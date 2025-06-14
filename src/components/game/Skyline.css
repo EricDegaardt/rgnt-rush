@@ -1,0 +1,66 @@
+
+.parallax-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    overflow: hidden;
+}
+
+#stars1, #stars2, #stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#stars1 {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250"><circle cx="1" cy="1" r="1" fill="white"/></svg>');
+    animation: animStar 50s linear infinite;
+}
+#stars2 {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><circle cx="1" cy="1" r="1" fill="white"/></svg>');
+    animation: animStar 100s linear infinite;
+}
+#stars3 {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="1" cy="1" r="1" fill="white"/></svg>');
+    animation: animStar 150s linear infinite;
+}
+
+@keyframes animStar {
+    from { background-position: 0 0; }
+    to { background-position: -10000px 5000px; }
+}
+
+#city-far, #city-near {
+    position: absolute;
+    bottom: 80px; /* Road height */
+    left: 0;
+    width: 200%;
+    height: 150px;
+    background-repeat: repeat-x;
+}
+
+#city-far {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 150"><rect x="10" y="70" width="40" height="80" fill="%231a202c"/><rect x="60" y="50" width="50" height="100" fill="%231a202c"/><rect x="120" y="90" width="30" height="60" fill="%231a202c"/><rect x="160" y="30" width="60" height="120" fill="%231a202c"/><rect x="230" y="80" width="40" height="70" fill="%231a202c"/><rect x="300" y="60" width="70" height="90" fill="%231a202c"/><rect x="400" y="40" width="50" height="110" fill="%231a202c"/><rect x="480" y="100" width="20" height="50" fill="%231a202c"/><rect x="520" y="70" width="60" height="80" fill="%231a202c"/><rect x="600" y="20" width="80" height="130" fill="%231a202c"/><rect x="700" y="90" width="40" height="60" fill="%231a202c"/></svg>');
+    background-size: 800px 150px;
+    animation: slide 30s linear infinite;
+    opacity: 0.6;
+}
+
+#city-near {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 150"><rect x="20" y="50" width="60" height="100" fill="%232d3748"/><rect x="100" y="20" width="80" height="130" fill="%232d3748" /><rect x="200" y="70" width="50" height="80" fill="%232d3748" /><rect x="280" y="40" width="70" height="110" fill="%232d3748" /><rect x="380" y="80" width="40" height="70" fill="%232d3748" /><rect x="450" y="30" width="90" height="120" fill="%232d3748" /><rect x="560" y="60" width="60" height="90" fill="%232d3748" /><rect x="650" y="10" width="100" height="140" fill="%232d3748" /></svg>');
+    background-size: 800px 150px;
+    animation: slide 15s linear infinite;
+}
+
+@keyframes slide {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
