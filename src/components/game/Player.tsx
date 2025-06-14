@@ -11,10 +11,13 @@ const Player = ({ y }: { y: number }) => {
                 width: '100px',
                 height: '50px',
                 imageRendering: 'pixelated',
+                zIndex: 10,
+                backgroundImage: `url('/lovable-uploads/b7deb829-7ece-471d-a8a0-f31de83fbf2.png')`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
             }}
-        >
-            <img src="/lovable-uploads/b7deb829-7ece-471d-a8a0-f31de83fbf2.png" alt="Motorcycle" className="w-full h-full object-contain" />
-        </div>
+        />
     );
 };
 
