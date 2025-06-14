@@ -12,11 +12,10 @@ const Player = ({ y }: { y: number }) => {
                 height: '50px',
                 imageRendering: 'pixelated',
                 zIndex: 10,
-                backgroundImage: `url('/lovable-uploads/b7deb829-7ece-471d-a8a0-f31de83fbf2.png')`,
+                backgroundImage: `url('/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png')`,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
             }}
         />
     );
