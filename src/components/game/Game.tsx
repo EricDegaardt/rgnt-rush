@@ -25,7 +25,7 @@ const Game = () => {
     const energyRef = useRef(100);
     const obstaclesRef = useRef([]);
     const collectiblesRef = useRef([]);
-    const playerYRef = useRef(GAME_HEIGHT - ROAD_HEIGHT - 50);
+    const playerYRef = useRef(ROAD_HEIGHT);
     const playerVelocityYRef = useRef(0);
     
     const [distance, setDistance] = useState(0);
@@ -41,10 +41,10 @@ const Game = () => {
         if (!runningRef.current) return;
 
         playerVelocityYRef.current -= GRAVITY;
-        playerYRef.current -= playerVelocityYRef.current;
+        playerYRef.current += playerVelocityYRef.current;
 
-        if (playerYRef.current >= GAME_HEIGHT - ROAD_HEIGHT - 50) {
-            playerYRef.current = GAME_HEIGHT - ROAD_HEIGHT - 50;
+        if (playerYRef.current <= ROAD_HEIGHT) {
+            playerYRef.current = ROAD_HEIGHT;
             playerVelocityYRef.current = 0;
         }
         
@@ -119,7 +119,7 @@ const Game = () => {
         setGameOver(false);
         distanceRef.current = 0;
         energyRef.current = 100;
-        playerYRef.current = GAME_HEIGHT - ROAD_HEIGHT - 50;
+        playerYRef.current = ROAD_HEIGHT;
         playerVelocityYRef.current = 0;
         obstaclesRef.current = [];
         collectiblesRef.current = [];
@@ -133,7 +133,7 @@ const Game = () => {
     };
     
     const handleJump = useCallback(() => {
-        const isOnGround = playerYRef.current <= GAME_HEIGHT - ROAD_HEIGHT - 50;
+        const isOnGround = playerYRef.current <= ROAD_HEIGHT;
         if (isOnGround && runningRef.current) {
             playerVelocityYRef.current = PLAYER_JUMP_VELOCITY;
         }

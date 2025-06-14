@@ -16,6 +16,7 @@ const Player = ({ y }: { y: number }) => {
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
             }}
         />
     );
