@@ -15,9 +15,12 @@ const GRAVITY = 0.8; // Increased for more natural fall
 const ROAD_HEIGHT = 80;
 
 const OBSTACLE_TYPES = [
-    { imgSrc: '/lovable-uploads/c8d70058-5f43-4c7f-bb0b-31eca09db410.png', width: 150, height: 75 }, // Truck
-    { imgSrc: '/lovable-uploads/5ed42b62-9dba-41f0-a950-c951aafc6097.png', width: 100, height: 50 }, // Yellow car
-    { imgSrc: '/lovable-uploads/42cffd22-e4bf-4af7-bf39-1f13ba7ee731.png', width: 100, height: 50 }  // Red car
+    { imgSrc: '/lovable-uploads/239f81b7-5e9d-4cba-9a04-8c28250e1741.png', width: 120, height: 60 }, // Grey Sedan
+    { imgSrc: '/lovable-uploads/5aa9da5a-21df-487e-a77e-c1da209e6484.png', width: 125, height: 65 }, // Dark SUV
+    { imgSrc: '/lovable-uploads/5c6a6ac2-15ba-46ff-9979-1eea1903047d.png', width: 160, height: 80 }, // White Truck
+    { imgSrc: '/lovable-uploads/60549ddd-1d5b-4741-8608-a3a2452edd43.png', width: 130, height: 70 }, // Red Minivan
+    { imgSrc: '/lovable-uploads/21c84da2-e844-409e-8651-f7d7b9c6365e.png', width: 200, height: 100 },// White RV
+    { imgSrc: '/lovable-uploads/722562c5-aa2a-4e52-acdb-042ecadfe573.png', width: 110, height: 55 }  // White Coupe
 ];
 
 const Game = () => {
