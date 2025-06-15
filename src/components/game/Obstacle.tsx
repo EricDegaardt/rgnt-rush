@@ -1,9 +1,10 @@
 
 import React from 'react';
+import TransparentImage from './TransparentImage';
 
 const Obstacle = ({ x, width, height, imgSrc }: { x: number; width: number; height: number; imgSrc: string; }) => {
     return (
-        <img
+        <TransparentImage
             src={imgSrc}
             alt="Obstacle"
             className="absolute"
@@ -12,6 +13,7 @@ const Obstacle = ({ x, width, height, imgSrc }: { x: number; width: number; heig
                 bottom: `80px`, // Road height
                 width: `${width}px`,
                 height: `${height}px`,
+                objectFit: 'contain',
             }}
         />
     );
