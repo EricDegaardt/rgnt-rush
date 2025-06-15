@@ -8,6 +8,7 @@ const Skyline = () => {
             <div id="stars1"></div>
             <div id="stars2"></div>
             <div id="stars3"></div>
+            <div id="city-background"></div>
             <div id="city-far"></div>
             <div id="city-near"></div>
             <div id="windows"></div>

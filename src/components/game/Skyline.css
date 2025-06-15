@@ -38,13 +38,20 @@
     to { background-position: -10000px 5000px; }
 }
 
-#city-far, #city-near, #windows {
+#city-background, #city-far, #city-near, #windows {
     position: absolute;
     bottom: 80px; /* Road height */
     left: 0;
     width: 200%;
     height: 250px; /* Increased height */
     background-repeat: repeat-x;
+}
+
+#city-background {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="5" y="180" width="30" height="70" fill="%2310151d"/><rect x="45" y="160" width="40" height="90" fill="%2310151d"/><rect x="100" y="200" width="25" height="50" fill="%2310151d"/><rect x="140" y="150" width="50" height="100" fill="%2310151d"/><rect x="210" y="190" width="30" height="60" fill="%2310151d"/><rect x="260" y="140" width="60" height="110" fill="%2310151d"/><rect x="350" y="170" width="40" height="80" fill="%2310151d"/><rect x="410" y="210" width="20" height="40" fill="%2310151d"/><rect x="450" y="160" width="50" height="90" fill="%2310151d"/><rect x="530" y="130" width="70" height="120" fill="%2310151d"/><rect x="620" y="180" width="30" height="70" fill="%2310151d"/><rect x="680" y="160" width="60" height="90" fill="%2310151d"/><rect x="750" y="190" width="40" height="60" fill="%2310151d"/></svg>');
+    background-size: 800px 250px;
+    animation: slide 60s linear infinite;
+    opacity: 0.4;
 }
 
 #city-far {
@@ -81,4 +88,3 @@
     60% { opacity: 0.4; }
     80% { opacity: 0.9; }
 }
-
