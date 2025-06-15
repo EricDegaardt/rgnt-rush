@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -13,10 +14,10 @@ const PLAYER_JUMP_VELOCITY = 22; // Slightly reduced for smoother arc
 const GRAVITY = 0.8; // Increased for more natural fall
 const ROAD_HEIGHT = 80;
 
-const OBSTACLE_IMAGES = [
-    '/lovable-uploads/c8d70058-5f43-4c7f-bb0b-31eca09db410.png',
-    '/lovable-uploads/5ed42b62-9dba-41f0-a950-c951aafc6097.png',
-    '/lovable-uploads/42cffd22-e4bf-4af7-bf39-1f13ba7ee731.png'
+const OBSTACLE_TYPES = [
+    { imgSrc: '/lovable-uploads/c8d70058-5f43-4c7f-bb0b-31eca09db410.png', width: 150, height: 75 }, // Truck
+    { imgSrc: '/lovable-uploads/5ed42b62-9dba-41f0-a950-c951aafc6097.png', width: 100, height: 50 }, // Yellow car
+    { imgSrc: '/lovable-uploads/42cffd22-e4bf-4af7-bf39-1f13ba7ee731.png', width: 100, height: 50 }  // Red car
 ];
 
 const Game = () => {
@@ -81,13 +82,13 @@ const Game = () => {
             .filter(o => o.x > -100);
         
         if (Math.random() < 0.015) {
-            const randomImage = OBSTACLE_IMAGES[Math.floor(Math.random() * OBSTACLE_IMAGES.length)];
+            const randomType = OBSTACLE_TYPES[Math.floor(Math.random() * OBSTACLE_TYPES.length)];
             obstaclesRef.current.push({
                 id: Date.now(),
                 x: GAME_WIDTH + 50,
-                width: 120,
-                height: 60,
-                imgSrc: randomImage
+                width: randomType.width,
+                height: randomType.height,
+                imgSrc: randomType.imgSrc
             });
         }
         
