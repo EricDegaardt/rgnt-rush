@@ -14,22 +14,12 @@ const PLAYER_JUMP_VELOCITY = 22; // Slightly reduced for smoother arc
 const GRAVITY = 0.8; // Increased for more natural fall
 const ROAD_HEIGHT = 80;
 
-const OBSTACLE_TYPES = [
-    { imgSrc: '/lovable-uploads/239f81b7-5e9d-4cba-9a04-8c28250e1741.png', width: 120, height: 60 }, // Grey Sedan
-    { imgSrc: '/lovable-uploads/5aa9da5a-21df-487e-a77e-c1da209e6484.png', width: 125, height: 65 }, // Dark SUV
-    { imgSrc: '/lovable-uploads/5c6a6ac2-15ba-46ff-9979-1eea1903047d.png', width: 160, height: 80 }, // White Truck
-    { imgSrc: '/lovable-uploads/60549ddd-1d5b-4741-8608-a3a2452edd43.png', width: 130, height: 70 }, // Red Minivan
-    { imgSrc: '/lovable-uploads/21c84da2-e844-409e-8651-f7d7b9c6365e.png', width: 200, height: 100 },// White RV
-    { imgSrc: '/lovable-uploads/722562c5-aa2a-4e52-acdb-042ecadfe573.png', width: 110, height: 55 }  // White Coupe
-];
-
 const Game = () => {
     const [running, setRunning] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [username, setUsername] = useState('');
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
-    const [roadPosition, setRoadPosition] = useState(0);
 
     const gameSpeedRef = useRef(7);
     const distanceRef = useRef(0);
@@ -41,7 +31,6 @@ const Game = () => {
     const playerVelocityYRef = useRef(0);
     const isOnGroundRef = useRef(true);
     const jumpKeyPressedRef = useRef(false);
-    const roadPositionRef = useRef(0);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -59,9 +48,6 @@ const Game = () => {
 
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
-
-        // Animate road
-        roadPositionRef.current -= gameSpeedRef.current;
 
         // Simple gravity physics - no air resistance for smoother movement
         playerVelocityYRef.current -= GRAVITY;
@@ -85,13 +71,11 @@ const Game = () => {
             .filter(o => o.x > -100);
         
         if (Math.random() < 0.015) {
-            const randomType = OBSTACLE_TYPES[Math.floor(Math.random() * OBSTACLE_TYPES.length)];
             obstaclesRef.current.push({
                 id: Date.now(),
                 x: GAME_WIDTH + 50,
-                width: randomType.width,
-                height: randomType.height,
-                imgSrc: randomType.imgSrc
+                width: 40 + Math.random() * 40,
+                height: 30 + Math.random() * 20,
             });
         }
         
@@ -143,7 +127,6 @@ const Game = () => {
         setObstacles([...obstaclesRef.current]);
         setCollectibles([...collectiblesRef.current]);
         setCollectionEffects([...collectionEffectsRef.current]);
-        setRoadPosition(roadPositionRef.current);
 
         requestAnimationFrame(gameLoop);
     }, []);
@@ -171,8 +154,6 @@ const Game = () => {
         setObstacles([]);
         setCollectibles([]);
         setCollectionEffects([]);
-        roadPositionRef.current = 0;
-        setRoadPosition(0);
         setRunning(true);
         jumpKeyPressedRef.current = false;
     };
@@ -248,14 +229,8 @@ const Game = () => {
         >
             <Skyline />
             <div 
-                className="absolute bottom-0 left-0 w-full" 
-                style={{ 
-                    height: `${ROAD_HEIGHT}px`,
-                    backgroundImage: `url('/lovable-uploads/5cc6ad25-42d9-4b54-b5ec-f669c222827c.png')`,
-                    backgroundRepeat: 'repeat-x',
-                    backgroundSize: 'auto 100%',
-                    backgroundPosition: `${roadPosition}px 0`,
-                }}
+                className="absolute bottom-0 left-0 w-full bg-gray-600" 
+                style={{ height: `${ROAD_HEIGHT}px`, borderTop: '4px solid #4a5568', background: 'linear-gradient(#666, #333)' }}
             />
             
             <Player y={playerY} />
