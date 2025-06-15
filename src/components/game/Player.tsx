@@ -1,14 +1,28 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { PLAYER_X_POSITION } from './constants';
 
 // Increased size by 20% (width: 120px, height: 60px)
 const Player = ({ y }: { y: number }) => {
+    const [bounceOffset, setBounceOffset] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setBounceOffset(prev => prev + 0.15); // Increment for smooth bounce
+        }, 16); // ~60fps
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Create a subtle bounce effect (2-3px amplitude)
+    const bounceY = Math.sin(bounceOffset) * 2.5;
+
     return (
         <div
             className="absolute"
             style={{
                 left: `${PLAYER_X_POSITION}px`,
-                bottom: `${y}px`,
+                bottom: `${y + bounceY}px`,
                 width: '120px',
                 height: '60px',
                 imageRendering: 'pixelated',
@@ -17,7 +31,7 @@ const Player = ({ y }: { y: number }) => {
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                // Adjust for bigger bike; keep similar effect
+                // Combine rotation with subtle bounce tilt
                 transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg)`,
                 transition: 'transform 150ms ease-linear',
             }}
