@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
 import Obstacle from './Obstacle';
@@ -7,12 +7,9 @@ import Collectible from './Collectible';
 import Skyline from './Skyline';
 import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
-
-const GAME_WIDTH = 600;
-const GAME_HEIGHT = 800;
-const PLAYER_JUMP_VELOCITY = 22; // Slightly reduced for smoother arc
-const GRAVITY = 0.8; // Increased for more natural fall
-const ROAD_HEIGHT = 80;
+import { useGameLogic } from '../../hooks/useGameLogic';
+import { usePlayerInput } from '../../hooks/usePlayerInput';
+import { GAME_WIDTH, GAME_HEIGHT, ROAD_HEIGHT } from './constants';
 
 const Game = () => {
     const [running, setRunning] = useState(false);
@@ -21,173 +18,32 @@ const Game = () => {
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
 
-    const gameSpeedRef = useRef(7); // Controls distance score
-    const visualSpeedRef = useRef(5); // Controls visual speed of elements
-    const distanceRef = useRef(0);
-    const energyRef = useRef(100);
-    const obstaclesRef = useRef([]);
-    const collectiblesRef = useRef([]);
-    const collectionEffectsRef = useRef([]);
-    const playerYRef = useRef(ROAD_HEIGHT);
-    const playerVelocityYRef = useRef(0);
-    const isOnGroundRef = useRef(true);
-    const jumpKeyPressedRef = useRef(false);
-    
-    const [distance, setDistance] = useState(0);
-    const [energy, setEnergy] = useState(100);
-    const [playerY, setPlayerY] = useState(playerYRef.current);
-    const [obstacles, setObstacles] = useState([]);
-    const [collectibles, setCollectibles] = useState([]);
-    const [collectionEffects, setCollectionEffects] = useState([]);
-
-    const runningRef = useRef(running);
-    runningRef.current = running;
-
-    const handleEffectComplete = useCallback((id) => {
-        collectionEffectsRef.current = collectionEffectsRef.current.filter(effect => effect.id !== id);
+    const handleGameOver = useCallback((score: number) => {
+        setFinalScore(score);
+        setGameOver(true);
+        setRunning(false);
     }, []);
 
-    const gameLoop = useCallback(() => {
-        if (!runningRef.current) return;
+    const {
+        distance,
+        energy,
+        playerY,
+        obstacles,
+        collectibles,
+        collectionEffects,
+        resetGame,
+        handleJump,
+        handleEffectComplete
+    } = useGameLogic(running, handleGameOver);
 
-        // Simple gravity physics - no air resistance for smoother movement
-        playerVelocityYRef.current -= GRAVITY;
-        
-        // Update player position
-        playerYRef.current += playerVelocityYRef.current;
+    usePlayerInput(handleJump, gameOver);
 
-        // Ground collision
-        if (playerYRef.current <= ROAD_HEIGHT) {
-            playerYRef.current = ROAD_HEIGHT;
-            playerVelocityYRef.current = 0;
-            isOnGroundRef.current = true;
-        } else {
-            isOnGroundRef.current = false;
-        }
-        
-        distanceRef.current += gameSpeedRef.current * 0.08;
-
-        obstaclesRef.current = obstaclesRef.current
-            .map(o => ({...o, x: o.x - visualSpeedRef.current}))
-            .filter(o => o.x > -100);
-        
-        if (Math.random() < 0.015) {
-            obstaclesRef.current.push({
-                id: Date.now(),
-                x: GAME_WIDTH + 50,
-                width: 40 + Math.random() * 40,
-                height: 30 + Math.random() * 20,
-            });
-        }
-        
-        collectiblesRef.current = collectiblesRef.current
-            .map(c => ({...c, x: c.x - visualSpeedRef.current}))
-            .filter(c => c.x > -100);
-
-        if (Math.random() < 0.01) {
-             collectiblesRef.current.push({
-                id: Date.now(),
-                x: GAME_WIDTH + 50,
-                y: ROAD_HEIGHT + 50 + Math.random() * 250, // Even higher spawn range
-            });
-        }
-
-        const playerRect = { x: 80, y: playerYRef.current, width: 80, height: 40 };
-
-        obstaclesRef.current.forEach(obstacle => {
-            const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };
-            if (playerRect.x < obstacleRect.x + obstacleRect.width && playerRect.x + playerRect.width > obstacleRect.x && playerRect.y < obstacleRect.y + obstacleRect.height && playerRect.y + playerRect.height > obstacleRect.y) {
-                energyRef.current -= 34;
-                obstaclesRef.current = obstaclesRef.current.filter(o => o.id !== obstacle.id);
-            }
-        });
-
-        collectiblesRef.current.forEach(collectible => {
-            const collectibleRect = { x: collectible.x, y: collectible.y, width: 30, height: 30 };
-            if (playerRect.x < collectibleRect.x + collectibleRect.width && playerRect.x + playerRect.width > collectibleRect.x && playerRect.y < collectibleRect.y + collectibleRect.height && playerRect.y + playerRect.height > collectibleRect.y) {
-                energyRef.current = Math.min(100, energyRef.current + 25);
-                collectionEffectsRef.current.push({
-                    id: collectible.id,
-                    x: collectible.x + 15, // Center of collectible
-                    y: collectible.y + 15,
-                });
-                collectiblesRef.current = collectiblesRef.current.filter(c => c.id !== collectible.id);
-            }
-        });
-
-        if (energyRef.current <= 0) {
-            energyRef.current = 0;
-            setFinalScore(distanceRef.current);
-            setGameOver(true);
-            setRunning(false);
-        }
-
-        setPlayerY(playerYRef.current);
-        setDistance(distanceRef.current);
-        setEnergy(energyRef.current);
-        setObstacles([...obstaclesRef.current]);
-        setCollectibles([...collectiblesRef.current]);
-        setCollectionEffects([...collectionEffectsRef.current]);
-
-        requestAnimationFrame(gameLoop);
-    }, []);
-    
-    useEffect(() => {
-        if (running && !gameOver) {
-            requestAnimationFrame(gameLoop);
-        }
-    }, [running, gameOver, gameLoop]);
-    
     const startGame = () => {
         setGameOver(false);
-        distanceRef.current = 0;
-        energyRef.current = 100;
-        playerYRef.current = ROAD_HEIGHT;
-        playerVelocityYRef.current = 0;
-        isOnGroundRef.current = true;
-        obstaclesRef.current = [];
-        collectiblesRef.current = [];
-        collectionEffectsRef.current = [];
         setFinalScore(0);
-        setDistance(0);
-        setEnergy(100);
-        setPlayerY(playerYRef.current);
-        setObstacles([]);
-        setCollectibles([]);
-        setCollectionEffects([]);
+        resetGame();
         setRunning(true);
-        jumpKeyPressedRef.current = false;
     };
-    
-    const handleJump = useCallback(() => {
-        if (isOnGroundRef.current && runningRef.current) {
-            playerVelocityYRef.current = PLAYER_JUMP_VELOCITY;
-            isOnGroundRef.current = false;
-        }
-    }, []);
-
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.code === 'Space' && !gameOver && !jumpKeyPressedRef.current) {
-                e.preventDefault(); // Prevent page scroll
-                handleJump();
-                jumpKeyPressedRef.current = true;
-            }
-        };
-
-        const handleKeyUp = (e) => {
-            if (e.code === 'Space') {
-                jumpKeyPressedRef.current = false;
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', handleKeyUp);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keyup', handleKeyUp);
-        };
-    }, [handleJump, gameOver]);
 
     const handleScreenInteraction = () => {
         if (!running && !gameOver && !showLeaderboard) {
