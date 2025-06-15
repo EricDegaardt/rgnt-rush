@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -10,6 +9,7 @@ import CollectionEffect from './CollectionEffect';
 import { useGameLogic } from '../../hooks/useGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { GAME_WIDTH, GAME_HEIGHT, ROAD_HEIGHT } from './constants';
+import Road from './Road';
 
 const Game = () => {
     const [running, setRunning] = useState(false);
@@ -85,10 +85,7 @@ const Game = () => {
             onClick={handleScreenInteraction}
         >
             <Skyline />
-            <div 
-                className="absolute bottom-0 left-0 w-full bg-gray-600" 
-                style={{ height: `${ROAD_HEIGHT}px`, borderTop: '4px solid #4a5568', background: 'linear-gradient(#666, #333)' }}
-            />
+            <Road />
             
             <Player y={playerY} />
             
