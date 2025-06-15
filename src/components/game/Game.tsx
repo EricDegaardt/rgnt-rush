@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -31,6 +32,7 @@ const Game = () => {
         obstacles,
         collectibles,
         collectionEffects,
+        isSpinning,
         resetGame,
         handleJump,
         handleEffectComplete
@@ -87,7 +89,7 @@ const Game = () => {
             <Skyline />
             <Road />
             
-            <Player y={playerY} />
+            <Player y={playerY} isSpinning={isSpinning} />
             
             {obstacles.map(o => <Obstacle key={o.id} {...o} />)}
             {collectibles.map(c => <Collectible key={c.id} {...c} />)}

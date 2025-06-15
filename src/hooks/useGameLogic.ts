@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GRAVITY, ROAD_HEIGHT, PLAYER_JUMP_VELOCITY, GAME_WIDTH, PLAYER_X_POSITION } from '../components/game/constants';
 
@@ -36,6 +37,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const playerYRef = useRef(ROAD_HEIGHT);
     const playerVelocityYRef = useRef(0);
     const isOnGroundRef = useRef(true);
+    const isSpinningRef = useRef(false);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -43,6 +45,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const [obstacles, setObstacles] = useState<ObstacleType[]>([]);
     const [collectibles, setCollectibles] = useState<CollectibleType[]>([]);
     const [collectionEffects, setCollectionEffects] = useState<CollectionEffectType[]>([]);
+    const [isSpinning, setIsSpinning] = useState(false);
 
     const runningRef = useRef(running);
     runningRef.current = running;
@@ -139,6 +142,13 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
             ) {
                 // === ENERGY: Reduce by 5% ===
                 energyRef.current -= 5;
+                // Trigger spin animation
+                isSpinningRef.current = true;
+                setIsSpinning(true);
+                setTimeout(() => {
+                    isSpinningRef.current = false;
+                    setIsSpinning(false);
+                }, 800);
                 obstaclesRef.current = obstaclesRef.current.filter(o => o.id !== obstacle.id);
             }
         });
@@ -193,6 +203,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         playerYRef.current = ROAD_HEIGHT;
         playerVelocityYRef.current = 0;
         isOnGroundRef.current = true;
+        isSpinningRef.current = false;
         obstaclesRef.current = [];
         collectiblesRef.current = [];
         collectionEffectsRef.current = [];
@@ -202,6 +213,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         setObstacles([]);
         setCollectibles([]);
         setCollectionEffects([]);
+        setIsSpinning(false);
     }, []);
     
     const handleJump = useCallback(() => {
@@ -222,6 +234,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         obstacles,
         collectibles,
         collectionEffects,
+        isSpinning,
         resetGame,
         handleJump,
         handleEffectComplete

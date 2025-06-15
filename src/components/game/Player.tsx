@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { PLAYER_X_POSITION } from './constants';
 
 // Increased size by 20% (width: 120px, height: 60px)
-const Player = ({ y }: { y: number }) => {
+const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
     const [bounceOffset, setBounceOffset] = useState(0);
 
     useEffect(() => {
@@ -31,9 +31,9 @@ const Player = ({ y }: { y: number }) => {
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                // Combine rotation with subtle bounce tilt
-                transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg)`,
-                transition: 'transform 150ms ease-linear',
+                // Combine rotation with subtle bounce tilt and spin animation
+                transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg) ${isSpinning ? 'rotate(360deg)' : ''}`,
+                transition: isSpinning ? 'transform 800ms ease-out' : 'transform 150ms ease-linear',
             }}
         />
     );
