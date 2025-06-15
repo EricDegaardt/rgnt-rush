@@ -64,6 +64,9 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         
         distanceRef.current += gameSpeedRef.current * 0.08;
 
+        // === ENERGY: Decrease a little bit over time ===
+        energyRef.current -= 0.06; // ~5% per about 10 seconds at 60fps
+
         obstaclesRef.current = obstaclesRef.current
             .map(o => ({...o, x: o.x - visualSpeedRef.current}))
             .filter(o => o.x > -100);
@@ -93,24 +96,39 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
 
         obstaclesRef.current.forEach(obstacle => {
             const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };
-            if (playerRect.x < obstacleRect.x + obstacleRect.width && playerRect.x + playerRect.width > obstacleRect.x && playerRect.y < obstacleRect.y + obstacleRect.height && playerRect.y + playerRect.height > obstacleRect.y) {
-                energyRef.current -= 34;
+            if (
+                playerRect.x < obstacleRect.x + obstacleRect.width &&
+                playerRect.x + playerRect.width > obstacleRect.x &&
+                playerRect.y < obstacleRect.y + obstacleRect.height &&
+                playerRect.y + playerRect.height > obstacleRect.y
+            ) {
+                // === ENERGY: Reduce by 5% ===
+                energyRef.current -= 5;
                 obstaclesRef.current = obstaclesRef.current.filter(o => o.id !== obstacle.id);
             }
         });
 
         collectiblesRef.current.forEach(collectible => {
             const collectibleRect = { x: collectible.x, y: collectible.y, width: 30, height: 30 };
-            if (playerRect.x < collectibleRect.x + collectibleRect.width && playerRect.x + playerRect.width > collectibleRect.x && playerRect.y < collectibleRect.y + collectibleRect.height && playerRect.y + playerRect.height > collectibleRect.y) {
-                energyRef.current = Math.min(100, energyRef.current + 25);
+            if (
+                playerRect.x < collectibleRect.x + collectibleRect.width &&
+                playerRect.x + playerRect.width > collectibleRect.x &&
+                playerRect.y < collectibleRect.y + collectibleRect.height &&
+                playerRect.y + playerRect.height > collectibleRect.y
+            ) {
+                // === ENERGY: Increase by 8%, cap at 100 ===
+                energyRef.current = Math.min(100, energyRef.current + 8);
                 collectionEffectsRef.current.push({
                     id: collectible.id,
-                    x: collectible.x + 15, // Center of collectible
+                    x: collectible.x + 15,
                     y: collectible.y + 15,
                 });
                 collectiblesRef.current = collectiblesRef.current.filter(c => c.id !== collectible.id);
             }
         });
+
+        // Clamp energy to [0, 100]
+        energyRef.current = Math.max(0, Math.min(100, energyRef.current));
 
         if (energyRef.current <= 0) {
             energyRef.current = 0;
