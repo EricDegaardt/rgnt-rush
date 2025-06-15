@@ -21,6 +21,9 @@ export interface CollectionEffectType {
     y: number;
 }
 
+// Update constants for player size (must match the new Player.tsx size)
+const PLAYER_WIDTH = 120; // 20% bigger than before
+const PLAYER_HEIGHT = 60;
 
 export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) => void) => {
     const gameSpeedRef = useRef(7); // Controls distance score
@@ -67,32 +70,56 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         // === ENERGY: Decrease a little bit over time ===
         energyRef.current -= 0.06; // ~5% per about 10 seconds at 60fps
 
+        // Move obstacles left
         obstaclesRef.current = obstaclesRef.current
             .map(o => ({...o, x: o.x - visualSpeedRef.current}))
             .filter(o => o.x > -100);
-        
-        if (Math.random() < 0.008) { // Reduced from 0.015
-            obstaclesRef.current.push({
-                id: Date.now(),
-                x: GAME_WIDTH + 50,
-                width: 40 + Math.random() * 40,
-                height: 30 + Math.random() * 20,
-            });
-        }
-        
+
+        // Move collectibles left
         collectiblesRef.current = collectiblesRef.current
             .map(c => ({...c, x: c.x - visualSpeedRef.current}))
             .filter(c => c.x > -100);
 
-        if (Math.random() < 0.01) {
-             collectiblesRef.current.push({
-                id: Date.now(),
-                x: GAME_WIDTH + 50,
-                y: ROAD_HEIGHT + 50 + Math.random() * 250, // Even higher spawn range
-            });
+        // === Spawn obstacles (with spacing VS collectibles) ===
+        if (Math.random() < 0.008) {
+            // Only spawn if there is no collectible it would overlap
+            const newX = GAME_WIDTH + 50;
+            const potentialWidth = 40 + Math.random() * 40;
+            const tooClose = collectiblesRef.current.some(
+                c =>
+                    c.x + 30 > newX && // collectible right edge past new left edge
+                    c.x < newX + potentialWidth // collectible left edge before ob right edge
+            );
+            if (!tooClose) {
+                obstaclesRef.current.push({
+                    id: Date.now(),
+                    x: newX,
+                    width: potentialWidth,
+                    height: 30 + Math.random() * 20,
+                });
+            }
         }
 
-        const playerRect = { x: PLAYER_X_POSITION, y: playerYRef.current, width: 80, height: 40 };
+        // === Spawn collectibles (with spacing VS obstacles) ===
+        if (Math.random() < 0.01) {
+            const newX = GAME_WIDTH + 50;
+            const newY = ROAD_HEIGHT + 50 + Math.random() * 250;
+            const tooClose = obstaclesRef.current.some(
+                o =>
+                    newX + 30 > o.x && // collectible right edge past ob left edge
+                    newX < o.x + o.width // collectible left edge before ob right edge
+            );
+            if (!tooClose) {
+                collectiblesRef.current.push({
+                    id: Date.now(),
+                    x: newX,
+                    y: newY,
+                });
+            }
+        }
+
+        // COLLISION DETECTION (update to new player size for all collision checks!)
+        const playerRect = { x: PLAYER_X_POSITION, y: playerYRef.current, width: PLAYER_WIDTH, height: PLAYER_HEIGHT };
 
         obstaclesRef.current.forEach(obstacle => {
             const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };
