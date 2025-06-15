@@ -80,8 +80,8 @@ const Game = () => {
 
     return (
         <div 
-            className="relative bg-black w-full h-full overflow-hidden mx-auto"
-            style={{ maxWidth: `${GAME_WIDTH}px`, maxHeight: `${GAME_HEIGHT}px`, aspectRatio: '3/4' }}
+            className="relative bg-black w-full overflow-hidden"
+            style={{ maxWidth: `${GAME_WIDTH}px`, aspectRatio: '3 / 4' }}
             onClick={handleScreenInteraction}
         >
             <Skyline />
