@@ -22,11 +22,11 @@ const Player = ({ y }: { y: number }) => {
             className="absolute"
             style={{
                 left: `${PLAYER_X_POSITION}px`,
-                bottom: `${y + bounceY}px`,
+                bottom: `${y + bounceY - 10}px`, // Position 10px lower to drive in the street
                 width: '120px',
                 height: '60px',
                 imageRendering: 'pixelated',
-                zIndex: 10,
+                zIndex: 999, // Highest z-index to ensure bike is always on top
                 backgroundImage: `url('/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png')`,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
