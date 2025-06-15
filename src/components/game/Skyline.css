@@ -40,7 +40,7 @@
 
 #city-background, #city-far, #city-near, #windows {
     position: absolute;
-    bottom: 80px; /* Road height */
+    bottom: 60px; /* Road height */
     left: 0;
     width: 200%;
     height: 250px; /* Increased height */
@@ -70,7 +70,7 @@
 }
 
 #windows {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="35" y="120" width="3" height="4" fill="%23fefcbf"/><rect x="55" y="180" width="3" height="4" fill="%23fefcbf"/><rect x="110" y="90" width="3" height="4" fill="%23fefcbf"/><rect x="130" y="150" width="3" height="4" fill="%23fefcbf"/><rect x="160" y="200" width="3" height="4" fill="%23fefcbf"/><rect x="220" y="140" width="3" height="4" fill="%23fefcbf"/><rect x="290" y="110" width="3" height="4" fill="%23fefcbf"/><rect x="330" y="180" width="3" height="4" fill="%23fefcbf"/><rect x="390" y="150" width="3" height="4" fill="%23fefcbf"/><rect x="470" y="100" width="3" height="4" fill="%23fefcbf"/><rect x="500" y="160" width="3" height="4" fill="%23fefcbf"/><rect x="580" y="130" width="3" height="4" fill="%23fefcbf"/><rect x="670" y="80" width="3" height="4" fill="%23fefcbf"/><rect x="700" y="140" width="3" height="4" fill="%23fefcbf"/><rect x="730" y="200" width="3" height="4" fill="%23fefcbf"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="35" y="120" width="3" height="4" fill="%23888470"/><rect x="55" y="180" width="3" height="4" fill="%23888470"/><rect x="110" y="90" width="3" height="4" fill="%23888470"/><rect x="130" y="150" width="3" height="4" fill="%23888470"/><rect x="160" y="200" width="3" height="4" fill="%23888470"/><rect x="220" y="140" width="3" height="4" fill="%23888470"/><rect x="290" y="110" width="3" height="4" fill="%23888470"/><rect x="330" y="180" width="3" height="4" fill="%23888470"/><rect x="390" y="150" width="3" height="4" fill="%23888470"/><rect x="470" y="100" width="3" height="4" fill="%23888470"/><rect x="500" y="160" width="3" height="4" fill="%23888470"/><rect x="580" y="130" width="3" height="4" fill="%23888470"/><rect x="670" y="80" width="3" height="4" fill="%23888470"/><rect x="700" y="140" width="3" height="4" fill="%23888470"/><rect x="730" y="200" width="3" height="4" fill="%23888470"/></svg>');
     background-size: 800px 250px;
     animation: slide 15s linear infinite, blink 3s ease-in-out infinite;
     z-index: 1;
@@ -82,9 +82,9 @@
 }
 
 @keyframes blink {
-    0%, 100% { opacity: 0.8; }
-    20% { opacity: 0.5; }
-    40% { opacity: 1; }
-    60% { opacity: 0.4; }
-    80% { opacity: 0.9; }
+    0%, 100% { opacity: 0.5; }
+    20% { opacity: 0.2; }
+    40% { opacity: 0.6; }
+    60% { opacity: 0.1; }
+    80% { opacity: 0.4; }
 }

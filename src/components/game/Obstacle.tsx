@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { ROAD_HEIGHT } from './constants';
 
 const Obstacle = ({ x, width, height }: { x: number; width: number; height: number; }) => {
     return (
@@ -7,7 +8,7 @@ const Obstacle = ({ x, width, height }: { x: number; width: number; height: numb
             className="absolute bg-red-600 border-2 border-red-800 rounded-sm"
             style={{
                 left: `${x}px`,
-                bottom: `80px`, // Road height
+                bottom: `${ROAD_HEIGHT}px`,
                 width: `${width}px`,
                 height: `${height}px`,
             }}
