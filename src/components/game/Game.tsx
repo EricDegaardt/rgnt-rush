@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -19,7 +20,7 @@ const Game = () => {
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
 
-    const gameSpeedRef = useRef(7);
+    const gameSpeedRef = useRef(12);
     const distanceRef = useRef(0);
     const energyRef = useRef(100);
     const obstaclesRef = useRef([]);
