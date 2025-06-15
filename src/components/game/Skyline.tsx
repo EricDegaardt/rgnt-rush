@@ -10,6 +10,7 @@ const Skyline = () => {
             <div id="stars3"></div>
             <div id="city-far"></div>
             <div id="city-near"></div>
+            <div id="windows"></div>
         </div>
     );
 };
