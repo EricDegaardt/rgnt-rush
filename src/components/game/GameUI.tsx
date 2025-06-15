@@ -8,7 +8,7 @@ const GameUI = ({ distance, energy }: { distance: number, energy: number }) => {
         : `${(distance / 1000).toFixed(1)}km`;
 
     return (
-        <div className="absolute top-4 left-4 text-white flex flex-col gap-2 p-2 bg-black bg-opacity-50 rounded text-xs md:text-base">
+        <div className="absolute top-4 left-4 text-white flex flex-row items-center gap-4 p-2 bg-black bg-opacity-50 rounded text-xs md:text-base">
             <div className="flex items-center gap-2">
                 <Gauge size={24} className="text-purple-400" />
                 <span>120 km/h</span>
