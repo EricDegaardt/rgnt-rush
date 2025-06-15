@@ -4,7 +4,7 @@ import React from 'react';
 const Player = ({ y }: { y: number }) => {
     return (
         <div
-            className="absolute transition-all duration-50 ease-linear"
+            className="absolute transition-all duration-100 ease-out"
             style={{
                 left: `100px`,
                 bottom: `${y}px`,

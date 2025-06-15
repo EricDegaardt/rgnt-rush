@@ -8,8 +8,8 @@ import Leaderboard from './Leaderboard';
 
 const GAME_WIDTH = 600;
 const GAME_HEIGHT = 800;
-const PLAYER_JUMP_VELOCITY = 20; // Increased for higher jumps
-const GRAVITY = 0.8; // Increased gravity for better feel
+const PLAYER_JUMP_VELOCITY = 25; // Increased for much higher jumps
+const GRAVITY = 0.6; // Reduced for smoother arc
 const ROAD_HEIGHT = 80;
 
 const Game = () => {
@@ -40,13 +40,13 @@ const Game = () => {
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
 
-        // Apply gravity (negative because Y increases upward in our coordinate system)
+        // Apply gravity with smoother deceleration
         playerVelocityYRef.current -= GRAVITY;
         
         // Update player position
         playerYRef.current += playerVelocityYRef.current;
 
-        // Ground collision
+        // Ground collision with bounce prevention
         if (playerYRef.current <= ROAD_HEIGHT) {
             playerYRef.current = ROAD_HEIGHT;
             playerVelocityYRef.current = 0;
@@ -78,7 +78,7 @@ const Game = () => {
              collectiblesRef.current.push({
                 id: Date.now(),
                 x: GAME_WIDTH + 50,
-                y: ROAD_HEIGHT + 50 + Math.random() * 200, // Higher spawn range for batteries
+                y: ROAD_HEIGHT + 50 + Math.random() * 250, // Even higher spawn range
             });
         }
 
