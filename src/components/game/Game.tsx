@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -9,8 +8,8 @@ import Leaderboard from './Leaderboard';
 
 const GAME_WIDTH = 600;
 const GAME_HEIGHT = 800;
-const PLAYER_JUMP_VELOCITY = 17;
-const GRAVITY = 0.7;
+const PLAYER_JUMP_VELOCITY = 20; // Increased for higher jumps
+const GRAVITY = 0.8; // Increased gravity for better feel
 const ROAD_HEIGHT = 80;
 
 const Game = () => {
@@ -27,6 +26,7 @@ const Game = () => {
     const collectiblesRef = useRef([]);
     const playerYRef = useRef(ROAD_HEIGHT);
     const playerVelocityYRef = useRef(0);
+    const isOnGroundRef = useRef(true);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -40,12 +40,19 @@ const Game = () => {
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
 
+        // Apply gravity (negative because Y increases upward in our coordinate system)
         playerVelocityYRef.current -= GRAVITY;
+        
+        // Update player position
         playerYRef.current += playerVelocityYRef.current;
 
+        // Ground collision
         if (playerYRef.current <= ROAD_HEIGHT) {
             playerYRef.current = ROAD_HEIGHT;
             playerVelocityYRef.current = 0;
+            isOnGroundRef.current = true;
+        } else {
+            isOnGroundRef.current = false;
         }
         
         distanceRef.current += gameSpeedRef.current * 0.05;
@@ -71,7 +78,7 @@ const Game = () => {
              collectiblesRef.current.push({
                 id: Date.now(),
                 x: GAME_WIDTH + 50,
-                y: ROAD_HEIGHT + 20 + Math.random() * 150,
+                y: ROAD_HEIGHT + 50 + Math.random() * 200, // Higher spawn range for batteries
             });
         }
 
@@ -121,6 +128,7 @@ const Game = () => {
         energyRef.current = 100;
         playerYRef.current = ROAD_HEIGHT;
         playerVelocityYRef.current = 0;
+        isOnGroundRef.current = true;
         obstaclesRef.current = [];
         collectiblesRef.current = [];
         setFinalScore(0);
@@ -133,15 +141,16 @@ const Game = () => {
     };
     
     const handleJump = useCallback(() => {
-        const isOnGround = playerYRef.current <= ROAD_HEIGHT;
-        if (isOnGround && runningRef.current) {
+        if (isOnGroundRef.current && runningRef.current) {
             playerVelocityYRef.current = PLAYER_JUMP_VELOCITY;
+            isOnGroundRef.current = false;
         }
     }, []);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.code === 'Space' && !gameOver) {
+                e.preventDefault(); // Prevent page scroll
                 handleJump();
             }
         };
