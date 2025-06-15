@@ -21,7 +21,8 @@ const Game = () => {
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
 
-    const gameSpeedRef = useRef(7);
+    const gameSpeedRef = useRef(7); // Controls distance score
+    const visualSpeedRef = useRef(5); // Controls visual speed of elements
     const distanceRef = useRef(0);
     const energyRef = useRef(100);
     const obstaclesRef = useRef([]);
@@ -67,7 +68,7 @@ const Game = () => {
         distanceRef.current += gameSpeedRef.current * 0.08;
 
         obstaclesRef.current = obstaclesRef.current
-            .map(o => ({...o, x: o.x - gameSpeedRef.current}))
+            .map(o => ({...o, x: o.x - visualSpeedRef.current}))
             .filter(o => o.x > -100);
         
         if (Math.random() < 0.015) {
@@ -80,7 +81,7 @@ const Game = () => {
         }
         
         collectiblesRef.current = collectiblesRef.current
-            .map(c => ({...c, x: c.x - gameSpeedRef.current}))
+            .map(c => ({...c, x: c.x - visualSpeedRef.current}))
             .filter(c => c.x > -100);
 
         if (Math.random() < 0.01) {
