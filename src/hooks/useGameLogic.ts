@@ -68,7 +68,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
             .map(o => ({...o, x: o.x - visualSpeedRef.current}))
             .filter(o => o.x > -100);
         
-        if (Math.random() < 0.015) {
+        if (Math.random() < 0.008) { // Reduced from 0.015
             obstaclesRef.current.push({
                 id: Date.now(),
                 x: GAME_WIDTH + 50,
