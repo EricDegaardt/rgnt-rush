@@ -20,6 +20,7 @@ const Game = () => {
     const [username, setUsername] = useState('');
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
+    const [roadPosition, setRoadPosition] = useState(0);
 
     const gameSpeedRef = useRef(7);
     const distanceRef = useRef(0);
@@ -31,6 +32,7 @@ const Game = () => {
     const playerVelocityYRef = useRef(0);
     const isOnGroundRef = useRef(true);
     const jumpKeyPressedRef = useRef(false);
+    const roadPositionRef = useRef(0);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -48,6 +50,12 @@ const Game = () => {
 
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
+
+        // Animate road
+        roadPositionRef.current -= gameSpeedRef.current;
+        if (roadPositionRef.current <= -1024) { // Wrap texture
+            roadPositionRef.current += 1024;
+        }
 
         // Simple gravity physics - no air resistance for smoother movement
         playerVelocityYRef.current -= GRAVITY;
@@ -127,6 +135,7 @@ const Game = () => {
         setObstacles([...obstaclesRef.current]);
         setCollectibles([...collectiblesRef.current]);
         setCollectionEffects([...collectionEffectsRef.current]);
+        setRoadPosition(roadPositionRef.current);
 
         requestAnimationFrame(gameLoop);
     }, []);
@@ -154,6 +163,8 @@ const Game = () => {
         setObstacles([]);
         setCollectibles([]);
         setCollectionEffects([]);
+        roadPositionRef.current = 0;
+        setRoadPosition(0);
         setRunning(true);
         jumpKeyPressedRef.current = false;
     };
@@ -229,8 +240,15 @@ const Game = () => {
         >
             <Skyline />
             <div 
-                className="absolute bottom-0 left-0 w-full bg-gray-600" 
-                style={{ height: `${ROAD_HEIGHT}px`, borderTop: '4px solid #4a5568', background: 'linear-gradient(#666, #333)' }}
+                className="absolute bottom-0 left-0 w-full" 
+                style={{ 
+                    height: `${ROAD_HEIGHT}px`, 
+                    borderTop: '4px solid #4a5568', 
+                    backgroundImage: `url('/lovable-uploads/b3e48028-6d05-45a6-935a-77e616394898.png')`,
+                    backgroundRepeat: 'repeat-x',
+                    backgroundSize: 'auto 100%',
+                    backgroundPosition: `${roadPosition}px 0`,
+                }}
             />
             
             <Player y={playerY} />
