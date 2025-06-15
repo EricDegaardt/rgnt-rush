@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -53,9 +52,6 @@ const Game = () => {
 
         // Animate road
         roadPositionRef.current -= gameSpeedRef.current;
-        if (roadPositionRef.current <= -1024) { // Wrap texture
-            roadPositionRef.current += 1024;
-        }
 
         // Simple gravity physics - no air resistance for smoother movement
         playerVelocityYRef.current -= GRAVITY;
@@ -242,9 +238,8 @@ const Game = () => {
             <div 
                 className="absolute bottom-0 left-0 w-full" 
                 style={{ 
-                    height: `${ROAD_HEIGHT}px`, 
-                    borderTop: '4px solid #4a5568', 
-                    backgroundImage: `url('/lovable-uploads/b3e48028-6d05-45a6-935a-77e616394898.png')`,
+                    height: `${ROAD_HEIGHT}px`,
+                    backgroundImage: `url('/lovable-uploads/5cc6ad25-42d9-4b54-b5ec-f669c222827c.png')`,
                     backgroundRepeat: 'repeat-x',
                     backgroundSize: 'auto 100%',
                     backgroundPosition: `${roadPosition}px 0`,
