@@ -2,7 +2,7 @@
 import React from 'react';
 import { Zap, Gauge, Milestone } from 'lucide-react';
 
-const GameUI = ({ speed, distance, energy }: { speed: number, distance: number, energy: number }) => {
+const GameUI = ({ distance, energy }: { distance: number, energy: number }) => {
     const formattedDistance = distance < 1000 
         ? `${Math.floor(distance)}m` 
         : `${(distance / 1000).toFixed(1)}km`;
@@ -11,7 +11,7 @@ const GameUI = ({ speed, distance, energy }: { speed: number, distance: number, 
         <div className="absolute top-4 left-4 text-white flex flex-col gap-2 p-2 bg-black bg-opacity-50 rounded text-xs md:text-base">
             <div className="flex items-center gap-2">
                 <Gauge size={24} className="text-purple-400" />
-                <span>{speed} km/h</span>
+                <span>120 km/h</span>
             </div>
             <div className="flex items-center gap-2">
                 <Milestone size={24} className="text-purple-400" />

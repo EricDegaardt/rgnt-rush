@@ -56,7 +56,7 @@ const Game = () => {
             isOnGroundRef.current = false;
         }
         
-        distanceRef.current += gameSpeedRef.current * 0.05;
+        distanceRef.current += gameSpeedRef.current * 0.08;
 
         obstaclesRef.current = obstaclesRef.current
             .map(o => ({...o, x: o.x - gameSpeedRef.current}))
@@ -222,7 +222,7 @@ const Game = () => {
             {obstacles.map(o => <Obstacle key={o.id} {...o} />)}
             {collectibles.map(c => <Collectible key={c.id} {...c} />)}
             
-            <GameUI speed={Math.floor(gameSpeedRef.current*10)} distance={distance} energy={energy} />
+            <GameUI distance={distance} energy={energy} />
 
             {gameOver && (
                 <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
