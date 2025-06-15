@@ -80,17 +80,20 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
             .map(c => ({...c, x: c.x - visualSpeedRef.current}))
             .filter(c => c.x > -100);
 
-        // === Spawn obstacles (with spacing VS collectibles) ===
+        // === Spawn obstacles (with improved spacing vs all items) ===
         if (Math.random() < 0.008) {
-            // Only spawn if there is no collectible it would overlap
             const newX = GAME_WIDTH + 50;
             const potentialWidth = 40 + Math.random() * 40;
-            const tooClose = collectiblesRef.current.some(
-                c =>
-                    c.x + 30 > newX && // collectible right edge past new left edge
-                    c.x < newX + potentialWidth // collectible left edge before ob right edge
+            const buffer = 120; // Minimum horizontal space between items
+
+            const tooCloseToObstacle = obstaclesRef.current.some(
+                o => (newX + potentialWidth >= o.x - buffer) && (newX <= o.x + o.width + buffer)
             );
-            if (!tooClose) {
+            const tooCloseToCollectible = collectiblesRef.current.some(
+                c => (newX + potentialWidth >= c.x - buffer) && (newX <= c.x + 30 + buffer) // 30 is collectible width
+            );
+
+            if (!tooCloseToObstacle && !tooCloseToCollectible) {
                 obstaclesRef.current.push({
                     id: Date.now(),
                     x: newX,
@@ -100,16 +103,21 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
             }
         }
 
-        // === Spawn collectibles (with spacing VS obstacles) ===
+        // === Spawn collectibles (with improved spacing vs all items) ===
         if (Math.random() < 0.01) {
             const newX = GAME_WIDTH + 50;
             const newY = ROAD_HEIGHT + 50 + Math.random() * 250;
-            const tooClose = obstaclesRef.current.some(
-                o =>
-                    newX + 30 > o.x && // collectible right edge past ob left edge
-                    newX < o.x + o.width // collectible left edge before ob right edge
+            const potentialWidth = 30; // Collectible width
+            const buffer = 120; // Minimum horizontal space between items
+
+            const tooCloseToObstacle = obstaclesRef.current.some(
+                o => (newX + potentialWidth >= o.x - buffer) && (newX <= o.x + o.width + buffer)
             );
-            if (!tooClose) {
+            const tooCloseToCollectible = collectiblesRef.current.some(
+                c => (newX + potentialWidth >= c.x - buffer) && (newX <= c.x + 30 + buffer)
+            );
+            
+            if (!tooCloseToObstacle && !tooCloseToCollectible) {
                 collectiblesRef.current.push({
                     id: Date.now(),
                     x: newX,
