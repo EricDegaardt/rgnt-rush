@@ -1,6 +1,5 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { GRAVITY, ROAD_HEIGHT, PLAYER_JUMP_VELOCITY, GAME_WIDTH } from '../components/game/constants';
+import { GRAVITY, ROAD_HEIGHT, PLAYER_JUMP_VELOCITY, GAME_WIDTH, PLAYER_X_POSITION } from '../components/game/constants';
 
 // Type definitions
 export interface ObstacleType {
@@ -90,7 +89,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
             });
         }
 
-        const playerRect = { x: 80, y: playerYRef.current, width: 80, height: 40 };
+        const playerRect = { x: PLAYER_X_POSITION, y: playerYRef.current, width: 80, height: 40 };
 
         obstaclesRef.current.forEach(obstacle => {
             const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };

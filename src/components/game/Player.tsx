@@ -1,12 +1,13 @@
 
 import React from 'react';
+import { PLAYER_X_POSITION } from './constants';
 
 const Player = ({ y }: { y: number }) => {
     return (
         <div
             className="absolute"
             style={{
-                left: `80px`,
+                left: `${PLAYER_X_POSITION}px`,
                 bottom: `${y}px`,
                 width: '100px',
                 height: '50px',
