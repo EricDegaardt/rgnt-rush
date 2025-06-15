@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -5,6 +6,7 @@ import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
 import Leaderboard from './Leaderboard';
+import CollectionEffect from './CollectionEffect';
 
 const GAME_WIDTH = 600;
 const GAME_HEIGHT = 800;
@@ -24,6 +26,7 @@ const Game = () => {
     const energyRef = useRef(100);
     const obstaclesRef = useRef([]);
     const collectiblesRef = useRef([]);
+    const collectionEffectsRef = useRef([]);
     const playerYRef = useRef(ROAD_HEIGHT);
     const playerVelocityYRef = useRef(0);
     const isOnGroundRef = useRef(true);
@@ -34,9 +37,14 @@ const Game = () => {
     const [playerY, setPlayerY] = useState(playerYRef.current);
     const [obstacles, setObstacles] = useState([]);
     const [collectibles, setCollectibles] = useState([]);
+    const [collectionEffects, setCollectionEffects] = useState([]);
 
     const runningRef = useRef(running);
     runningRef.current = running;
+
+    const handleEffectComplete = useCallback((id) => {
+        collectionEffectsRef.current = collectionEffectsRef.current.filter(effect => effect.id !== id);
+    }, []);
 
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
@@ -97,6 +105,11 @@ const Game = () => {
             const collectibleRect = { x: collectible.x, y: collectible.y, width: 30, height: 30 };
             if (playerRect.x < collectibleRect.x + collectibleRect.width && playerRect.x + playerRect.width > collectibleRect.x && playerRect.y < collectibleRect.y + collectibleRect.height && playerRect.y + playerRect.height > collectibleRect.y) {
                 energyRef.current = Math.min(100, energyRef.current + 25);
+                collectionEffectsRef.current.push({
+                    id: collectible.id,
+                    x: collectible.x + 15, // Center of collectible
+                    y: collectible.y + 15,
+                });
                 collectiblesRef.current = collectiblesRef.current.filter(c => c.id !== collectible.id);
             }
         });
@@ -113,6 +126,7 @@ const Game = () => {
         setEnergy(energyRef.current);
         setObstacles([...obstaclesRef.current]);
         setCollectibles([...collectiblesRef.current]);
+        setCollectionEffects([...collectionEffectsRef.current]);
 
         requestAnimationFrame(gameLoop);
     }, []);
@@ -132,12 +146,14 @@ const Game = () => {
         isOnGroundRef.current = true;
         obstaclesRef.current = [];
         collectiblesRef.current = [];
+        collectionEffectsRef.current = [];
         setFinalScore(0);
         setDistance(0);
         setEnergy(100);
         setPlayerY(playerYRef.current);
         setObstacles([]);
         setCollectibles([]);
+        setCollectionEffects([]);
         setRunning(true);
         jumpKeyPressedRef.current = false;
     };
@@ -221,6 +237,14 @@ const Game = () => {
             
             {obstacles.map(o => <Obstacle key={o.id} {...o} />)}
             {collectibles.map(c => <Collectible key={c.id} {...c} />)}
+            {collectionEffects.map(effect => (
+                <CollectionEffect
+                    key={effect.id}
+                    x={effect.x}
+                    y={effect.y}
+                    onComplete={() => handleEffectComplete(effect.id)}
+                />
+            ))}
             
             <GameUI distance={distance} energy={energy} />
 
