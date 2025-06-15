@@ -4,7 +4,7 @@ import React from 'react';
 const Player = ({ y }: { y: number }) => {
     return (
         <div
-            className="absolute transition-all duration-150 ease-linear"
+            className="absolute"
             style={{
                 left: `100px`,
                 bottom: `${y}px`,
@@ -18,6 +18,7 @@ const Player = ({ y }: { y: number }) => {
                 backgroundPosition: 'center',
                 // Reduced rotation for smoother visual
                 transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg)`,
+                transition: 'transform 150ms ease-linear',
             }}
         />
     );

@@ -27,6 +27,7 @@ const Game = () => {
     const playerYRef = useRef(ROAD_HEIGHT);
     const playerVelocityYRef = useRef(0);
     const isOnGroundRef = useRef(true);
+    const jumpKeyPressedRef = useRef(false);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -138,6 +139,7 @@ const Game = () => {
         setObstacles([]);
         setCollectibles([]);
         setRunning(true);
+        jumpKeyPressedRef.current = false;
     };
     
     const handleJump = useCallback(() => {
@@ -149,13 +151,25 @@ const Game = () => {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.code === 'Space' && !gameOver) {
+            if (e.code === 'Space' && !gameOver && !jumpKeyPressedRef.current) {
                 e.preventDefault(); // Prevent page scroll
                 handleJump();
+                jumpKeyPressedRef.current = true;
             }
         };
+
+        const handleKeyUp = (e) => {
+            if (e.code === 'Space') {
+                jumpKeyPressedRef.current = false;
+            }
+        };
+
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
+        };
     }, [handleJump, gameOver]);
 
     const handleScreenInteraction = () => {
