@@ -4,7 +4,7 @@ import React from 'react';
 const Player = ({ y }: { y: number }) => {
     return (
         <div
-            className="absolute transition-all duration-75 ease-out"
+            className="absolute transition-all duration-150 ease-linear"
             style={{
                 left: `100px`,
                 bottom: `${y}px`,
@@ -16,8 +16,8 @@ const Player = ({ y }: { y: number }) => {
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                // Add subtle rotation based on vertical position for more dynamic feel
-                transform: `rotate(${Math.max(-10, Math.min(10, (y - 80) * 0.1))}deg)`,
+                // Reduced rotation for smoother visual
+                transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg)`,
             }}
         />
     );

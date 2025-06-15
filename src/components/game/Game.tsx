@@ -8,9 +8,8 @@ import Leaderboard from './Leaderboard';
 
 const GAME_WIDTH = 600;
 const GAME_HEIGHT = 800;
-const PLAYER_JUMP_VELOCITY = 28; // Higher initial jump velocity
-const GRAVITY = 0.5; // Smoother gravity
-const AIR_RESISTANCE = 0.98; // Slight air resistance for realism
+const PLAYER_JUMP_VELOCITY = 22; // Slightly reduced for smoother arc
+const GRAVITY = 0.8; // Increased for more natural fall
 const ROAD_HEIGHT = 80;
 
 const Game = () => {
@@ -41,18 +40,13 @@ const Game = () => {
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
 
-        // Apply gravity with air resistance for smoother physics
+        // Simple gravity physics - no air resistance for smoother movement
         playerVelocityYRef.current -= GRAVITY;
-        
-        // Apply air resistance only when moving upward
-        if (playerVelocityYRef.current > 0) {
-            playerVelocityYRef.current *= AIR_RESISTANCE;
-        }
         
         // Update player position
         playerYRef.current += playerVelocityYRef.current;
 
-        // Ground collision with smooth landing
+        // Ground collision
         if (playerYRef.current <= ROAD_HEIGHT) {
             playerYRef.current = ROAD_HEIGHT;
             playerVelocityYRef.current = 0;
