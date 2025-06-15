@@ -1,10 +1,12 @@
 
 import React from 'react';
 
-const Obstacle = ({ x, width, height }: { x: number; width: number; height: number; }) => {
+const Obstacle = ({ x, width, height, imgSrc }: { x: number; width: number; height: number; imgSrc: string; }) => {
     return (
-        <div 
-            className="absolute bg-red-600 border-2 border-red-800 rounded-sm"
+        <img
+            src={imgSrc}
+            alt="Obstacle"
+            className="absolute"
             style={{
                 left: `${x}px`,
                 bottom: `80px`, // Road height

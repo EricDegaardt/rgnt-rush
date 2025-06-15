@@ -13,6 +13,12 @@ const PLAYER_JUMP_VELOCITY = 22; // Slightly reduced for smoother arc
 const GRAVITY = 0.8; // Increased for more natural fall
 const ROAD_HEIGHT = 80;
 
+const OBSTACLE_IMAGES = [
+    '/lovable-uploads/c8d70058-5f43-4c7f-bb0b-31eca09db410.png',
+    '/lovable-uploads/5ed42b62-9dba-41f0-a950-c951aafc6097.png',
+    '/lovable-uploads/42cffd22-e4bf-4af7-bf39-1f13ba7ee731.png'
+];
+
 const Game = () => {
     const [running, setRunning] = useState(false);
     const [gameOver, setGameOver] = useState(false);
@@ -75,11 +81,13 @@ const Game = () => {
             .filter(o => o.x > -100);
         
         if (Math.random() < 0.015) {
+            const randomImage = OBSTACLE_IMAGES[Math.floor(Math.random() * OBSTACLE_IMAGES.length)];
             obstaclesRef.current.push({
                 id: Date.now(),
                 x: GAME_WIDTH + 50,
-                width: 40 + Math.random() * 40,
-                height: 30 + Math.random() * 20,
+                width: 120,
+                height: 60,
+                imgSrc: randomImage
             });
         }
         
