@@ -91,7 +91,7 @@ const Game = () => {
             });
         }
 
-        const playerRect = { x: 100, y: playerYRef.current, width: 80, height: 40 };
+        const playerRect = { x: 80, y: playerYRef.current, width: 80, height: 40 };
 
         obstaclesRef.current.forEach(obstacle => {
             const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };

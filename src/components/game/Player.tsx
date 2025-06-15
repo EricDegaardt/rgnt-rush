@@ -6,7 +6,7 @@ const Player = ({ y }: { y: number }) => {
         <div
             className="absolute"
             style={{
-                left: `100px`,
+                left: `80px`,
                 bottom: `${y}px`,
                 width: '100px',
                 height: '50px',
