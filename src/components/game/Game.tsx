@@ -5,7 +5,6 @@ import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
 import Leaderboard from './Leaderboard';
-import CollectionEffect from './CollectionEffect';
 
 const GAME_WIDTH = 600;
 const GAME_HEIGHT = 800;
@@ -19,7 +18,6 @@ const Game = () => {
     const [username, setUsername] = useState('');
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
-    const [collectEffectKey, setCollectEffectKey] = useState(0);
 
     const gameSpeedRef = useRef(7);
     const distanceRef = useRef(0);
@@ -95,19 +93,13 @@ const Game = () => {
             }
         });
 
-        const collectedIds = new Set();
         collectiblesRef.current.forEach(collectible => {
             const collectibleRect = { x: collectible.x, y: collectible.y, width: 30, height: 30 };
             if (playerRect.x < collectibleRect.x + collectibleRect.width && playerRect.x + playerRect.width > collectibleRect.x && playerRect.y < collectibleRect.y + collectibleRect.height && playerRect.y + playerRect.height > collectibleRect.y) {
                 energyRef.current = Math.min(100, energyRef.current + 25);
-                collectedIds.add(collectible.id);
+                collectiblesRef.current = collectiblesRef.current.filter(c => c.id !== collectible.id);
             }
         });
-
-        if (collectedIds.size > 0) {
-            collectiblesRef.current = collectiblesRef.current.filter(c => !collectedIds.has(c.id));
-            setCollectEffectKey(k => k + 1);
-        }
 
         if (energyRef.current <= 0) {
             energyRef.current = 0;
@@ -231,7 +223,6 @@ const Game = () => {
             {collectibles.map(c => <Collectible key={c.id} {...c} />)}
             
             <GameUI distance={distance} energy={energy} />
-            {collectEffectKey > 0 && <CollectionEffect key={collectEffectKey} />}
 
             {gameOver && (
                 <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
