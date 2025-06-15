@@ -7,8 +7,8 @@ import Collectible from './Collectible';
 import Skyline from './Skyline';
 import Leaderboard from './Leaderboard';
 
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 600;
+const GAME_WIDTH = 600;
+const GAME_HEIGHT = 800;
 const PLAYER_JUMP_VELOCITY = 17;
 const GRAVITY = 0.7;
 const ROAD_HEIGHT = 80;
@@ -184,8 +184,8 @@ const Game = () => {
 
     return (
         <div 
-            className="relative bg-black w-full h-full overflow-hidden"
-            style={{ maxWidth: `${GAME_WIDTH}px`, maxHeight: `${GAME_HEIGHT}px` }}
+            className="relative bg-black w-full h-full overflow-hidden mx-auto"
+            style={{ maxWidth: `${GAME_WIDTH}px`, maxHeight: `${GAME_HEIGHT}px`, aspectRatio: '3/4' }}
             onClick={handleScreenInteraction}
         >
             <Skyline />
