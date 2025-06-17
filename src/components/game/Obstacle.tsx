@@ -16,6 +16,7 @@ const Obstacle = ({ x, width, height }: { x: number; width: number; height: numb
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
                 imageRendering: 'pixelated',
+                transform: 'scale(1.5)', // Make barrels 50% larger
             }}
         />
     );

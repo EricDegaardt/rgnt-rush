@@ -31,9 +31,9 @@ const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                // Combine rotation with subtle bounce tilt and spin animation
-                transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg) ${isSpinning ? 'rotate(360deg)' : ''}`,
-                transition: isSpinning ? 'transform 800ms ease-out' : 'transform 150ms ease-linear',
+                // Combine rotation with subtle bounce tilt and controlled spin animation
+                transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg)`,
+                animation: isSpinning ? 'spin 800ms ease-out' : 'none',
             }}
         />
     );

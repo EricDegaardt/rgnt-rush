@@ -1,4 +1,3 @@
-
 import { ObstacleType, CollectibleType } from './types';
 import { GAME_WIDTH, ROAD_HEIGHT } from '../../components/game/constants';
 
@@ -16,7 +15,7 @@ export const canSpawnAtPosition = (
     obstacles: ObstacleType[],
     collectibles: CollectibleType[]
 ): boolean => {
-    const buffer = 120;
+    const buffer = 150; // Increased buffer to account for larger barrels
 
     const tooCloseToObstacle = obstacles.some(
         o => (newX + potentialWidth >= o.x - buffer) && (newX <= o.x + o.width + buffer)
@@ -32,14 +31,14 @@ export const createObstacle = (obstacles: ObstacleType[], collectibles: Collecti
     if (!shouldSpawnObstacle()) return null;
 
     const newX = GAME_WIDTH + 50;
-    const potentialWidth = 40 + Math.random() * 40;
+    const potentialWidth = 60 + Math.random() * 40; // Larger base width for barrels
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {
         return {
             id: Date.now(),
             x: newX,
             width: potentialWidth,
-            height: 30 + Math.random() * 20,
+            height: 40 + Math.random() * 30, // Larger base height for barrels
         };
     }
     return null;
