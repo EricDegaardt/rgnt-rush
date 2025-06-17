@@ -31,7 +31,8 @@ const Game = () => {
     setGameOver(true);
     setRunning(false);
     stopBackgroundMusic();
-  }, [stopBackgroundMusic]);
+    playSound('gameOver');
+  }, [stopBackgroundMusic, playSound]);
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
       case 'jump':

@@ -12,12 +12,14 @@ export const useGameAudio = () => {
         bikeJump: null as HTMLAudioElement | null,
         hittingBarrel: null as HTMLAudioElement | null,
         collectingBattery: null as HTMLAudioElement | null,
+        gameOver: null as HTMLAudioElement | null,
     });
 
     const lastPlayedRef = useRef({
         bikeJump: 0,
         hittingBarrel: 0,
         collectingBattery: 0,
+        gameOver: 0,
     });
 
     // Load all audio files
@@ -26,6 +28,7 @@ export const useGameAudio = () => {
         audioRefs.current.bikeJump = new Audio('/lovable-uploads/sounds/bike-jump.mp3');
         audioRefs.current.hittingBarrel = new Audio('/lovable-uploads/sounds/hitting-barell.mp3');
         audioRefs.current.collectingBattery = new Audio('/lovable-uploads/sounds/collecting-battery.mp3');
+        audioRefs.current.gameOver = new Audio('/lovable-uploads/sounds/game-over.mp3');
 
         // Configure background music
         if (audioRefs.current.backgroundMusic) {
