@@ -7,8 +7,10 @@ import Collectible from './Collectible';
 import Skyline from './Skyline';
 import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
+import SoundToggle from './SoundToggle';
 import { useGameLogic } from '../../hooks/useGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
+import { useGameAudio } from '../../hooks/useGameAudio';
 import { GAME_WIDTH, GAME_HEIGHT, ROAD_HEIGHT } from './constants';
 import Road from './Road';
 
@@ -19,11 +21,28 @@ const Game = () => {
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
 
+    const { playSound, startBackgroundMusic, stopBackgroundMusic, toggleMute, isMuted } = useGameAudio();
+
     const handleGameOver = useCallback((score: number) => {
         setFinalScore(score);
         setGameOver(true);
         setRunning(false);
-    }, []);
+        stopBackgroundMusic();
+    }, [stopBackgroundMusic]);
+
+    const handleSoundEvent = useCallback((eventType: string) => {
+        switch (eventType) {
+            case 'jump':
+                playSound('bikeJump');
+                break;
+            case 'collect':
+                playSound('collectingBattery');
+                break;
+            case 'hit':
+                playSound('hittingBarrel');
+                break;
+        }
+    }, [playSound]);
 
     const {
         distance,
@@ -36,7 +55,7 @@ const Game = () => {
         resetGame,
         handleJump,
         handleEffectComplete
-    } = useGameLogic(running, handleGameOver);
+    } = useGameLogic(running, handleGameOver, handleSoundEvent);
 
     usePlayerInput(handleJump, gameOver);
 
@@ -45,6 +64,7 @@ const Game = () => {
         setFinalScore(0);
         resetGame();
         setRunning(true);
+        startBackgroundMusic();
     };
 
     const handleScreenInteraction = () => {
@@ -60,6 +80,7 @@ const Game = () => {
     if (!running && !gameOver) {
         return (
             <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center">
+                <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
                 <h1 className="text-3xl md:text-5xl mb-4 text-purple-400">RGNT RUSH</h1>
                 <p className="mb-8 text-sm md:text-base">Collect batteries, dodge cars!</p>
                 <input
@@ -86,6 +107,7 @@ const Game = () => {
             style={{ maxWidth: `${GAME_WIDTH}px`, aspectRatio: '3 / 4' }}
             onClick={handleScreenInteraction}
         >
+            <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
             <Skyline />
             <Road />
             

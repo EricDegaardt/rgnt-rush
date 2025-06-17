@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ROAD_HEIGHT } from '../components/game/constants';
 import { ObstacleType, CollectibleType, CollectionEffectType, GameState } from './game/types';
@@ -8,7 +9,7 @@ import { createObstacle, createCollectible, moveObstacles, moveCollectibles } fr
 // Re-export types for backward compatibility
 export type { ObstacleType, CollectibleType, CollectionEffectType } from './game/types';
 
-export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) => void) => {
+export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) => void, onSoundEvent?: (eventType: string) => void) => {
     const gameSpeedRef = useRef(7);
     const visualSpeedRef = useRef(5);
     const distanceRef = useRef(0);
@@ -72,6 +73,16 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         collectionEffectsRef.current = collisionResult.collectionEffects;
         energyRef.current += collisionResult.energyChange;
 
+        // Handle sound events
+        if (onSoundEvent) {
+            if (collisionResult.hitObstacle) {
+                onSoundEvent('hit');
+            }
+            if (collisionResult.energyChange > 0) {
+                onSoundEvent('collect');
+            }
+        }
+
         if (collisionResult.hitObstacle) {
             isSpinningRef.current = true;
             setIsSpinning(true);
@@ -99,7 +110,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         setCollectionEffects([...collectionEffectsRef.current]);
 
         requestAnimationFrame(gameLoop);
-    }, [onGameOver]);
+    }, [onGameOver, onSoundEvent]);
     
     useEffect(() => {
         if (running) {
@@ -131,8 +142,11 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const handleJump = useCallback(() => {
         if (playerPhysicsRef.current.isOnGround && runningRef.current) {
             playerPhysicsRef.current = handlePlayerJump(playerPhysicsRef.current);
+            if (onSoundEvent) {
+                onSoundEvent('jump');
+            }
         }
-    }, []);
+    }, [onSoundEvent]);
 
     const handleEffectComplete = useCallback((id: number) => {
         collectionEffectsRef.current = collectionEffectsRef.current.filter(effect => effect.id !== id);
