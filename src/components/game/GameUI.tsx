@@ -15,7 +15,9 @@ const GameUI = ({ distance, energy, isMuted, onToggleMute }: GameUIProps) => {
         : `${(distance / 1000).toFixed(1)}km`;
 
     const handleSoundToggle = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent event bubbling to game container
+        e.preventDefault();
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
         onToggleMute();
     };
 
