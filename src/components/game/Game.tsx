@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -8,6 +7,7 @@ import Skyline from './Skyline';
 import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
 import SoundToggle from './SoundToggle';
+import SplashEffect from './SplashEffect';
 import { useGameLogic } from '../../hooks/useGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -51,10 +51,12 @@ const Game = () => {
         obstacles,
         collectibles,
         collectionEffects,
+        splashEffects,
         isSpinning,
         resetGame,
         handleJump,
-        handleEffectComplete
+        handleEffectComplete,
+        handleSplashComplete
     } = useGameLogic(running, handleGameOver, handleSoundEvent);
 
     usePlayerInput(handleJump, gameOver);
@@ -121,6 +123,14 @@ const Game = () => {
                     x={effect.x}
                     y={effect.y}
                     onComplete={() => handleEffectComplete(effect.id)}
+                />
+            ))}
+            {splashEffects.map(effect => (
+                <SplashEffect
+                    key={effect.id}
+                    x={effect.x}
+                    y={effect.y}
+                    onComplete={() => handleSplashComplete(effect.id)}
                 />
             ))}
             

@@ -1,5 +1,5 @@
 
-import { ObstacleType, CollectibleType, CollectionEffectType } from './types';
+import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './types';
 import { PLAYER_X_POSITION, ROAD_HEIGHT } from '../../components/game/constants';
 
 const PLAYER_WIDTH = 120;
@@ -9,6 +9,7 @@ interface CollisionResult {
     obstacles: ObstacleType[];
     collectibles: CollectibleType[];
     collectionEffects: CollectionEffectType[];
+    splashEffects: SplashEffectType[];
     energyChange: number;
     hitObstacle: boolean;
 }
@@ -17,7 +18,8 @@ export const checkCollisions = (
     playerY: number,
     obstacles: ObstacleType[],
     collectibles: CollectibleType[],
-    collectionEffects: CollectionEffectType[]
+    collectionEffects: CollectionEffectType[],
+    splashEffects: SplashEffectType[]
 ): CollisionResult => {
     const playerRect = { x: PLAYER_X_POSITION, y: playerY, width: PLAYER_WIDTH, height: PLAYER_HEIGHT };
     let energyChange = 0;
@@ -25,6 +27,7 @@ export const checkCollisions = (
     let newObstacles = [...obstacles];
     let newCollectibles = [...collectibles];
     let newCollectionEffects = [...collectionEffects];
+    let newSplashEffects = [...splashEffects];
 
     // Check obstacle collisions
     obstacles.forEach(obstacle => {
@@ -37,6 +40,14 @@ export const checkCollisions = (
         ) {
             energyChange -= 5;
             hitObstacle = true;
+            
+            // Create splash effect at obstacle position
+            newSplashEffects = [...newSplashEffects, {
+                id: Date.now() + Math.random(),
+                x: obstacle.x + obstacle.width / 2,
+                y: ROAD_HEIGHT + obstacle.height / 2,
+            }];
+            
             newObstacles = newObstacles.filter(o => o.id !== obstacle.id);
         }
     });
@@ -64,6 +75,7 @@ export const checkCollisions = (
         obstacles: newObstacles,
         collectibles: newCollectibles,
         collectionEffects: newCollectionEffects,
+        splashEffects: newSplashEffects,
         energyChange,
         hitObstacle
     };

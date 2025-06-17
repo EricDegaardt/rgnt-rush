@@ -18,6 +18,12 @@ export interface CollectionEffectType {
     y: number;
 }
 
+export interface SplashEffectType {
+    id: number;
+    x: number;
+    y: number;
+}
+
 export interface GameState {
     distance: number;
     energy: number;
@@ -25,5 +31,6 @@ export interface GameState {
     obstacles: ObstacleType[];
     collectibles: CollectibleType[];
     collectionEffects: CollectionEffectType[];
+    splashEffects: SplashEffectType[];
     isSpinning: boolean;
 }

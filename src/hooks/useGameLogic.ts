@@ -1,13 +1,12 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ROAD_HEIGHT } from '../components/game/constants';
-import { ObstacleType, CollectibleType, CollectionEffectType, GameState } from './game/types';
+import { ObstacleType, CollectibleType, CollectionEffectType, GameState, SplashEffectType } from './game/types';
 import { PlayerPhysics, updatePlayerPhysics, handlePlayerJump } from './game/physics';
 import { checkCollisions } from './game/collision';
 import { createObstacle, createCollectible, moveObstacles, moveCollectibles } from './game/spawning';
 
 // Re-export types for backward compatibility
-export type { ObstacleType, CollectibleType, CollectionEffectType } from './game/types';
+export type { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './game/types';
 
 export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) => void, onSoundEvent?: (eventType: string) => void) => {
     const gameSpeedRef = useRef(7);
@@ -23,6 +22,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         isOnGround: true
     });
     const isSpinningRef = useRef(false);
+    const splashEffectsRef = useRef<SplashEffectType[]>([]);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -30,6 +30,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const [obstacles, setObstacles] = useState<ObstacleType[]>([]);
     const [collectibles, setCollectibles] = useState<CollectibleType[]>([]);
     const [collectionEffects, setCollectionEffects] = useState<CollectionEffectType[]>([]);
+    const [splashEffects, setSplashEffects] = useState<SplashEffectType[]>([]);
     const [isSpinning, setIsSpinning] = useState(false);
 
     const runningRef = useRef(running);
@@ -65,12 +66,14 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
             playerPhysicsRef.current.playerY,
             obstaclesRef.current,
             collectiblesRef.current,
-            collectionEffectsRef.current
+            collectionEffectsRef.current,
+            splashEffectsRef.current
         );
 
         obstaclesRef.current = collisionResult.obstacles;
         collectiblesRef.current = collisionResult.collectibles;
         collectionEffectsRef.current = collisionResult.collectionEffects;
+        splashEffectsRef.current = collisionResult.splashEffects;
         energyRef.current += collisionResult.energyChange;
 
         // Handle sound events
@@ -108,6 +111,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         setObstacles([...obstaclesRef.current]);
         setCollectibles([...collectiblesRef.current]);
         setCollectionEffects([...collectionEffectsRef.current]);
+        setSplashEffects([...splashEffectsRef.current]);
 
         requestAnimationFrame(gameLoop);
     }, [onGameOver, onSoundEvent]);
@@ -130,12 +134,14 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         obstaclesRef.current = [];
         collectiblesRef.current = [];
         collectionEffectsRef.current = [];
+        splashEffectsRef.current = [];
         setDistance(0);
         setEnergy(100);
         setPlayerY(ROAD_HEIGHT);
         setObstacles([]);
         setCollectibles([]);
         setCollectionEffects([]);
+        setSplashEffects([]);
         setIsSpinning(false);
     }, []);
     
@@ -152,6 +158,11 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         collectionEffectsRef.current = collectionEffectsRef.current.filter(effect => effect.id !== id);
     }, []);
 
+    const handleSplashComplete = useCallback((id: number) => {
+        splashEffectsRef.current = splashEffectsRef.current.filter(effect => effect.id !== id);
+        setSplashEffects(prev => prev.filter(effect => effect.id !== id));
+    }, []);
+
     return {
         distance,
         energy,
@@ -159,9 +170,11 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         obstacles,
         collectibles,
         collectionEffects,
+        splashEffects,
         isSpinning,
         resetGame,
         handleJump,
-        handleEffectComplete
+        handleEffectComplete,
+        handleSplashComplete
     };
 };

@@ -17,25 +17,35 @@ const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
     // Create a subtle bounce effect (2-3px amplitude)
     const bounceY = Math.sin(bounceOffset) * 2.5;
 
+    // CSS for the spin animation
+    const spinKeyframes = `
+        @keyframes spinOnce {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+
     return (
-        <div
-            className="absolute"
-            style={{
-                left: `${PLAYER_X_POSITION}px`,
-                bottom: `${y + bounceY - 10}px`, // Position 10px lower to drive in the street
-                width: '120px',
-                height: '60px',
-                imageRendering: 'pixelated',
-                zIndex: 999, // Highest z-index to ensure bike is always on top
-                backgroundImage: `url('/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png')`,
-                backgroundSize: 'contain',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                // Combine rotation with subtle bounce tilt and controlled spin animation
-                transform: `rotate(${Math.max(-5, Math.min(5, (y - 80) * 0.05))}deg)`,
-                animation: isSpinning ? 'spin 800ms ease-out' : 'none',
-            }}
-        />
+        <>
+            <style>{spinKeyframes}</style>
+            <div
+                className="absolute"
+                style={{
+                    left: `${PLAYER_X_POSITION}px`,
+                    bottom: `${y + bounceY - 10}px`, // Position 10px lower to drive in the street
+                    width: '120px',
+                    height: '60px',
+                    imageRendering: 'pixelated',
+                    zIndex: 999, // Highest z-index to ensure bike is always on top
+                    backgroundImage: `url('/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png')`,
+                    backgroundSize: 'contain',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    // Single 360-degree spin when hitting barrel
+                    animation: isSpinning ? 'spinOnce 800ms ease-out' : 'none',
+                }}
+            />
+        </>
     );
 };
 
