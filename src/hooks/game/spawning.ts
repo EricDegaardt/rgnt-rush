@@ -1,3 +1,4 @@
+
 import { ObstacleType, CollectibleType } from './types';
 import { GAME_WIDTH, ROAD_HEIGHT } from '../../components/game/constants';
 
@@ -31,9 +32,9 @@ export const createObstacle = (obstacles: ObstacleType[], collectibles: Collecti
     if (!shouldSpawnObstacle()) return null;
 
     const newX = GAME_WIDTH + 50;
-    // Fixed size for medium barrels only
-    const potentialWidth = 80; // Medium size barrel
-    const potentialHeight = 60; // Medium size barrel
+    // 10% smaller than previous size (was 80x60, now 72x54)
+    const potentialWidth = 72; // Medium size barrel, 10% smaller
+    const potentialHeight = 54; // Medium size barrel, 10% smaller
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {
         return {

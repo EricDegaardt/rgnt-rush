@@ -29,9 +29,11 @@ export const checkCollisions = (
     let newCollectionEffects = [...collectionEffects];
     let newSplashEffects = [...splashEffects];
 
-    // Check obstacle collisions - only create splash when collision happens
-    obstacles.forEach(obstacle => {
+    // Check obstacle collisions - process each obstacle only once
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+        const obstacle = obstacles[i];
         const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };
+        
         if (
             playerRect.x < obstacleRect.x + obstacleRect.width &&
             playerRect.x + playerRect.width > obstacleRect.x &&
@@ -41,17 +43,18 @@ export const checkCollisions = (
             energyChange -= 5;
             hitObstacle = true;
             
-            // Create splash effect ONLY when collision occurs (not every frame)
+            // Create splash effect ONLY once per obstacle
             newSplashEffects = [...newSplashEffects, {
                 id: Date.now() + Math.random(),
                 x: obstacle.x + obstacle.width / 2,
                 y: ROAD_HEIGHT + obstacle.height / 2,
             }];
             
-            // Remove the obstacle that was hit
-            newObstacles = newObstacles.filter(o => o.id !== obstacle.id);
+            // Remove the obstacle immediately to prevent multiple collisions
+            newObstacles.splice(i, 1);
+            break; // Exit loop after first collision to prevent multiple hits in same frame
         }
-    });
+    }
 
     // Check collectible collisions
     collectibles.forEach(collectible => {
