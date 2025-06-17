@@ -1,10 +1,13 @@
 
 import React, { useEffect, useState } from 'react';
+import BikeExplosionEffect from './BikeExplosionEffect';
 import { PLAYER_X_POSITION } from './constants';
 
 // Increased size by 5% (width: 126px, height: 63px)
-const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
+const Player = ({ y, isSpinning, gameOver }: { y: number; isSpinning?: boolean; gameOver?: boolean }) => {
     const [bounceOffset, setBounceOffset] = useState(0);
+    const [showExplosion, setShowExplosion] = useState(false);
+    const [explosionCompleted, setExplosionCompleted] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -14,8 +17,19 @@ const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        if (gameOver && !explosionCompleted) {
+            setShowExplosion(true);
+        }
+    }, [gameOver, explosionCompleted]);
+
     // Create a subtle bounce effect (2-3px amplitude)
     const bounceY = Math.sin(bounceOffset) * 2.5;
+
+    const handleExplosionComplete = () => {
+        setShowExplosion(false);
+        setExplosionCompleted(true);
+    };
 
     // CSS for the spin animation
     const spinKeyframes = `
@@ -43,8 +57,17 @@ const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
                     backgroundPosition: 'center',
                     // Single 360-degree spin when hitting barrel
                     animation: isSpinning ? 'spinOnce 800ms ease-out' : 'none',
+                    // Hide bike during explosion
+                    opacity: showExplosion ? 0 : 1,
                 }}
             />
+            {showExplosion && (
+                <BikeExplosionEffect
+                    x={PLAYER_X_POSITION + 63} // Center of bike
+                    y={y + 31.5} // Center of bike
+                    onComplete={handleExplosionComplete}
+                />
+            )}
         </>
     );
 };
