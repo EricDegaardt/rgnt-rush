@@ -25,6 +25,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const isSpinningRef = useRef(false);
     const lastCollectedRef = useRef(0);
     const lastHitRef = useRef(0);
+    const gameLoopIdRef = useRef<number | null>(null);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -111,16 +112,39 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         setCollectibles([...collectiblesRef.current]);
         setCollectionEffects([...collectionEffectsRef.current]);
 
-        requestAnimationFrame(gameLoop);
-    }, [onGameOver]);
+        gameLoopIdRef.current = requestAnimationFrame(gameLoop);
+    }, []); // Remove onGameOver dependency to prevent multiple loops
     
     useEffect(() => {
         if (running) {
-            requestAnimationFrame(gameLoop);
+            // Cancel any existing game loop before starting a new one
+            if (gameLoopIdRef.current) {
+                cancelAnimationFrame(gameLoopIdRef.current);
+            }
+            gameLoopIdRef.current = requestAnimationFrame(gameLoop);
+        } else {
+            // Cancel game loop when not running
+            if (gameLoopIdRef.current) {
+                cancelAnimationFrame(gameLoopIdRef.current);
+                gameLoopIdRef.current = null;
+            }
         }
+
+        // Cleanup on unmount
+        return () => {
+            if (gameLoopIdRef.current) {
+                cancelAnimationFrame(gameLoopIdRef.current);
+            }
+        };
     }, [running, gameLoop]);
     
     const resetGame = useCallback(() => {
+        // Cancel any running game loop
+        if (gameLoopIdRef.current) {
+            cancelAnimationFrame(gameLoopIdRef.current);
+            gameLoopIdRef.current = null;
+        }
+        
         distanceRef.current = 0;
         energyRef.current = 100;
         playerPhysicsRef.current = {
@@ -154,6 +178,16 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const handleEffectComplete = useCallback((id: number) => {
         collectionEffectsRef.current = collectionEffectsRef.current.filter(effect => effect.id !== id);
     }, []);
+
+    // Handle game over callback through useEffect to avoid dependency issues
+    const onGameOverRef = useRef(onGameOver);
+    onGameOverRef.current = onGameOver;
+
+    useEffect(() => {
+        if (energy <= 0 && running) {
+            onGameOverRef.current(distance);
+        }
+    }, [energy, running, distance]);
 
     return {
         distance,
