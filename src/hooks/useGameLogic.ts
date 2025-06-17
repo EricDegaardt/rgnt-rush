@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ROAD_HEIGHT } from '../components/game/constants';
 import { ObstacleType, CollectibleType, CollectionEffectType, GameState } from './game/types';
@@ -23,9 +22,6 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         isOnGround: true
     });
     const isSpinningRef = useRef(false);
-    const lastCollectedRef = useRef(0);
-    const lastHitRef = useRef(0);
-    const gameLoopIdRef = useRef<number | null>(null);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -34,8 +30,6 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const [collectibles, setCollectibles] = useState<CollectibleType[]>([]);
     const [collectionEffects, setCollectionEffects] = useState<CollectionEffectType[]>([]);
     const [isSpinning, setIsSpinning] = useState(false);
-    const [lastCollected, setLastCollected] = useState(0);
-    const [lastHit, setLastHit] = useState(0);
 
     const runningRef = useRef(running);
     runningRef.current = running;
@@ -78,15 +72,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         collectionEffectsRef.current = collisionResult.collectionEffects;
         energyRef.current += collisionResult.energyChange;
 
-        // Track sound events
-        if (collisionResult.energyChange > 0) {
-            lastCollectedRef.current = Date.now();
-            setLastCollected(lastCollectedRef.current);
-        }
-
         if (collisionResult.hitObstacle) {
-            lastHitRef.current = Date.now();
-            setLastHit(lastHitRef.current);
             isSpinningRef.current = true;
             setIsSpinning(true);
             setTimeout(() => {
@@ -112,39 +98,16 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         setCollectibles([...collectiblesRef.current]);
         setCollectionEffects([...collectionEffectsRef.current]);
 
-        gameLoopIdRef.current = requestAnimationFrame(gameLoop);
-    }, []); // Remove onGameOver dependency to prevent multiple loops
+        requestAnimationFrame(gameLoop);
+    }, [onGameOver]);
     
     useEffect(() => {
         if (running) {
-            // Cancel any existing game loop before starting a new one
-            if (gameLoopIdRef.current) {
-                cancelAnimationFrame(gameLoopIdRef.current);
-            }
-            gameLoopIdRef.current = requestAnimationFrame(gameLoop);
-        } else {
-            // Cancel game loop when not running
-            if (gameLoopIdRef.current) {
-                cancelAnimationFrame(gameLoopIdRef.current);
-                gameLoopIdRef.current = null;
-            }
+            requestAnimationFrame(gameLoop);
         }
-
-        // Cleanup on unmount
-        return () => {
-            if (gameLoopIdRef.current) {
-                cancelAnimationFrame(gameLoopIdRef.current);
-            }
-        };
     }, [running, gameLoop]);
     
     const resetGame = useCallback(() => {
-        // Cancel any running game loop
-        if (gameLoopIdRef.current) {
-            cancelAnimationFrame(gameLoopIdRef.current);
-            gameLoopIdRef.current = null;
-        }
-        
         distanceRef.current = 0;
         energyRef.current = 100;
         playerPhysicsRef.current = {
@@ -153,8 +116,6 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
             isOnGround: true
         };
         isSpinningRef.current = false;
-        lastCollectedRef.current = 0;
-        lastHitRef.current = 0;
         obstaclesRef.current = [];
         collectiblesRef.current = [];
         collectionEffectsRef.current = [];
@@ -165,8 +126,6 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         setCollectibles([]);
         setCollectionEffects([]);
         setIsSpinning(false);
-        setLastCollected(0);
-        setLastHit(0);
     }, []);
     
     const handleJump = useCallback(() => {
@@ -179,16 +138,6 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         collectionEffectsRef.current = collectionEffectsRef.current.filter(effect => effect.id !== id);
     }, []);
 
-    // Handle game over callback through useEffect to avoid dependency issues
-    const onGameOverRef = useRef(onGameOver);
-    onGameOverRef.current = onGameOver;
-
-    useEffect(() => {
-        if (energy <= 0 && running) {
-            onGameOverRef.current(distance);
-        }
-    }, [energy, running, distance]);
-
     return {
         distance,
         energy,
@@ -197,8 +146,6 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         collectibles,
         collectionEffects,
         isSpinning,
-        lastCollected,
-        lastHit,
         resetGame,
         handleJump,
         handleEffectComplete

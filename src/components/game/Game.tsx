@@ -7,10 +7,8 @@ import Collectible from './Collectible';
 import Skyline from './Skyline';
 import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
-import SoundToggle from './SoundToggle';
 import { useGameLogic } from '../../hooks/useGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
-import { useGameAudio } from '../../hooks/useGameAudio';
 import { GAME_WIDTH, GAME_HEIGHT, ROAD_HEIGHT } from './constants';
 import Road from './Road';
 
@@ -21,14 +19,11 @@ const Game = () => {
     const [showLeaderboard, setShowLeaderboard] = useState(false);
     const [finalScore, setFinalScore] = useState(0);
 
-    const audio = useGameAudio();
-
     const handleGameOver = useCallback((score: number) => {
         setFinalScore(score);
         setGameOver(true);
         setRunning(false);
-        audio.playGameOverSound();
-    }, [audio]);
+    }, []);
 
     const {
         distance,
@@ -40,28 +35,10 @@ const Game = () => {
         isSpinning,
         resetGame,
         handleJump,
-        handleEffectComplete,
-        lastCollected,
-        lastHit
+        handleEffectComplete
     } = useGameLogic(running, handleGameOver);
 
-    usePlayerInput(() => {
-        handleJump();
-        audio.playJumpSound();
-    }, gameOver);
-
-    // Play sounds when collecting or hitting
-    React.useEffect(() => {
-        if (lastCollected > 0) {
-            audio.playCollectSound();
-        }
-    }, [lastCollected, audio]);
-
-    React.useEffect(() => {
-        if (lastHit > 0) {
-            audio.playHitSound();
-        }
-    }, [lastHit, audio]);
+    usePlayerInput(handleJump, gameOver);
 
     const startGame = () => {
         setGameOver(false);
@@ -75,7 +52,6 @@ const Game = () => {
              // Let button handle start
         } else if (running && !gameOver) {
             handleJump();
-            audio.playJumpSound();
         } else if (gameOver) {
             startGame();
         }
@@ -83,9 +59,7 @@ const Game = () => {
 
     if (!running && !gameOver) {
         return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center relative">
-                <SoundToggle isMuted={audio.isMuted} onToggle={audio.toggleMute} />
-                
+            <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center">
                 <h1 className="text-3xl md:text-5xl mb-4 text-purple-400">RGNT RUSH</h1>
                 <p className="mb-8 text-sm md:text-base">Collect batteries, dodge cars!</p>
                 <input
@@ -112,8 +86,6 @@ const Game = () => {
             style={{ maxWidth: `${GAME_WIDTH}px`, aspectRatio: '3 / 4' }}
             onClick={handleScreenInteraction}
         >
-            <SoundToggle isMuted={audio.isMuted} onToggle={audio.toggleMute} />
-            
             <Skyline />
             <Road />
             
