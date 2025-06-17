@@ -129,7 +129,6 @@ const Game = () => {
       }}
       onClick={handleScreenInteraction}
     >
-      <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
       <Skyline />
       <Road />
       
@@ -158,7 +157,12 @@ const Game = () => {
         />
       ))}
       
-      <GameUI distance={distance} energy={energy} />
+      <GameUI 
+        distance={distance} 
+        energy={energy}
+        isMuted={isMuted}
+        onToggleMute={toggleMute}
+      />
 
       {gameOver && (
         <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">

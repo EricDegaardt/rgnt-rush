@@ -1,8 +1,15 @@
 
 import React from 'react';
-import { Zap, Gauge, Milestone } from 'lucide-react';
+import { Zap, Gauge, Milestone, Volume2, VolumeX } from 'lucide-react';
 
-const GameUI = ({ distance, energy }: { distance: number, energy: number }) => {
+interface GameUIProps {
+    distance: number;
+    energy: number;
+    isMuted: boolean;
+    onToggleMute: () => void;
+}
+
+const GameUI = ({ distance, energy, isMuted, onToggleMute }: GameUIProps) => {
     const formattedDistance = distance < 1000 
         ? `${Math.floor(distance)}m` 
         : `${(distance / 1000).toFixed(1)}km`;
@@ -23,6 +30,13 @@ const GameUI = ({ distance, energy }: { distance: number, energy: number }) => {
                     <div className="h-full bg-green-400" style={{ width: `${energy}%` }} />
                 </div>
             </div>
+            <button
+                onClick={onToggleMute}
+                className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-all"
+                title={isMuted ? 'Unmute' : 'Mute'}
+            >
+                {isMuted ? <VolumeX size={20} className="text-gray-400" /> : <Volume2 size={20} className="text-white" />}
+            </button>
         </div>
     );
 };
