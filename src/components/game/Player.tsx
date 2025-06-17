@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { PLAYER_X_POSITION } from './constants';
 
-// Increased size by 20% (width: 120px, height: 60px)
+// Increased size by 5% (width: 126px, height: 63px)
 const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
     const [bounceOffset, setBounceOffset] = useState(0);
 
@@ -33,8 +33,8 @@ const Player = ({ y, isSpinning }: { y: number; isSpinning?: boolean }) => {
                 style={{
                     left: `${PLAYER_X_POSITION}px`,
                     bottom: `${y + bounceY - 10}px`, // Position 10px lower to drive in the street
-                    width: '120px',
-                    height: '60px',
+                    width: '126px',
+                    height: '63px',
                     imageRendering: 'pixelated',
                     zIndex: 999, // Highest z-index to ensure bike is always on top
                     backgroundImage: `url('/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png')`,

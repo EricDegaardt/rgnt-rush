@@ -15,17 +15,17 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
         // Stop the particles animation early to prevent infinite looping
         const particleTimer = setTimeout(() => {
             setShowParticles(false);
-        }, 400);
+        }, 300); // Reduced time to remove particles faster
 
         // Start fading out
         const fadeTimer = setTimeout(() => {
             setOpacity(0);
-        }, 400);
+        }, 350);
 
         // Complete and remove the effect
         const completeTimer = setTimeout(() => {
             onComplete();
-        }, 600);
+        }, 500); // Reduced total time
 
         return () => {
             clearTimeout(particleTimer);
@@ -33,6 +33,11 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
             clearTimeout(completeTimer);
         };
     }, [onComplete]);
+
+    // Don't render anything if particles are not showing and opacity is 0
+    if (!showParticles && opacity === 0) {
+        return null;
+    }
 
     return (
         <div
@@ -43,7 +48,7 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
                 width: '60px',
                 height: '60px',
                 opacity,
-                transition: 'opacity 200ms ease-out',
+                transition: 'opacity 150ms ease-out',
                 zIndex: 998
             }}
         >
@@ -53,58 +58,43 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
                     <div 
                         className="absolute inset-0"
                         style={{
-                            animation: 'ping 0.4s ease-out forwards'
+                            animation: 'ping 0.3s ease-out forwards'
                         }}
                     >
                         <div 
                             className="w-4 h-4 bg-orange-500 rounded-full absolute top-2 left-2"
                             style={{
-                                animation: 'bounce 0.4s ease-out forwards'
+                                animation: 'bounce 0.3s ease-out forwards'
                             }}
                         ></div>
                         <div 
                             className="w-3 h-3 bg-red-500 rounded-full absolute top-4 right-3"
                             style={{
-                                animation: 'bounce 0.4s ease-out forwards',
-                                animationDelay: '0.1s'
+                                animation: 'bounce 0.3s ease-out forwards',
+                                animationDelay: '0.05s'
                             }}
                         ></div>
                         <div 
                             className="w-2 h-2 bg-yellow-500 rounded-full absolute bottom-3 left-4"
                             style={{
-                                animation: 'bounce 0.4s ease-out forwards',
-                                animationDelay: '0.2s'
+                                animation: 'bounce 0.3s ease-out forwards',
+                                animationDelay: '0.1s'
                             }}
                         ></div>
                         <div 
                             className="w-3 h-3 bg-orange-600 rounded-full absolute bottom-2 right-2"
                             style={{
-                                animation: 'bounce 0.4s ease-out forwards',
-                                animationDelay: '0.15s'
+                                animation: 'bounce 0.3s ease-out forwards',
+                                animationDelay: '0.075s'
                             }}
                         ></div>
                         <div 
                             className="w-2 h-2 bg-red-600 rounded-full absolute top-6 left-8"
                             style={{
-                                animation: 'bounce 0.4s ease-out forwards',
-                                animationDelay: '0.25s'
+                                animation: 'bounce 0.3s ease-out forwards',
+                                animationDelay: '0.125s'
                             }}
                         ></div>
-                    </div>
-                )}
-                
-                {/* Secondary particles - also limited duration */}
-                {showParticles && (
-                    <div 
-                        className="absolute inset-0"
-                        style={{
-                            animation: 'pulse 0.4s ease-out forwards'
-                        }}
-                    >
-                        <div className="w-1 h-1 bg-orange-400 rounded-full absolute top-1 left-6"></div>
-                        <div className="w-1 h-1 bg-red-400 rounded-full absolute top-8 right-1"></div>
-                        <div className="w-1 h-1 bg-yellow-400 rounded-full absolute bottom-1 left-1"></div>
-                        <div className="w-1 h-1 bg-orange-500 rounded-full absolute bottom-6 right-6"></div>
                     </div>
                 )}
             </div>

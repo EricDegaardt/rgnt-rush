@@ -1,9 +1,8 @@
-
 import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './types';
 import { PLAYER_X_POSITION, ROAD_HEIGHT } from '../../components/game/constants';
 
-const PLAYER_WIDTH = 120;
-const PLAYER_HEIGHT = 60;
+const PLAYER_WIDTH = 126; // Updated to match new bike size
+const PLAYER_HEIGHT = 63; // Updated to match new bike size
 
 interface CollisionResult {
     obstacles: ObstacleType[];
