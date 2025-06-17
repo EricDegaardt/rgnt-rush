@@ -29,7 +29,7 @@ export const checkCollisions = (
     let newCollectionEffects = [...collectionEffects];
     let newSplashEffects = [...splashEffects];
 
-    // Check obstacle collisions
+    // Check obstacle collisions - only create splash when collision happens
     obstacles.forEach(obstacle => {
         const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };
         if (
@@ -41,13 +41,14 @@ export const checkCollisions = (
             energyChange -= 5;
             hitObstacle = true;
             
-            // Create splash effect at obstacle position
+            // Create splash effect ONLY when collision occurs (not every frame)
             newSplashEffects = [...newSplashEffects, {
                 id: Date.now() + Math.random(),
                 x: obstacle.x + obstacle.width / 2,
                 y: ROAD_HEIGHT + obstacle.height / 2,
             }];
             
+            // Remove the obstacle that was hit
             newObstacles = newObstacles.filter(o => o.id !== obstacle.id);
         }
     });

@@ -31,14 +31,16 @@ export const createObstacle = (obstacles: ObstacleType[], collectibles: Collecti
     if (!shouldSpawnObstacle()) return null;
 
     const newX = GAME_WIDTH + 50;
-    const potentialWidth = 60 + Math.random() * 40; // Larger base width for barrels
+    // Fixed size for medium barrels only
+    const potentialWidth = 80; // Medium size barrel
+    const potentialHeight = 60; // Medium size barrel
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {
         return {
             id: Date.now(),
             x: newX,
             width: potentialWidth,
-            height: 40 + Math.random() * 30, // Larger base height for barrels
+            height: potentialHeight,
         };
     }
     return null;
