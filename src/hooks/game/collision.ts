@@ -29,7 +29,7 @@ export const checkCollisions = (
     let newCollectionEffects = [...collectionEffects];
     let newSplashEffects = [...splashEffects];
 
-    // Check obstacle collisions - process each obstacle only once
+    // Check obstacle collisions - only process one collision per frame
     for (let i = obstacles.length - 1; i >= 0; i--) {
         const obstacle = obstacles[i];
         const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };
@@ -43,16 +43,17 @@ export const checkCollisions = (
             energyChange -= 5;
             hitObstacle = true;
             
-            // Create splash effect ONLY once per obstacle
-            newSplashEffects = [...newSplashEffects, {
+            // Create ONE splash effect for this specific collision
+            const splashEffect: SplashEffectType = {
                 id: Date.now() + Math.random(),
                 x: obstacle.x + obstacle.width / 2,
                 y: ROAD_HEIGHT + obstacle.height / 2,
-            }];
+            };
+            newSplashEffects = [splashEffect]; // Replace all splash effects with just this one
             
-            // Remove the obstacle immediately to prevent multiple collisions
+            // Remove the hit obstacle immediately
             newObstacles.splice(i, 1);
-            break; // Exit loop after first collision to prevent multiple hits in same frame
+            break; // Exit after first collision to prevent multiple hits
         }
     }
 
