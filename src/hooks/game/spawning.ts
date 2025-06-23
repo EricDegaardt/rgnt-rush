@@ -6,7 +6,7 @@ export const shouldSpawnObstacle = (): boolean => {
 };
 
 export const shouldSpawnCollectible = (): boolean => {
-    return Math.random() < 0.009; // Keep collectible rate the same
+    return Math.random() < 0.004; // Reduced from 0.009 to 0.004 for more consistent spacing
 };
 
 export const canSpawnAtPosition = (
