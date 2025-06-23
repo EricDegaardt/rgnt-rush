@@ -15,7 +15,6 @@ import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import { GAME_WIDTH, GAME_HEIGHT } from './constants';
 import Road from './Road';
-
 const MobileOptimizedGame = () => {
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -82,30 +81,6 @@ const MobileOptimizedGame = () => {
     }
   }, [running, gameOver, showLeaderboard, showBikeSelection, gameLogic]);
 
-  const getGameOverMessage = (distance: number) => {
-    if (distance < 500) {
-      return {
-        title: "Try again",
-        color: "text-red-500"
-      };
-    } else if (distance < 1000) {
-      return {
-        title: "You can do better",
-        color: "text-yellow-500"
-      };
-    } else if (distance < 1500) {
-      return {
-        title: "Awesome",
-        color: "text-green-500"
-      };
-    } else {
-      return {
-        title: "Legendary",
-        color: "text-purple-500"
-      };
-    }
-  };
-
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
   if (isPreloading) {
@@ -132,9 +107,6 @@ const MobileOptimizedGame = () => {
         {showLeaderboard && <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={0} />}
       </div>;
   }
-
-  const gameOverMessage = getGameOverMessage(finalScore);
-
   return <div className="relative bg-black w-full overflow-hidden touch-none select-none" style={{
     maxWidth: `${GAME_WIDTH}px`,
     aspectRatio: '3 / 4',
@@ -156,7 +128,7 @@ const MobileOptimizedGame = () => {
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
       {gameOver && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
-          <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
+          <h2 className="text-4xl text-red-500">Great </h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
           <button onClick={() => setShowBikeSelection(true)} className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl">
             Play Again
