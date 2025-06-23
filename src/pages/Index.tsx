@@ -1,11 +1,11 @@
 
-import Game from "@/components/game/Game";
+import MobileOptimizedGame from "../components/game/MobileOptimizedGame";
 
 const Index = () => {
   return (
-    <div className="w-screen h-screen font-press-start bg-black flex items-center justify-center overflow-hidden p-2">
-      <div className="w-full h-full max-w-md flex items-center justify-center">
-        <Game />
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        <MobileOptimizedGame />
       </div>
     </div>
   );
