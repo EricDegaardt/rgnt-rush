@@ -88,7 +88,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
     <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4">
       <h2 className="text-2xl md:text-3xl mb-6 text-purple-400">Choose Your Bike</h2>
       
-      <div className="w-full max-w-md mb-6 px-24">
+      <div className="w-full max-w-md mb-6">
         <Carousel className="w-full" setApi={setApi}>
           <CarouselContent>
             {bikes.map((bike) => (
@@ -103,9 +103,9 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       <img 
                         src={bike.image} 
                         alt={bike.name}
-                        className="w-52 h-26 object-contain mb-4"
+                        className="w-48 h-24 object-contain mb-4"
                       />
-                      <h3 className="text-lg text-purple-300 mb-4">{bike.name}</h3>
+                      <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
                       <div className="grid grid-cols-2 gap-1 text-xs w-full">
                         <div className="text-gray-300">
