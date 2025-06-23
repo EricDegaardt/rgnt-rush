@@ -204,10 +204,10 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-black/50 border-purple-400 text-white hover:bg-purple-600/80 backdrop-blur-sm z-10",
+        "absolute h-10 w-10 rounded-full bg-black/70 border-purple-400 text-white hover:bg-purple-600/80 backdrop-blur-sm z-10",
         orientation === "horizontal"
-          ? "left-2 top-1/2 -translate-y-1/2"
-          : "top-2 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-left-14 top-1/2 -translate-y-1/2"
+          : "-top-14 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollPrev}
@@ -233,10 +233,10 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-black/50 border-purple-400 text-white hover:bg-purple-600/80 backdrop-blur-sm z-10",
+        "absolute h-10 w-10 rounded-full bg-black/70 border-purple-400 text-white hover:bg-purple-600/80 backdrop-blur-sm z-10",
         orientation === "horizontal"
-          ? "right-2 top-1/2 -translate-y-1/2"
-          : "bottom-2 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-right-14 top-1/2 -translate-y-1/2"
+          : "-bottom-14 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollNext}
