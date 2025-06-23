@@ -156,7 +156,9 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     }, []);
     
     const handleJump = useCallback(() => {
+        console.log('handleJump called, isOnGround:', playerPhysicsRef.current.isOnGround, 'running:', runningRef.current); // Debug log
         if (playerPhysicsRef.current.isOnGround && runningRef.current) {
+            console.log('Jump executed!'); // Debug log
             playerPhysicsRef.current = handlePlayerJump(playerPhysicsRef.current);
             if (onSoundEvent) {
                 onSoundEvent('jump');

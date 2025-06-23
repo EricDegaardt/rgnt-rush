@@ -13,8 +13,10 @@ import GamePreloader from './GamePreloader';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
+import { useScoreboard } from '../../hooks/useScoreboard';
 import { GAME_WIDTH, GAME_HEIGHT } from './constants';
 import Road from './Road';
+
 const MobileOptimizedGame = () => {
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -24,6 +26,10 @@ const MobileOptimizedGame = () => {
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
+  const [scoreSaved, setScoreSaved] = useState(false);
+
+  const { saveScore } = useScoreboard();
+  
   const {
     playSound,
     startBackgroundMusic,
@@ -31,13 +37,24 @@ const MobileOptimizedGame = () => {
     toggleMute,
     isMuted
   } = useGameAudio();
-  const handleGameOver = useCallback((score: number) => {
+  
+  const handleGameOver = useCallback(async (score: number) => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
+    setScoreSaved(false);
     stopBackgroundMusic();
     playSound('gameOver');
-  }, [stopBackgroundMusic, playSound]);
+    
+    // Save score to database
+    if (username.trim()) {
+      const success = await saveScore(username.trim(), score, selectedBike);
+      if (success) {
+        setScoreSaved(true);
+      }
+    }
+  }, [stopBackgroundMusic, playSound, saveScore, username, selectedBike]);
+
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
       case 'jump':
@@ -53,9 +70,11 @@ const MobileOptimizedGame = () => {
   }, [playSound]);
   const gameLogic = useOptimizedGameLogic(running, handleGameOver, handleSoundEvent);
   usePlayerInput(gameLogic.handleJump, gameOver);
+
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
+    setScoreSaved(false);
     gameLogic.resetGame();
     setRunning(true);
     startBackgroundMusic();
@@ -80,6 +99,30 @@ const MobileOptimizedGame = () => {
       setShowBikeSelection(true);
     }
   }, [running, gameOver, showLeaderboard, showBikeSelection, gameLogic]);
+
+  const getGameOverMessage = (distance: number) => {
+    if (distance < 500) {
+      return {
+        title: "Try again",
+        color: "text-red-500"
+      };
+    } else if (distance < 1000) {
+      return {
+        title: "You can do better",
+        color: "text-yellow-500"
+      };
+    } else if (distance < 1500) {
+      return {
+        title: "Awesome",
+        color: "text-green-500"
+      };
+    } else {
+      return {
+        title: "Legendary",
+        color: "text-purple-500"
+      };
+    }
+  };
 
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
@@ -107,6 +150,9 @@ const MobileOptimizedGame = () => {
         {showLeaderboard && <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={0} />}
       </div>;
   }
+
+  const gameOverMessage = getGameOverMessage(finalScore);
+
   return <div className="relative bg-black w-full overflow-hidden touch-none select-none" style={{
     maxWidth: `${GAME_WIDTH}px`,
     aspectRatio: '3 / 4',
@@ -128,8 +174,11 @@ const MobileOptimizedGame = () => {
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
       {gameOver && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
-          <h2 className="text-4xl text-red-500">Great </h2>
+          <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
+          {scoreSaved && <p className="text-green-400 text-sm mt-1">Score saved to leaderboard!</p>}
+          {!scoreSaved && username.trim() && <p className="text-yellow-400 text-sm mt-1">Score saving failed. Try again later.</p>}
+          {!username.trim() && <p className="text-gray-400 text-sm mt-1">Enter your name to save scores!</p>}
           <button onClick={() => setShowBikeSelection(true)} className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl">
             Play Again
           </button>
