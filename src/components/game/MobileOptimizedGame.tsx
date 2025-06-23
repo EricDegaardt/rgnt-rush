@@ -5,20 +5,18 @@ import GameUI from './GameUI';
 import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
-import RealLeaderboard from './RealLeaderboard';
 import CollectionEffect from './CollectionEffect';
 import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
 import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
-import AuthPage from '../auth/AuthPage';
+import CompetitionEntry from './CompetitionEntry';
+import GuestLeaderboard from './GuestLeaderboard';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
-import { useAuth } from '../../hooks/useAuth';
-import { useLeaderboard } from '../../hooks/useLeaderboard';
+import { useGuestScores } from '../../hooks/useGuestScores';
 import { GAME_WIDTH, GAME_HEIGHT } from './constants';
-import { Button } from '@/components/ui/button';
 import Road from './Road';
 
 const MobileOptimizedGame = () => {
@@ -26,13 +24,12 @@ const MobileOptimizedGame = () => {
   const [gameOver, setGameOver] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showBikeSelection, setShowBikeSelection] = useState(false);
+  const [showCompetitionEntry, setShowCompetitionEntry] = useState(false);
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
-  const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
-  const { user, loading: authLoading, signOut } = useAuth();
-  const { submitScore } = useLeaderboard();
+  const { submitGuestScore, getTopScores } = useGuestScores();
 
   const {
     playSound,
@@ -46,16 +43,14 @@ const MobileOptimizedGame = () => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
-    setScoreSubmitted(false);
     stopBackgroundMusic();
     playSound('gameOver');
 
-    // Auto-submit score for authenticated users
-    if (user && score > 0) {
-      await submitScore(score, Math.floor(score), selectedBike);
-      setScoreSubmitted(true);
+    // Auto-save score locally
+    if (score > 0) {
+      submitGuestScore(score, Math.floor(score), selectedBike);
     }
-  }, [stopBackgroundMusic, playSound, user, submitScore, selectedBike]);
+  }, [stopBackgroundMusic, playSound, submitGuestScore, selectedBike]);
 
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
@@ -77,7 +72,6 @@ const MobileOptimizedGame = () => {
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
-    setScoreSubmitted(false);
     gameLogic.resetGame();
     setRunning(true);
     startBackgroundMusic();
@@ -130,23 +124,6 @@ const MobileOptimizedGame = () => {
     }
   };
 
-  // Show loading while checking authentication
-  if (authLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-black text-white">
-        <div className="text-center">
-          <div className="text-2xl text-purple-400 mb-2">RGNT RUSH</div>
-          <div>Loading...</div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show auth page if not authenticated
-  if (!user) {
-    return <AuthPage onSuccess={() => {}} />;
-  }
-
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
   
@@ -158,23 +135,27 @@ const MobileOptimizedGame = () => {
     return <BikeSelection onBikeSelect={handleBikeSelect} onBack={() => setShowBikeSelection(false)} />;
   }
 
+  if (showCompetitionEntry) {
+    return (
+      <CompetitionEntry 
+        score={finalScore}
+        onClose={() => setShowCompetitionEntry(false)}
+        onSuccess={() => {
+          setShowCompetitionEntry(false);
+          setShowLeaderboard(true);
+        }}
+      />
+    );
+  }
+
   if (!running && !gameOver) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center">
-        <div className="absolute top-4 right-4 flex gap-2">
+        <div className="absolute top-4 right-4">
           <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
-          <Button
-            onClick={signOut}
-            variant="outline"
-            size="sm"
-            className="border-gray-600 text-gray-300 hover:bg-gray-800"
-          >
-            Sign Out
-          </Button>
         </div>
         
         <h1 className="text-3xl md:text-5xl mb-4 text-purple-400">RGNT RUSH</h1>
-        <p className="mb-4 text-sm md:text-base">Welcome back, {user.email}!</p>
         <p className="mb-8 text-sm md:text-base">Collect batteries and jump over oil barrels by tapping the screen. Good Luck!</p>
         
         <button
@@ -195,7 +176,7 @@ const MobileOptimizedGame = () => {
         </button>
         
         {showLeaderboard && (
-          <RealLeaderboard onClose={() => setShowLeaderboard(false)} currentScore={0} />
+          <GuestLeaderboard onClose={() => setShowLeaderboard(false)} currentScore={0} />
         )}
       </div>
     );
@@ -216,16 +197,8 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction}
       onTouchStart={handleScreenInteraction}
     >
-      <div className="absolute top-4 right-4 flex gap-2 z-10">
+      <div className="absolute top-4 right-4 z-10">
         <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
-        <Button
-          onClick={signOut}
-          variant="outline"
-          size="sm"
-          className="border-gray-600 text-gray-300 hover:bg-gray-800"
-        >
-          Sign Out
-        </Button>
       </div>
       
       <Skyline />
@@ -244,23 +217,32 @@ const MobileOptimizedGame = () => {
         <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
-          {scoreSubmitted && (
-            <p className="text-green-400 text-sm mt-1">✓ Score submitted to leaderboard!</p>
-          )}
-          <button
-            onClick={() => setShowBikeSelection(true)}
-            className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl"
-          >
-            Play Again
-          </button>
-          <button
-            onClick={() => setShowLeaderboard(true)}
-            className="mt-4 text-purple-300 underline"
-          >
-            View Leaderboard
-          </button>
+          
+          <div className="mt-8 space-y-4">
+            <button
+              onClick={() => setShowBikeSelection(true)}
+              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl block"
+            >
+              Play Again
+            </button>
+            
+            <button
+              onClick={() => setShowCompetitionEntry(true)}
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-lg block"
+            >
+              Enter Competition
+            </button>
+            
+            <button
+              onClick={() => setShowLeaderboard(true)}
+              className="text-purple-300 underline"
+            >
+              View Leaderboard
+            </button>
+          </div>
+          
           {showLeaderboard && (
-            <RealLeaderboard onClose={() => setShowLeaderboard(false)} currentScore={finalScore} />
+            <GuestLeaderboard onClose={() => setShowLeaderboard(false)} currentScore={finalScore} />
           )}
         </div>
       )}
