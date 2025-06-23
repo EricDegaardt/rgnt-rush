@@ -4,7 +4,6 @@ import GameUI from './GameUI';
 import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
-import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
 import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
@@ -20,7 +19,6 @@ const MobileOptimizedGame = () => {
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [username, setUsername] = useState('');
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showBikeSelection, setShowBikeSelection] = useState(false);
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
@@ -73,14 +71,14 @@ const MobileOptimizedGame = () => {
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault(); // Prevent default touch behavior
 
-    if (!running && !gameOver && !showLeaderboard && !showBikeSelection) {
+    if (!running && !gameOver && !showBikeSelection) {
       // Let button handle start
     } else if (running && !gameOver) {
       gameLogic.handleJump();
     } else if (gameOver) {
       setShowBikeSelection(true);
     }
-  }, [running, gameOver, showLeaderboard, showBikeSelection, gameLogic]);
+  }, [running, gameOver, showBikeSelection, gameLogic]);
 
   const getGameOverMessage = (distance: number) => {
     if (distance < 500) {
@@ -123,13 +121,6 @@ const MobileOptimizedGame = () => {
         <button onClick={() => setShowBikeSelection(true)} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl md:text-2xl animate-pulse">
           Start Game
         </button>
-        <button onClick={() => {
-        setFinalScore(0);
-        setShowLeaderboard(true);
-      }} className="mt-4 text-purple-300 underline">
-          Leaderboard
-        </button>
-        {showLeaderboard && <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={0} />}
       </div>;
   }
 
@@ -161,10 +152,6 @@ const MobileOptimizedGame = () => {
           <button onClick={() => setShowBikeSelection(true)} className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl">
             Play Again
           </button>
-          <button onClick={() => setShowLeaderboard(true)} className="mt-4 text-purple-300 underline">
-            View Leaderboard
-          </button>
-          {showLeaderboard && <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={finalScore} />}
         </div>}
     </div>;
 };

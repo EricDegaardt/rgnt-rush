@@ -4,7 +4,6 @@ import GameUI from './GameUI';
 import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
-import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
 import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
@@ -19,7 +18,6 @@ const Game = () => {
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [username, setUsername] = useState('');
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showBikeSelection, setShowBikeSelection] = useState(false);
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
@@ -85,7 +83,7 @@ const Game = () => {
   };
 
   const handleScreenInteraction = () => {
-    if (!running && !gameOver && !showLeaderboard && !showBikeSelection) {
+    if (!running && !gameOver && !showBikeSelection) {
       // Let button handle start
     } else if (running && !gameOver) {
       handleJump();
@@ -122,18 +120,6 @@ const Game = () => {
         >
           Start Game
         </button>
-        <button
-          onClick={() => {
-            setFinalScore(0);
-            setShowLeaderboard(true);
-          }}
-          className="mt-4 text-purple-300 underline"
-        >
-          Leaderboard
-        </button>
-        {showLeaderboard && (
-          <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={0} />
-        )}
       </div>
     );
   }
@@ -188,12 +174,6 @@ const Game = () => {
           >
             Play Again
           </button>
-          <button onClick={() => setShowLeaderboard(true)} className="mt-4 text-purple-300 underline">
-            View Leaderboard
-          </button>
-          {showLeaderboard && (
-            <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={finalScore} />
-          )}
         </div>
       )}
     </div>
