@@ -1,8 +1,8 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import type { CarouselApi } from '@/components/ui/carousel';
 
 interface Bike {
   id: string;
@@ -60,6 +60,25 @@ interface BikeSelectionProps {
 
 const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
+  const [api, setApi] = useState<CarouselApi>();
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const onSelect = () => {
+      const selectedIndex = api.selectedScrollSnap();
+      setSelectedBike(bikes[selectedIndex].id);
+    };
+
+    onSelect(); // Set initial selection
+    api.on('select', onSelect);
+
+    return () => {
+      api.off('select', onSelect);
+    };
+  }, [api]);
 
   const handleStartGame = () => {
     onBikeSelect(selectedBike);
@@ -70,16 +89,15 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
       <h2 className="text-2xl md:text-3xl mb-6 text-purple-400">Choose Your Bike</h2>
       
       <div className="w-full max-w-md mb-6">
-        <Carousel className="w-full">
+        <Carousel className="w-full" setApi={setApi}>
           <CarouselContent>
             {bikes.map((bike) => (
               <CarouselItem key={bike.id}>
                 <div className="p-1">
                   <Card 
-                    className={`bg-gray-900 border-2 cursor-pointer transition-colors ${
+                    className={`bg-gray-900 border-2 transition-colors ${
                       selectedBike === bike.id ? 'border-purple-400' : 'border-gray-700'
                     }`}
-                    onClick={() => setSelectedBike(bike.id)}
                   >
                     <CardContent className="flex flex-col items-center p-4">
                       <img 
