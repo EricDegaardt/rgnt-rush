@@ -38,8 +38,27 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
     };
   }, []);
 
+  // CSS for speed line animation
+  const speedLineKeyframes = `
+    @keyframes speedLine {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+  `;
+
   return (
     <div className="w-full h-full relative overflow-hidden bg-black">
+      <style>{speedLineKeyframes}</style>
+      
       <SoundToggle isMuted={isMuted} onToggle={onToggleMute} />
       
       {/* Background */}
@@ -139,22 +158,6 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes speedLine {
-          0% {
-            transform: translateX(-100%);
-            opacity: 0;
-          }
-          50% {
-            opacity: 0.3;
-          }
-          100% {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-        }
-      `}</style>
     </div>
   );
 };
