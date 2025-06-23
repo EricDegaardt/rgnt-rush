@@ -22,7 +22,7 @@ const bikes: Bike[] = [
   {
     id: 'purple-rain',
     name: 'PURPLE RAIN',
-    image: '/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png',
+    image: '/lovable-uploads/purple-rain.png',
     specs: {
       topSpeed: '120 km/h',
       turboPower: '40 kW',
@@ -58,6 +58,10 @@ interface BikeSelectionProps {
 
 const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
   const [selectedBike, setSelectedBike] = useState(bikes[0]);
+
+  const handleBikeChange = (bike: Bike) => {
+    setSelectedBike(bike);
+  };
 
   const handleStartGame = () => {
     onBikeSelect(selectedBike.id);
@@ -103,7 +107,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                     alt={bike.name}
                     className="max-w-full max-h-full object-contain"
                     style={{ imageRendering: 'pixelated' }}
-                    onLoad={() => setSelectedBike(bike)}
+                    onLoad={() => handleBikeChange(bike)}
                   />
                 </div>
                 <h2 className="text-2xl font-bold mb-6 tracking-wider">

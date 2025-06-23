@@ -4,7 +4,7 @@ import BikeExplosionEffect from './BikeExplosionEffect';
 import { PLAYER_X_POSITION } from './constants';
 
 const bikeImages = {
-  'purple-rain': '/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png',
+  'purple-rain': '/lovable-uploads/purple-rain.png',
   'black-thunder': '/lovable-uploads/black-thunder.png'
 };
 
