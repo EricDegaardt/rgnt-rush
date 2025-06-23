@@ -147,8 +147,8 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="text-white border-purple-400 -left-12" />
-          <CarouselNext className="text-white border-purple-400 -right-12" />
+          <CarouselPrevious />
+          <CarouselNext />
         </Carousel>
       </div>
 
