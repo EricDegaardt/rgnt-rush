@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import OptimizedPlayer from './OptimizedPlayer';
 import GameUI from './GameUI';
@@ -10,6 +11,8 @@ import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
 import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
+import SocialShare from './SocialShare';
+import CompetitionEntry from './CompetitionEntry';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -27,7 +30,9 @@ const MobileOptimizedGame = () => {
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
-  const { addScore } = useSupabaseLeaderboard();
+  const [currentScoreId, setCurrentScoreId] = useState<string | null>(null);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const { addScore, updateScoreWithEmail } = useSupabaseLeaderboard();
   const {
     playSound,
     startBackgroundMusic,
@@ -40,14 +45,17 @@ const MobileOptimizedGame = () => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
+    setShowLeaderboard(true); // Show leaderboard immediately on game over
     stopBackgroundMusic();
     playSound('gameOver');
     
     // Add score to Supabase leaderboard if username is provided
     if (username.trim() && !scoreSubmitted) {
       setScoreSubmitted(true);
-      const success = await addScore(username.trim(), score, selectedBike);
-      if (!success) {
+      const scoreData = await addScore(username.trim(), score, selectedBike);
+      if (scoreData) {
+        setCurrentScoreId(scoreData.id);
+      } else {
         console.error('Failed to submit score to leaderboard');
       }
     }
@@ -74,6 +82,8 @@ const MobileOptimizedGame = () => {
     setGameOver(false);
     setFinalScore(0);
     setScoreSubmitted(false);
+    setCurrentScoreId(null);
+    setShowLeaderboard(false);
     gameLogic.resetGame();
     setRunning(true);
     startBackgroundMusic();
@@ -88,6 +98,15 @@ const MobileOptimizedGame = () => {
   const handlePreloadComplete = () => {
     setIsPreloading(false);
     startGame();
+  };
+
+  const handleEmailSubmit = async (email: string): Promise<boolean> => {
+    if (!currentScoreId) return false;
+    
+    setIsSubmittingEmail(true);
+    const success = await updateScoreWithEmail(currentScoreId, email);
+    setIsSubmittingEmail(false);
+    return success;
   };
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
@@ -196,10 +215,24 @@ const MobileOptimizedGame = () => {
       
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-      {gameOver && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
+      {gameOver && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4 overflow-y-auto">
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Well done {username}!</p>
           <p className="text-xl mt-1">Distance: {Math.floor(finalScore)}m</p>
+          
+          <SocialShare 
+            score={Math.floor(finalScore)} 
+            username={username} 
+            selectedBike={selectedBike} 
+          />
+          
+          {currentScoreId && (
+            <CompetitionEntry 
+              onEmailSubmit={handleEmailSubmit}
+              isSubmitting={isSubmittingEmail}
+            />
+          )}
+          
           <button onClick={() => setShowBikeSelection(true)} className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl">
             Play Again
           </button>

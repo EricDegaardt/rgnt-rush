@@ -7,6 +7,7 @@ interface LeaderboardEntry {
   username: string;
   distance: number;
   selected_bike: string;
+  email?: string;
   created_at: string;
 }
 
@@ -43,24 +44,45 @@ export const useSupabaseLeaderboard = () => {
 
   const addScore = async (username: string, distance: number, selectedBike: string) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('leaderboard_scores')
         .insert({
           username: username.trim() || 'Anonymous',
           distance: Math.floor(distance),
           selected_bike: selectedBike
-        });
+        })
+        .select()
+        .single();
 
       if (error) {
         console.error('Error adding score:', error);
-        return false;
+        return null;
       }
 
       // Refresh the leaderboard after adding a score
       await fetchScores();
-      return true;
+      return data;
     } catch (error) {
       console.error('Error adding score:', error);
+      return null;
+    }
+  };
+
+  const updateScoreWithEmail = async (scoreId: string, email: string) => {
+    try {
+      const { error } = await supabase
+        .from('leaderboard_scores')
+        .update({ email: email.trim() })
+        .eq('id', scoreId);
+
+      if (error) {
+        console.error('Error updating score with email:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error updating score with email:', error);
       return false;
     }
   };
@@ -69,6 +91,7 @@ export const useSupabaseLeaderboard = () => {
     scores,
     loading,
     addScore,
+    updateScoreWithEmail,
     refreshScores: fetchScores
   };
 };
