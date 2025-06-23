@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import OptimizedPlayer from './OptimizedPlayer';
 import GameUI from './GameUI';
@@ -32,6 +33,7 @@ const MobileOptimizedGame = () => {
     toggleMute,
     isMuted
   } = useGameAudio();
+  
   const handleGameOver = useCallback((score: number) => {
     setFinalScore(score);
     setGameOver(true);
@@ -39,6 +41,7 @@ const MobileOptimizedGame = () => {
     stopBackgroundMusic();
     playSound('gameOver');
   }, [stopBackgroundMusic, playSound]);
+  
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
       case 'jump':
@@ -52,8 +55,10 @@ const MobileOptimizedGame = () => {
         break;
     }
   }, [playSound]);
+  
   const gameLogic = useOptimizedGameLogic(running, handleGameOver, handleSoundEvent);
   usePlayerInput(gameLogic.handleJump, gameOver);
+  
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
@@ -61,15 +66,18 @@ const MobileOptimizedGame = () => {
     setRunning(true);
     startBackgroundMusic();
   };
+  
   const handleBikeSelect = (bikeId: string) => {
     setSelectedBike(bikeId);
     setShowBikeSelection(false);
     setIsPreloading(true);
   };
+  
   const handlePreloadComplete = () => {
     setIsPreloading(false);
     startGame();
   };
+  
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault(); // Prevent default touch behavior
 
@@ -108,21 +116,42 @@ const MobileOptimizedGame = () => {
 
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
+  
   if (isPreloading) {
     return <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />;
   }
+  
   if (showBikeSelection) {
     return <BikeSelection onBikeSelect={handleBikeSelect} onBack={() => setShowBikeSelection(false)} />;
   }
+  
   if (!running && !gameOver) {
     return <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center">
         <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
         <h1 className="text-3xl md:text-5xl mb-4 text-purple-400">RGNT RUSH</h1>
-        <p className="mb-8 text-sm md:text-base">Collect batteries and jump over oil barells by tapping the screen. Good Luck!</p>
-        <input type="text" placeholder="Enter your name" value={username} onChange={e => setUsername(e.target.value)} className="bg-gray-800 border border-purple-400 p-2 rounded mb-4 text-center w-64" />
-        <button onClick={() => setShowBikeSelection(true)} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl md:text-2xl animate-pulse">
+        <p className="mb-8 text-sm md:text-base">Collect batteries and jump over oil barrels by tapping the screen. Good Luck!</p>
+        <input 
+          type="text" 
+          placeholder="Enter your name" 
+          value={username} 
+          onChange={e => setUsername(e.target.value)} 
+          className="bg-gray-800 border border-purple-400 p-2 rounded mb-4 text-center w-64" 
+          required
+        />
+        <button 
+          onClick={() => setShowBikeSelection(true)} 
+          disabled={!username.trim()}
+          className={`font-bold py-2 px-4 rounded text-xl md:text-2xl ${
+            username.trim() 
+              ? 'bg-purple-500 hover:bg-purple-700 text-white animate-pulse' 
+              : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+          }`}
+        >
           Start Game
         </button>
+        {!username.trim() && (
+          <p className="text-red-400 text-sm mt-2">Please enter your name to start playing</p>
+        )}
         <button onClick={() => {
         setFinalScore(0);
         setShowLeaderboard(true);
@@ -157,7 +186,8 @@ const MobileOptimizedGame = () => {
 
       {gameOver && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
-          <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
+          <p className="text-xl mt-2">Well done {username}!</p>
+          <p className="text-xl mt-1">Distance: {Math.floor(finalScore)}m</p>
           <button onClick={() => setShowBikeSelection(true)} className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl">
             Play Again
           </button>
@@ -168,4 +198,5 @@ const MobileOptimizedGame = () => {
         </div>}
     </div>;
 };
+
 export default MobileOptimizedGame;
