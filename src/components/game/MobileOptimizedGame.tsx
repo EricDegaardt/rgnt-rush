@@ -13,9 +13,9 @@ import GamePreloader from './GamePreloader';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
+import { useSupabaseLeaderboard } from '../../hooks/useSupabaseLeaderboard';
 import { GAME_WIDTH, GAME_HEIGHT } from './constants';
 import Road from './Road';
-import { useLocalLeaderboard } from '../../hooks/useLocalLeaderboard';
 
 const MobileOptimizedGame = () => {
   const [running, setRunning] = useState(false);
@@ -26,7 +26,8 @@ const MobileOptimizedGame = () => {
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
-  const { addScore } = useLocalLeaderboard();
+  const [scoreSubmitted, setScoreSubmitted] = useState(false);
+  const { addScore } = useSupabaseLeaderboard();
   const {
     playSound,
     startBackgroundMusic,
@@ -35,18 +36,22 @@ const MobileOptimizedGame = () => {
     isMuted
   } = useGameAudio();
   
-  const handleGameOver = useCallback((score: number) => {
+  const handleGameOver = useCallback(async (score: number) => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
     stopBackgroundMusic();
     playSound('gameOver');
     
-    // Add score to leaderboard if username is provided
-    if (username.trim()) {
-      addScore(username.trim(), score);
+    // Add score to Supabase leaderboard if username is provided
+    if (username.trim() && !scoreSubmitted) {
+      setScoreSubmitted(true);
+      const success = await addScore(username.trim(), score, selectedBike);
+      if (!success) {
+        console.error('Failed to submit score to leaderboard');
+      }
     }
-  }, [stopBackgroundMusic, playSound, username, addScore]);
+  }, [stopBackgroundMusic, playSound, username, selectedBike, addScore, scoreSubmitted]);
   
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
@@ -68,6 +73,7 @@ const MobileOptimizedGame = () => {
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
+    setScoreSubmitted(false);
     gameLogic.resetGame();
     setRunning(true);
     startBackgroundMusic();
@@ -200,7 +206,7 @@ const MobileOptimizedGame = () => {
           <button onClick={() => setShowLeaderboard(true)} className="mt-4 text-purple-300 underline">
             View Leaderboard
           </button>
-          {showLeaderboard && <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={finalScore} />}
+          {showLeaderboard && <Leaderboard onClose={() => setShowLeaderboard(false)} currentScore={finalScore} currentBike={selectedBike} />}
         </div>}
     </div>;
 };
