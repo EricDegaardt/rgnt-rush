@@ -103,42 +103,42 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       <img 
                         src={bike.image} 
                         alt={bike.name}
-                        className="w-32 h-16 object-contain mb-4"
+                        className="w-48 h-24 object-contain mb-4"
                       />
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
-                      <div className="grid grid-cols-2 gap-2 text-xs w-full">
+                      <div className="grid grid-cols-2 gap-1 text-xs w-full">
                         <div className="text-gray-300">
-                          <div className="font-semibold">Top Speed</div>
-                          <div>{bike.specs.topSpeed}</div>
+                          <div className="font-semibold text-xs">Top Speed</div>
+                          <div className="text-xs">{bike.specs.topSpeed}</div>
                         </div>
                         <div className="text-gray-300">
-                          <div className="font-semibold">Mixed Range</div>
-                          <div>{bike.specs.mixedRange}</div>
+                          <div className="font-semibold text-xs">Mixed Range</div>
+                          <div className="text-xs">{bike.specs.mixedRange}</div>
                         </div>
                         <div className="text-gray-300">
-                          <div className="font-semibold">Turbo Power</div>
-                          <div>{bike.specs.turboPower}</div>
+                          <div className="font-semibold text-xs">Turbo Power</div>
+                          <div className="text-xs">{bike.specs.turboPower}</div>
                         </div>
                         <div className="text-gray-300">
-                          <div className="font-semibold">Accel 0-100 km/h</div>
-                          <div>{bike.specs.acceleration}</div>
+                          <div className="font-semibold text-xs">Accel 0-100</div>
+                          <div className="text-xs">{bike.specs.acceleration}</div>
                         </div>
                         <div className="text-gray-300">
-                          <div className="font-semibold">Braking System</div>
-                          <div>{bike.specs.brakingSystem}</div>
+                          <div className="font-semibold text-xs">Braking</div>
+                          <div className="text-xs">{bike.specs.brakingSystem}</div>
                         </div>
                         <div className="text-gray-300">
-                          <div className="font-semibold">Battery System</div>
-                          <div>{bike.specs.batterySystem}</div>
+                          <div className="font-semibold text-xs">Battery</div>
+                          <div className="text-xs">{bike.specs.batterySystem}</div>
                         </div>
                         <div className="text-gray-300">
-                          <div className="font-semibold">Charge 20-80%</div>
-                          <div className="text-xs">{bike.specs.chargeTime}</div>
+                          <div className="font-semibold text-xs">Charge 20-80%</div>
+                          <div className="text-xs leading-tight">{bike.specs.chargeTime}</div>
                         </div>
                         <div className="text-gray-300">
-                          <div className="font-semibold">License</div>
-                          <div>{bike.specs.license}</div>
+                          <div className="font-semibold text-xs">License</div>
+                          <div className="text-xs">{bike.specs.license}</div>
                         </div>
                       </div>
                     </CardContent>
@@ -147,8 +147,8 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="text-white border-purple-400" />
-          <CarouselNext className="text-white border-purple-400" />
+          <CarouselPrevious className="text-white border-purple-400 -left-12" />
+          <CarouselNext className="text-white border-purple-400 -right-12" />
         </Carousel>
       </div>
 
