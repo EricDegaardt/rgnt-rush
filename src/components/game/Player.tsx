@@ -54,6 +54,7 @@ const Player = ({
         }
     `;
 
+    // Get the correct bike image based on selection
     const bikeImageUrl = bikeImages[selectedBike as keyof typeof bikeImages] || bikeImages['purple-rain'];
 
     return (
