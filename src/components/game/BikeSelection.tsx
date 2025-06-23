@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
@@ -53,10 +52,9 @@ const bikes: Bike[] = [
 
 interface BikeSelectionProps {
   onBikeSelect: (bikeId: string) => void;
-  onBack: () => void;
 }
 
-const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
+const BikeSelection = ({ onBikeSelect }: BikeSelectionProps) => {
   const [selectedBike, setSelectedBike] = useState(bikes[0]);
 
   const handleBikeChange = (bike: Bike) => {
@@ -159,13 +157,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
         </Carousel>
       </div>
 
-      <div className="flex gap-4 mt-8">
-        <button
-          onClick={onBack}
-          className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded text-lg"
-        >
-          Back
-        </button>
+      <div className="flex justify-center mt-8">
         <button
           onClick={handleStartGame}
           className="bg-white text-black font-bold py-3 px-8 rounded text-lg hover:bg-gray-200 transition-colors"

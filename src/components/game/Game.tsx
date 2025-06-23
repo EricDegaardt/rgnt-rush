@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -109,7 +108,7 @@ const Game = () => {
 
   // Show bike selection screen
   if (showBikeSelection) {
-    return <BikeSelection onBikeSelect={handleBikeSelect} onBack={handleBackFromBikeSelection} />;
+    return <BikeSelection onBikeSelect={handleBikeSelect} />;
   }
 
   if (!running && !gameOver) {
