@@ -201,20 +201,20 @@ const CarouselPrevious = React.forwardRef<
   return (
     <Button
       ref={ref}
-      variant={variant}
-      size={size}
+      variant="ghost"
+      size="icon"
       className={cn(
-        "absolute h-12 w-12 rounded-full bg-white/90 border-2 border-purple-400 text-purple-600 hover:bg-purple-50 hover:text-purple-700 shadow-lg z-10",
+        "absolute text-purple-400 hover:text-purple-300 hover:bg-transparent z-10 p-0 bg-transparent border-none",
         orientation === "horizontal"
-          ? "-left-16 top-1/2 -translate-y-1/2"
-          : "-top-16 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-left-20 top-1/2 -translate-y-1/2"
+          : "-top-20 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}
     >
-      <ChevronLeft className="h-6 w-6" />
+      <ChevronLeft className="h-10 w-10" />
       <span className="sr-only">Previous slide</span>
     </Button>
   )
@@ -230,20 +230,20 @@ const CarouselNext = React.forwardRef<
   return (
     <Button
       ref={ref}
-      variant={variant}
-      size={size}
+      variant="ghost"
+      size="icon"
       className={cn(
-        "absolute h-12 w-12 rounded-full bg-white/90 border-2 border-purple-400 text-purple-600 hover:bg-purple-50 hover:text-purple-700 shadow-lg z-10",
+        "absolute text-purple-400 hover:text-purple-300 hover:bg-transparent z-10 p-0 bg-transparent border-none",
         orientation === "horizontal"
-          ? "-right-16 top-1/2 -translate-y-1/2"
-          : "-bottom-16 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-right-20 top-1/2 -translate-y-1/2"
+          : "-bottom-20 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}
     >
-      <ChevronRight className="h-6 w-6" />
+      <ChevronRight className="h-10 w-10" />
       <span className="sr-only">Next slide</span>
     </Button>
   )
