@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import SoundToggle from './SoundToggle';
-import Skyline from './Skyline';
-import Road from './Road';
 
 interface AnimatedStartScreenProps {
   onStartGame: () => void;
@@ -23,11 +21,11 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
     // Animate bikes racing across screen
     const bikeAnimation = setInterval(() => {
       setPurpleBikeX(prev => {
-        if (prev > window.innerWidth + 200) return -200;
+        if (prev > 800) return -200;
         return prev + 8;
       });
       setBlackBikeX(prev => {
-        if (prev > window.innerWidth + 200) return -300;
+        if (prev > 800) return -300;
         return prev + 6;
       });
     }, 50);
@@ -38,39 +36,69 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
     };
   }, []);
 
-  // CSS for speed line animation
-  const speedLineKeyframes = `
-    @keyframes speedLine {
-      0% {
-        transform: translateX(-100%);
-        opacity: 0;
-      }
-      50% {
-        opacity: 0.3;
-      }
-      100% {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-    }
-  `;
-
   return (
-    <div className="w-full h-full relative overflow-hidden bg-black">
-      <style>{speedLineKeyframes}</style>
+    <div className="w-full h-full relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900 min-h-screen">
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes speedLine {
+          0% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          50% {
+            opacity: 0.3;
+          }
+          100% {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes cityMove {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        
+        .speed-line {
+          animation: speedLine 1.5s linear infinite;
+        }
+        
+        .city-bg {
+          animation: cityMove 20s linear infinite;
+        }
+      `}</style>
       
       <SoundToggle isMuted={isMuted} onToggle={onToggleMute} />
       
-      {/* Background */}
-      <Skyline />
-      <Road />
+      {/* Animated City Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="city-bg absolute bottom-0 left-0 w-[200%] h-64 opacity-30">
+          {/* City silhouette */}
+          <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-purple-900/20 to-transparent"></div>
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute bottom-0 bg-gray-800"
+              style={{
+                left: `${i * 10}%`,
+                width: `${3 + Math.random() * 4}%`,
+                height: `${30 + Math.random() * 60}%`,
+              }}
+            />
+          ))}
+        </div>
+      </div>
       
       {/* Racing Bikes */}
       <div 
-        className="absolute transition-transform duration-75 ease-linear z-10"
+        className="absolute z-10 transition-transform duration-75 ease-linear"
         style={{
           left: `${purpleBikeX}px`,
-          bottom: '80px',
+          bottom: '120px',
           width: '126px',
           height: '63px',
           backgroundImage: "url('/lovable-uploads/purple-rain.png')",
@@ -78,15 +106,15 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           imageRendering: 'pixelated',
-          filter: 'drop-shadow(0 4px 8px rgba(147, 51, 234, 0.3))',
+          filter: 'drop-shadow(0 4px 8px rgba(147, 51, 234, 0.5))',
         }}
       />
       
       <div 
-        className="absolute transition-transform duration-75 ease-linear z-10"
+        className="absolute z-10 transition-transform duration-75 ease-linear"
         style={{
           left: `${blackBikeX}px`,
-          bottom: '90px',
+          bottom: '130px',
           width: '126px',
           height: '63px',
           backgroundImage: "url('/lovable-uploads/black-thunder.png')",
@@ -94,31 +122,35 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           imageRendering: 'pixelated',
-          filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5))',
+          filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7))',
         }}
       />
 
       {/* Speed lines effect */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <div
             key={i}
-            className="absolute h-0.5 bg-white opacity-20"
+            className="absolute h-0.5 bg-white opacity-20 speed-line"
             style={{
-              top: `${20 + i * 30}%`,
+              top: `${20 + i * 25}%`,
               left: '0%',
               width: '100%',
-              animation: `speedLine 1.5s linear infinite`,
               animationDelay: `${i * 0.1}s`,
             }}
           />
         ))}
       </div>
 
+      {/* Road */}
+      <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 border-t-4 border-gray-500">
+        <div className="absolute top-6 left-0 w-full h-1 bg-white opacity-30"></div>
+      </div>
+
       {/* Main Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center z-20">
         <div className={`transition-all duration-1000 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h1 className="text-4xl md:text-6xl mb-2 text-purple-400 font-bold tracking-wider">
+          <h1 className="text-4xl md:text-6xl mb-2 text-purple-400 font-bold tracking-wider drop-shadow-lg">
             RGNT RUSH
           </h1>
           <div className="text-lg md:text-xl mb-8 text-gray-300 font-medium">
