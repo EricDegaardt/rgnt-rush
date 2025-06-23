@@ -94,10 +94,6 @@ const Game = () => {
     startGame();
   };
 
-  const handleBackFromBikeSelection = () => {
-    setShowBikeSelection(false);
-  };
-
   const handleStartFromMenu = () => {
     if (!username.trim()) {
       alert('Please enter your name first!');
@@ -128,7 +124,7 @@ const Game = () => {
           onClick={handleStartFromMenu}
           className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl md:text-2xl animate-pulse"
         >
-          Start Game
+          Select Bike
         </button>
         <button
           onClick={() => {

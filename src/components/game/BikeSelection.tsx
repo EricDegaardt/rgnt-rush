@@ -55,14 +55,10 @@ interface BikeSelectionProps {
 }
 
 const BikeSelection = ({ onBikeSelect }: BikeSelectionProps) => {
-  const [selectedBike, setSelectedBike] = useState(bikes[0]);
-
-  const handleBikeChange = (bike: Bike) => {
-    setSelectedBike(bike);
-  };
+  const [currentBike, setCurrentBike] = useState(bikes[0]);
 
   const handleStartGame = () => {
-    onBikeSelect(selectedBike.id);
+    onBikeSelect(currentBike.id);
   };
 
   return (
@@ -95,7 +91,16 @@ const BikeSelection = ({ onBikeSelect }: BikeSelectionProps) => {
       </div>
 
       <div className="w-full max-w-md mb-8 relative z-10">
-        <Carousel className="w-full" opts={{ align: "center", loop: true }}>
+        <Carousel 
+          className="w-full" 
+          opts={{ align: "center", loop: true }}
+          onSelect={(api) => {
+            if (api) {
+              const selectedIndex = api.selectedScrollSnap();
+              setCurrentBike(bikes[selectedIndex]);
+            }
+          }}
+        >
           <CarouselContent>
             {bikes.map((bike) => (
               <CarouselItem key={bike.id} className="flex flex-col items-center">
@@ -105,7 +110,6 @@ const BikeSelection = ({ onBikeSelect }: BikeSelectionProps) => {
                     alt={bike.name}
                     className="max-w-full max-h-full object-contain"
                     style={{ imageRendering: 'pixelated' }}
-                    onLoad={() => handleBikeChange(bike)}
                   />
                 </div>
                 <h2 className="text-2xl font-bold mb-6 tracking-wider">
