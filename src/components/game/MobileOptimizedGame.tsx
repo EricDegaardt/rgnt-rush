@@ -83,60 +83,25 @@ const MobileOptimizedGame = () => {
   }, [running, gameOver, showLeaderboard, showBikeSelection, gameLogic]);
 
   const getGameOverMessage = (distance: number) => {
-    if (distance < 100) {
-      const messages = [
-        "Don't give up!",
-        "Keep trying!",
-        "You've got this!",
-        "Practice makes perfect!"
-      ];
+    if (distance < 500) {
       return {
-        title: messages[Math.floor(Math.random() * messages.length)],
-        color: "text-yellow-500"
-      };
-    } else if (distance < 300) {
-      const messages = [
-        "Getting better!",
-        "Nice progress!",
-        "Keep it up!",
-        "You're improving!"
-      ];
-      return {
-        title: messages[Math.floor(Math.random() * messages.length)],
-        color: "text-blue-500"
-      };
-    } else if (distance < 600) {
-      const messages = [
-        "Well done!",
-        "Great job!",
-        "Impressive!",
-        "You're on fire!"
-      ];
-      return {
-        title: messages[Math.floor(Math.random() * messages.length)],
-        color: "text-green-500"
+        title: "Try again",
+        color: "text-red-500"
       };
     } else if (distance < 1000) {
-      const messages = [
-        "Outstanding!",
-        "Phenomenal!",
-        "Incredible!",
-        "You're a pro!"
-      ];
       return {
-        title: messages[Math.floor(Math.random() * messages.length)],
-        color: "text-purple-500"
+        title: "You can do better",
+        color: "text-yellow-500"
+      };
+    } else if (distance < 1500) {
+      return {
+        title: "Awesome",
+        color: "text-green-500"
       };
     } else {
-      const messages = [
-        "LEGENDARY!",
-        "AMAZING!",
-        "UNSTOPPABLE!",
-        "WORLD CLASS!"
-      ];
       return {
-        title: messages[Math.floor(Math.random() * messages.length)],
-        color: "text-gold-500"
+        title: "Legendary",
+        color: "text-purple-500"
       };
     }
   };
