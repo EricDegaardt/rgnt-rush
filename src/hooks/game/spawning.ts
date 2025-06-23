@@ -1,12 +1,13 @@
+
 import { ObstacleType, CollectibleType } from './types';
 import { GAME_WIDTH, ROAD_HEIGHT } from '../../components/game/constants';
 
 export const shouldSpawnObstacle = (): boolean => {
-    return Math.random() < 0.006; // Reduced from 0.009 to 0.006 for more spacing
+    return Math.random() < 0.008;
 };
 
 export const shouldSpawnCollectible = (): boolean => {
-    return Math.random() < 0.004; // Reduced from 0.009 to 0.004 for more consistent spacing
+    return Math.random() < 0.01;
 };
 
 export const canSpawnAtPosition = (

@@ -1,4 +1,3 @@
-
 import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './types';
 import { PLAYER_X_POSITION, ROAD_HEIGHT } from '../../components/game/constants';
 
@@ -29,19 +28,10 @@ export const checkCollisions = (
     let newCollectionEffects = [...collectionEffects];
     let newSplashEffects = [...splashEffects];
 
-    // Check obstacle collisions - reduced hitbox by 30% on all sides
+    // Check obstacle collisions - only process one collision per frame
     for (let i = obstacles.length - 1; i >= 0; i--) {
         const obstacle = obstacles[i];
-        const hitboxReduction = 0.3; // 30% reduction
-        const widthReduction = obstacle.width * hitboxReduction;
-        const heightReduction = obstacle.height * hitboxReduction;
-        
-        const obstacleRect = { 
-            x: obstacle.x + widthReduction / 2, 
-            y: ROAD_HEIGHT + heightReduction / 2, 
-            width: obstacle.width - widthReduction, 
-            height: obstacle.height - heightReduction 
-        };
+        const obstacleRect = { x: obstacle.x, y: ROAD_HEIGHT, width: obstacle.width, height: obstacle.height };
         
         if (
             playerRect.x < obstacleRect.x + obstacleRect.width &&
@@ -66,7 +56,7 @@ export const checkCollisions = (
         }
     }
 
-    // Check collectible collisions - increased energy gain by 4% (from 8 to 12)
+    // Check collectible collisions
     collectibles.forEach(collectible => {
         const collectibleRect = { x: collectible.x, y: collectible.y, width: 30, height: 30 };
         if (
@@ -75,7 +65,7 @@ export const checkCollisions = (
             playerRect.y < collectibleRect.y + collectibleRect.height &&
             playerRect.y + playerRect.height > collectibleRect.y
         ) {
-            energyChange += 12; // Increased from 8 to 12 (4% increase)
+            energyChange += 8;
             newCollectionEffects = [...newCollectionEffects, {
                 id: collectible.id,
                 x: collectible.x + 15,
