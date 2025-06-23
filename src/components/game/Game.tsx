@@ -8,6 +8,7 @@ import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
 import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
+import BikeSelection from './BikeSelection';
 import { useGameLogic } from '../../hooks/useGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -19,6 +20,8 @@ const Game = () => {
   const [gameOver, setGameOver] = useState(false);
   const [username, setUsername] = useState('');
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showBikeSelection, setShowBikeSelection] = useState(false);
+  const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
   const {
     playSound,
@@ -75,15 +78,30 @@ const Game = () => {
     startBackgroundMusic();
   };
 
+  const handleBikeSelect = (bikeId: string) => {
+    setSelectedBike(bikeId);
+    setShowBikeSelection(false);
+    startGame();
+  };
+
   const handleScreenInteraction = () => {
-    if (!running && !gameOver && !showLeaderboard) {
+    if (!running && !gameOver && !showLeaderboard && !showBikeSelection) {
       // Let button handle start
     } else if (running && !gameOver) {
       handleJump();
     } else if (gameOver) {
-      startGame();
+      setShowBikeSelection(true);
     }
   };
+
+  if (showBikeSelection) {
+    return (
+      <BikeSelection 
+        onBikeSelect={handleBikeSelect}
+        onBack={() => setShowBikeSelection(false)}
+      />
+    );
+  }
 
   if (!running && !gameOver) {
     return (
@@ -99,7 +117,7 @@ const Game = () => {
           className="bg-gray-800 border border-purple-400 p-2 rounded mb-4 text-center w-64"
         />
         <button
-          onClick={startGame}
+          onClick={() => setShowBikeSelection(true)}
           className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl md:text-2xl animate-pulse"
         >
           Start Game
@@ -133,7 +151,7 @@ const Game = () => {
       <Skyline />
       <Road />
       
-      <Player y={playerY} isSpinning={isSpinning} gameOver={gameOver} />
+      <Player y={playerY} isSpinning={isSpinning} gameOver={gameOver} selectedBike={selectedBike} />
       
       {obstacles.map(o => (
         <Obstacle key={o.id} {...o} />
@@ -165,7 +183,7 @@ const Game = () => {
           <h2 className="text-4xl text-red-500">Game Over</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
           <button
-            onClick={startGame}
+            onClick={() => setShowBikeSelection(true)}
             className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl"
           >
             Play Again
