@@ -1,4 +1,3 @@
-
 .parallax-bg {
     position: absolute;
     top: 0;
@@ -45,6 +44,7 @@
     width: 200%;
     height: 250px; /* Increased height */
     background-repeat: repeat-x;
+    pointer-events: none; /* Ensure no interference with game interactions */
 }
 
 #city-background {
