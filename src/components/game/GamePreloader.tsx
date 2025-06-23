@@ -38,7 +38,13 @@ const GamePreloader = ({ onComplete, bikeImages }: GamePreloaderProps) => {
             setProgress((loadedCount / totalAssets) * 100);
             resolve();
           });
-          audio.addEventListener('error', resolve); // Continue even if audio fails
+          audio.addEventListener('error', () => {
+            // Continue even if audio fails
+            loadedCount++;
+            setLoadedAssets(loadedCount);
+            setProgress((loadedCount / totalAssets) * 100);
+            resolve();
+          });
         } else {
           // Preload image
           const img = new Image();
@@ -48,7 +54,13 @@ const GamePreloader = ({ onComplete, bikeImages }: GamePreloaderProps) => {
             setProgress((loadedCount / totalAssets) * 100);
             resolve();
           };
-          img.onerror = resolve; // Continue even if image fails
+          img.onerror = () => {
+            // Continue even if image fails
+            loadedCount++;
+            setLoadedAssets(loadedCount);
+            setProgress((loadedCount / totalAssets) * 100);
+            resolve();
+          };
           img.src = src;
         }
       });
