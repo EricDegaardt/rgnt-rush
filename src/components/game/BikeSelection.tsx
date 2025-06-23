@@ -75,6 +75,7 @@ const BikeSelection = ({ onBikeSelect }: BikeSelectionProps) => {
   }, [api]);
 
   const handleStartGame = () => {
+    console.log('Starting game with bike:', currentBike.id);
     onBikeSelect(currentBike.id);
   };
 
