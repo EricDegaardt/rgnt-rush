@@ -37,21 +37,21 @@ const CompetitionEntry = ({ onEmailSubmit, isSubmitting }: CompetitionEntryProps
 
   if (submitted) {
     return (
-      <div className="mt-4 p-4 bg-green-800 rounded-lg text-center">
-        <Trophy className="mx-auto mb-2" size={24} />
-        <h3 className="text-lg font-bold text-green-400 mb-2">Competition Entry Submitted!</h3>
-        <p className="text-green-300 text-sm">Good luck! We'll contact you if you win.</p>
+      <div className="mt-4 p-4 bg-green-800 rounded-lg text-center w-full max-w-sm mx-auto">
+        <Trophy className="mx-auto mb-2" size={20} />
+        <h3 className="text-base font-bold text-green-400 mb-2">Competition Entry Submitted!</h3>
+        <p className="text-green-300 text-xs">Good luck! We'll contact you if you win.</p>
       </div>
     );
   }
 
   return (
-    <div className="mt-4 p-4 bg-purple-900 rounded-lg">
-      <div className="flex items-center gap-2 mb-3">
-        <Trophy className="text-yellow-400" size={20} />
-        <h3 className="text-lg font-bold text-purple-400">Enter Competition!</h3>
+    <div className="mt-4 p-4 bg-purple-900 rounded-lg w-full max-w-sm mx-auto">
+      <div className="flex items-center gap-2 mb-3 justify-center">
+        <Trophy className="text-yellow-400" size={18} />
+        <h3 className="text-base font-bold text-purple-400">Enter Competition!</h3>
       </div>
-      <p className="text-purple-300 text-sm mb-3">
+      <p className="text-purple-300 text-xs mb-3 text-center">
         Enter your email to participate in our monthly leaderboard competition and win prizes!
       </p>
       <form onSubmit={handleSubmit} className="space-y-3">
@@ -61,21 +61,21 @@ const CompetitionEntry = ({ onEmailSubmit, isSubmitting }: CompetitionEntryProps
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email address"
-            className="w-full bg-gray-800 border border-purple-500 p-2 rounded text-white placeholder-gray-400"
+            className="w-full bg-gray-800 border border-purple-500 p-2 rounded text-white placeholder-gray-400 text-sm"
             disabled={isSubmitting}
           />
-          {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
+          {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
         </div>
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded font-bold ${
+          className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded font-bold text-sm ${
             isSubmitting
               ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
               : 'bg-purple-600 hover:bg-purple-700 text-white'
           }`}
         >
-          <Mail size={16} />
+          <Mail size={14} />
           {isSubmitting ? 'Submitting...' : 'Enter Competition'}
         </button>
       </form>

@@ -29,15 +29,17 @@ export const useGameStateManager = () => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
-    setShowLeaderboard(true);
     stopBackgroundMusic();
     playSound('gameOver');
     
+    // Only submit score once per game session
     if (username.trim() && !scoreSubmitted) {
       setScoreSubmitted(true);
+      console.log('Submitting score:', { username: username.trim(), score, selectedBike });
       const scoreData = await addScore(username.trim(), score, selectedBike);
       if (scoreData) {
         setCurrentScoreId(scoreData.id);
+        console.log('Score submitted successfully:', scoreData.id);
       } else {
         console.error('Failed to submit score to leaderboard');
       }
@@ -61,6 +63,7 @@ export const useGameStateManager = () => {
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
+    // Reset score submission state for new game
     setScoreSubmitted(false);
     setCurrentScoreId(null);
     setShowLeaderboard(false);

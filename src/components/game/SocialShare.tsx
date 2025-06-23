@@ -38,35 +38,35 @@ const SocialShare = ({ score, username, selectedBike }: SocialShareProps) => {
   };
 
   return (
-    <div className="mt-4 p-4 bg-gray-800 rounded-lg">
-      <h3 className="text-lg font-bold text-purple-400 mb-3">Share Your Score!</h3>
-      <div className="flex flex-wrap gap-2 justify-center">
+    <div className="mt-4 p-3 bg-gray-800 rounded-lg w-full max-w-sm mx-auto">
+      <h3 className="text-base font-bold text-purple-400 mb-3 text-center">Share Your Score!</h3>
+      <div className="grid grid-cols-2 gap-2">
         <button
           onClick={shareOnTwitter}
-          className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          className="flex items-center justify-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-xs font-medium"
         >
-          <Twitter size={16} />
+          <Twitter size={14} />
           X (Twitter)
         </button>
         <button
           onClick={shareOnLinkedIn}
-          className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded text-sm"
+          className="flex items-center justify-center gap-1 bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded text-xs font-medium"
         >
-          <Share2 size={16} />
+          <Share2 size={14} />
           LinkedIn
         </button>
         <button
           onClick={shareViaEmail}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+          className="flex items-center justify-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-xs font-medium"
         >
-          <Mail size={16} />
+          <Mail size={14} />
           Email
         </button>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm"
+          className="flex items-center justify-center gap-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-xs font-medium"
         >
-          <Share2 size={16} />
+          <Share2 size={14} />
           Copy Link
         </button>
       </div>
