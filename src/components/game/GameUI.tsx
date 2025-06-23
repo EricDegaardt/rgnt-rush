@@ -24,16 +24,16 @@ const GameUI = ({
   };
 
   return (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-white flex flex-row items-center gap-1 sm:gap-2 p-2 bg-black bg-opacity-50 rounded text-xs">
-      <div className="flex items-center gap-1">
+    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-white flex flex-row items-center gap-2 sm:gap-3 px-3 py-2 bg-black bg-opacity-50 rounded text-xs min-w-max">
+      <div className="flex items-center gap-1 whitespace-nowrap">
         <Gauge size={16} className="text-purple-400" />
         <span className="text-xs">120 km/h</span>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 whitespace-nowrap">
         <Milestone size={16} className="text-purple-400" />
         <span className="text-xs">{formattedDistance}</span>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 whitespace-nowrap">
         <Zap size={16} className={getEnergyIconColor(energy)} />
         <div className={`w-16 sm:w-20 h-3 bg-gray-700 rounded overflow-hidden border ${getEnergyColor(energy).split(' ')[1]}`}>
           <div className={`h-full ${getEnergyColor(energy).split(' ')[0]}`} style={{
