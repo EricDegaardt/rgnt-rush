@@ -3,8 +3,18 @@ import React, { useEffect, useState } from 'react';
 import BikeExplosionEffect from './BikeExplosionEffect';
 import { PLAYER_X_POSITION } from './constants';
 
+const bikeImages = {
+  'purple-rain': '/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png',
+  'black-thunder': '/lovable-uploads/black-thunder.png'
+};
+
 // Increased size by 5% (width: 126px, height: 63px)
-const Player = ({ y, isSpinning, gameOver }: { y: number; isSpinning?: boolean; gameOver?: boolean }) => {
+const Player = ({ y, isSpinning, gameOver, selectedBike = 'purple-rain' }: { 
+  y: number; 
+  isSpinning?: boolean; 
+  gameOver?: boolean;
+  selectedBike?: string;
+}) => {
     const [bounceOffset, setBounceOffset] = useState(0);
     const [showExplosion, setShowExplosion] = useState(false);
     const [explosionCompleted, setExplosionCompleted] = useState(false);
@@ -39,6 +49,8 @@ const Player = ({ y, isSpinning, gameOver }: { y: number; isSpinning?: boolean; 
         }
     `;
 
+    const bikeImageSrc = bikeImages[selectedBike as keyof typeof bikeImages] || bikeImages['purple-rain'];
+
     return (
         <>
             <style>{spinKeyframes}</style>
@@ -51,7 +63,7 @@ const Player = ({ y, isSpinning, gameOver }: { y: number; isSpinning?: boolean; 
                     height: '63px',
                     imageRendering: 'pixelated',
                     zIndex: 999, // Highest z-index to ensure bike is always on top
-                    backgroundImage: `url('/lovable-uploads/eaee9891-3b63-4bc0-b704-e40d80ffe56a.png')`,
+                    backgroundImage: `url('${bikeImageSrc}')`,
                     backgroundSize: 'contain',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',

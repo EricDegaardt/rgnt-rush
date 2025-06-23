@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import Player from './Player';
 import GameUI from './GameUI';
@@ -8,6 +9,7 @@ import Leaderboard from './Leaderboard';
 import CollectionEffect from './CollectionEffect';
 import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
+import BikeSelection from './BikeSelection';
 import { useGameLogic } from '../../hooks/useGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -18,6 +20,8 @@ const Game = () => {
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [username, setUsername] = useState('');
+  const [selectedBike, setSelectedBike] = useState('purple-rain');
+  const [showBikeSelection, setShowBikeSelection] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
   const {
@@ -85,6 +89,29 @@ const Game = () => {
     }
   };
 
+  const handleBikeSelect = (bikeId: string) => {
+    setSelectedBike(bikeId);
+    setShowBikeSelection(false);
+    startGame();
+  };
+
+  const handleBackFromBikeSelection = () => {
+    setShowBikeSelection(false);
+  };
+
+  const handleStartFromMenu = () => {
+    if (!username.trim()) {
+      alert('Please enter your name first!');
+      return;
+    }
+    setShowBikeSelection(true);
+  };
+
+  // Show bike selection screen
+  if (showBikeSelection) {
+    return <BikeSelection onBikeSelect={handleBikeSelect} onBack={handleBackFromBikeSelection} />;
+  }
+
   if (!running && !gameOver) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center">
@@ -99,7 +126,7 @@ const Game = () => {
           className="bg-gray-800 border border-purple-400 p-2 rounded mb-4 text-center w-64"
         />
         <button
-          onClick={startGame}
+          onClick={handleStartFromMenu}
           className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl md:text-2xl animate-pulse"
         >
           Start Game
@@ -133,7 +160,7 @@ const Game = () => {
       <Skyline />
       <Road />
       
-      <Player y={playerY} isSpinning={isSpinning} gameOver={gameOver} />
+      <Player y={playerY} isSpinning={isSpinning} gameOver={gameOver} selectedBike={selectedBike} />
       
       {obstacles.map(o => (
         <Obstacle key={o.id} {...o} />
