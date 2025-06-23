@@ -2,7 +2,7 @@ import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -204,17 +204,17 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-black/70 border-purple-400 text-white hover:bg-purple-600/80 backdrop-blur-sm z-10",
+        "absolute h-12 w-12 rounded-full bg-white/90 border-2 border-purple-400 text-purple-600 hover:bg-purple-50 hover:text-purple-700 shadow-lg z-10",
         orientation === "horizontal"
-          ? "-left-14 top-1/2 -translate-y-1/2"
-          : "-top-14 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-left-16 top-1/2 -translate-y-1/2"
+          : "-top-16 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft className="h-5 w-5" />
+      <ChevronLeft className="h-6 w-6" />
       <span className="sr-only">Previous slide</span>
     </Button>
   )
@@ -233,17 +233,17 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-black/70 border-purple-400 text-white hover:bg-purple-600/80 backdrop-blur-sm z-10",
+        "absolute h-12 w-12 rounded-full bg-white/90 border-2 border-purple-400 text-purple-600 hover:bg-purple-50 hover:text-purple-700 shadow-lg z-10",
         orientation === "horizontal"
-          ? "-right-14 top-1/2 -translate-y-1/2"
-          : "-bottom-14 left-1/2 -translate-x-1/2 rotate-90",
+          ? "-right-16 top-1/2 -translate-y-1/2"
+          : "-bottom-16 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight className="h-5 w-5" />
+      <ChevronRight className="h-6 w-6" />
       <span className="sr-only">Next slide</span>
     </Button>
   )
