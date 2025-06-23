@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import OptimizedPlayer from './OptimizedPlayer';
 import GameUI from './GameUI';
@@ -16,6 +15,7 @@ import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import { GAME_WIDTH, GAME_HEIGHT } from './constants';
 import Road from './Road';
+import { useLocalLeaderboard } from '../../hooks/useLocalLeaderboard';
 
 const MobileOptimizedGame = () => {
   const [running, setRunning] = useState(false);
@@ -26,6 +26,7 @@ const MobileOptimizedGame = () => {
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
+  const { addScore } = useLocalLeaderboard();
   const {
     playSound,
     startBackgroundMusic,
@@ -40,7 +41,12 @@ const MobileOptimizedGame = () => {
     setRunning(false);
     stopBackgroundMusic();
     playSound('gameOver');
-  }, [stopBackgroundMusic, playSound]);
+    
+    // Add score to leaderboard if username is provided
+    if (username.trim()) {
+      addScore(username.trim(), score);
+    }
+  }, [stopBackgroundMusic, playSound, username, addScore]);
   
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
