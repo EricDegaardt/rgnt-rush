@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Zap, Gauge, Milestone } from 'lucide-react';
 
@@ -25,18 +24,18 @@ const GameUI = ({
   };
 
   return (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-white flex flex-row items-center gap-2 sm:gap-4 p-2 bg-black bg-opacity-50 rounded text-xs md:text-base">
-      <div className="flex items-center gap-2">
-        <Gauge size={20} className="text-purple-400" />
-        <span>120 km/h</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <Milestone size={20} className="text-purple-400" />
-        <span>{formattedDistance}</span>
+    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-white flex flex-row items-center gap-1 sm:gap-2 p-2 bg-black bg-opacity-50 rounded text-xs">
+      <div className="flex items-center gap-1">
+        <Gauge size={16} className="text-purple-400" />
+        <span className="text-xs">120 km/h</span>
       </div>
       <div className="flex items-center gap-1">
-        <Zap size={20} className={getEnergyIconColor(energy)} />
-        <div className={`w-20 sm:w-24 h-4 bg-gray-700 rounded overflow-hidden border ${getEnergyColor(energy).split(' ')[1]}`}>
+        <Milestone size={16} className="text-purple-400" />
+        <span className="text-xs">{formattedDistance}</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <Zap size={16} className={getEnergyIconColor(energy)} />
+        <div className={`w-16 sm:w-20 h-3 bg-gray-700 rounded overflow-hidden border ${getEnergyColor(energy).split(' ')[1]}`}>
           <div className={`h-full ${getEnergyColor(energy).split(' ')[0]}`} style={{
             width: `${energy}%`
           }} />
