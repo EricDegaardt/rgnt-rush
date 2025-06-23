@@ -71,6 +71,7 @@ const Game = () => {
   usePlayerInput(handleJump, gameOver);
 
   const startGame = () => {
+    console.log('Starting game with selected bike:', selectedBike);
     setGameOver(false);
     setFinalScore(0);
     resetGame();
@@ -89,9 +90,13 @@ const Game = () => {
   };
 
   const handleBikeSelect = (bikeId: string) => {
+    console.log('Bike selected:', bikeId);
     setSelectedBike(bikeId);
     setShowBikeSelection(false);
-    startGame();
+    // Start the game immediately after bike selection
+    setTimeout(() => {
+      startGame();
+    }, 100); // Small delay to ensure state updates
   };
 
   const handleStartFromMenu = () => {
