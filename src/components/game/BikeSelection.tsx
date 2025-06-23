@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from '@/components/ui/carousel';
 
 interface Bike {
   id: string;
@@ -56,6 +56,23 @@ interface BikeSelectionProps {
 
 const BikeSelection = ({ onBikeSelect }: BikeSelectionProps) => {
   const [currentBike, setCurrentBike] = useState(bikes[0]);
+  const [api, setApi] = useState<CarouselApi>();
+
+  React.useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const onSelect = () => {
+      const selectedIndex = api.selectedScrollSnap();
+      setCurrentBike(bikes[selectedIndex]);
+    };
+
+    api.on("select", onSelect);
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api]);
 
   const handleStartGame = () => {
     onBikeSelect(currentBike.id);
@@ -94,12 +111,7 @@ const BikeSelection = ({ onBikeSelect }: BikeSelectionProps) => {
         <Carousel 
           className="w-full" 
           opts={{ align: "center", loop: true }}
-          onSelect={(api) => {
-            if (api) {
-              const selectedIndex = api.selectedScrollSnap();
-              setCurrentBike(bikes[selectedIndex]);
-            }
-          }}
+          setApi={setApi}
         >
           <CarouselContent>
             {bikes.map((bike) => (
