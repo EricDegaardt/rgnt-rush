@@ -10,6 +10,7 @@ import SplashEffect from './SplashEffect';
 import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
 import ShareScore from './ShareScore';
+import AnimatedStartScreen from './AnimatedStartScreen';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -25,6 +26,8 @@ const MobileOptimizedGame = () => {
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
   const [showShareScore, setShowShareScore] = useState(false);
+  const [showStartScreen, setShowStartScreen] = useState(true);
+  
   const {
     playSound,
     startBackgroundMusic,
@@ -32,6 +35,7 @@ const MobileOptimizedGame = () => {
     toggleMute,
     isMuted
   } = useGameAudio();
+  
   const handleGameOver = useCallback((score: number) => {
     setFinalScore(score);
     setGameOver(true);
@@ -39,6 +43,7 @@ const MobileOptimizedGame = () => {
     stopBackgroundMusic();
     playSound('gameOver');
   }, [stopBackgroundMusic, playSound]);
+  
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
       case 'jump':
@@ -52,8 +57,10 @@ const MobileOptimizedGame = () => {
         break;
     }
   }, [playSound]);
+  
   const gameLogic = useOptimizedGameLogic(running, handleGameOver, handleSoundEvent);
   usePlayerInput(gameLogic.handleJump, gameOver);
+  
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
@@ -61,17 +68,25 @@ const MobileOptimizedGame = () => {
     setRunning(true);
     startBackgroundMusic();
   };
+  
+  const handleStartFromMenu = () => {
+    setShowStartScreen(false);
+    setShowBikeSelection(true);
+  };
+  
   const handleBikeSelect = (bikeId: string) => {
     setSelectedBike(bikeId);
     setShowBikeSelection(false);
     setIsPreloading(true);
   };
+  
   const handlePreloadComplete = () => {
     setIsPreloading(false);
     startGame();
   };
+  
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault(); // Prevent default touch behavior
+    e.preventDefault();
 
     if (!running && !gameOver && !showBikeSelection) {
       // Let button handle start
@@ -108,22 +123,17 @@ const MobileOptimizedGame = () => {
 
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
+  
+  if (showStartScreen) {
+    return <AnimatedStartScreen onStartGame={handleStartFromMenu} isMuted={isMuted} onToggleMute={toggleMute} />;
+  }
+  
   if (isPreloading) {
     return <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />;
   }
+  
   if (showBikeSelection) {
-    return <BikeSelection onBikeSelect={handleBikeSelect} onBack={() => setShowBikeSelection(false)} />;
-  }
-  if (!running && !gameOver) {
-    return <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center">
-        <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
-        <h1 className="text-3xl md:text-5xl mb-4 text-purple-400">RGNT RUSH</h1>
-        <p className="mb-8 text-sm md:text-base">Collect batteries and jump over oil barells by tapping the screen. Good Luck!</p>
-        <input type="text" placeholder="Enter your name" value={username} onChange={e => setUsername(e.target.value)} className="bg-gray-800 border border-purple-400 p-2 rounded mb-4 text-center w-64" />
-        <button onClick={() => setShowBikeSelection(true)} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl md:text-2xl animate-pulse">
-          Start Game
-        </button>
-      </div>;
+    return <BikeSelection onBikeSelect={handleBikeSelect} />;
   }
 
   const gameOverMessage = getGameOverMessage(finalScore);
