@@ -168,7 +168,7 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
           <div className="mb-6">
             <input
               type="text"
-              placeholder="Enter Username"
+              placeholder="Enter your rider name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="bg-gray-800/80 border-2 border-purple-400/50 p-3 rounded-lg mb-4 text-center w-72 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-colors backdrop-blur-sm"
