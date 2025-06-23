@@ -39,6 +39,7 @@ export const useSupabaseLeaderboard = () => {
     setError(null);
     
     try {
+      // Save one row per race - no policies needed
       const { error } = await supabase
         .from('leaderboard_scores')
         .insert({

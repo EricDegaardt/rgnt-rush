@@ -100,9 +100,8 @@ const MobileOptimizedGame = () => {
       // Let button handle start
     } else if (running && !gameOver) {
       gameLogic.handleJump();
-    } else if (gameOver) {
-      setShowBikeSelection(true);
     }
+    // Remove the gameOver click handler since buttons should handle their own clicks
   }, [running, gameOver, showLeaderboard, showBikeSelection, gameLogic]);
 
   const getGameOverMessage = (distance: number) => {
@@ -226,7 +225,7 @@ const MobileOptimizedGame = () => {
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
       {gameOver && (
-        <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
+        <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4 pointer-events-none">
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
           
@@ -234,15 +233,21 @@ const MobileOptimizedGame = () => {
             <p className="text-green-400 mt-2 text-sm">✅ Score saved to leaderboard!</p>
           )}
           
-          <div className="flex flex-col gap-3 mt-6 w-full max-w-xs">
+          <div className="flex flex-col gap-3 mt-6 w-full max-w-xs pointer-events-auto">
             <button 
-              onClick={() => setShowLeaderboard(true)} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLeaderboard(true);
+              }} 
               className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded text-lg"
             >
               🏆 View Leaderboard
             </button>
             <button 
-              onClick={() => setShowBikeSelection(true)} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowBikeSelection(true);
+              }} 
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-lg"
             >
               Play Again
@@ -250,13 +255,15 @@ const MobileOptimizedGame = () => {
           </div>
           
           {showLeaderboard && (
-            <Leaderboard 
-              onClose={() => setShowLeaderboard(false)} 
-              currentScore={finalScore}
-              username={username}
-              selectedBike={selectedBike}
-              showSocialShare={true}
-            />
+            <div className="pointer-events-auto">
+              <Leaderboard 
+                onClose={() => setShowLeaderboard(false)} 
+                currentScore={finalScore}
+                username={username}
+                selectedBike={selectedBike}
+                showSocialShare={true}
+              />
+            </div>
           )}
         </div>
       )}
