@@ -9,6 +9,7 @@ import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
 import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
+import ShareScore from './ShareScore';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -23,6 +24,7 @@ const MobileOptimizedGame = () => {
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
+  const [showShareScore, setShowShareScore] = useState(false);
   const {
     playSound,
     startBackgroundMusic,
@@ -149,10 +151,22 @@ const MobileOptimizedGame = () => {
       {gameOver && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
-          <button onClick={() => setShowBikeSelection(true)} className="mt-8 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-2xl">
-            Play Again
-          </button>
+          <div className="flex gap-4 mt-8">
+            <button onClick={() => setShowShareScore(true)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2">
+              Share Score
+            </button>
+            <button onClick={() => setShowBikeSelection(true)} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl">
+              Play Again
+            </button>
+          </div>
         </div>}
+
+      {showShareScore && (
+        <ShareScore 
+          score={finalScore} 
+          onClose={() => setShowShareScore(false)} 
+        />
+      )}
     </div>;
 };
 export default MobileOptimizedGame;

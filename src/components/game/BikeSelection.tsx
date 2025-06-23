@@ -55,7 +55,7 @@ const bikes: Bike[] = [
 
 interface BikeSelectionProps {
   onBikeSelect: (bikeId: string) => void;
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
@@ -153,13 +153,15 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
       </div>
 
       <div className="flex gap-4">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="border-gray-600 text-gray-300 hover:bg-gray-800"
-        >
-          Back
-        </Button>
+        {onBack && (
+          <Button
+            onClick={onBack}
+            variant="outline"
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
+            Back
+          </Button>
+        )}
         <Button
           onClick={handleStartGame}
           className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-6 text-xl animate-pulse"
