@@ -1,4 +1,3 @@
-
 import { ObstacleType, CollectibleType } from './types';
 import { GAME_WIDTH, ROAD_HEIGHT } from '../../components/game/constants';
 
@@ -7,7 +6,7 @@ export const shouldSpawnObstacle = (): boolean => {
 };
 
 export const shouldSpawnCollectible = (): boolean => {
-    return Math.random() < 0.008; // Increased from 0.004 to 0.008 for more batteries
+    return Math.random() < 0.004; // Reduced from 0.009 to 0.004 for more consistent spacing
 };
 
 export const canSpawnAtPosition = (
@@ -16,7 +15,7 @@ export const canSpawnAtPosition = (
     obstacles: ObstacleType[],
     collectibles: CollectibleType[]
 ): boolean => {
-    const buffer = 120; // Reduced buffer to allow more spawning opportunities
+    const buffer = 150; // Increased buffer to account for larger barrels
 
     const tooCloseToObstacle = obstacles.some(
         o => (newX + potentialWidth >= o.x - buffer) && (newX <= o.x + o.width + buffer)
