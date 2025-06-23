@@ -84,18 +84,32 @@ const MobileOptimizedGame = () => {
     setIsPreloading(false);
     startGame();
   };
+
+  const handleShareScore = () => {
+    setShowShareScore(true);
+  };
+
+  const handleCloseShareScore = () => {
+    setShowShareScore(false);
+  };
+
+  const handlePlayAgain = () => {
+    setGameOver(false);
+    setShowShareScore(false);
+    setShowBikeSelection(true);
+  };
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
 
-    if (!running && !gameOver && !showBikeSelection) {
+    if (!running && !gameOver && !showBikeSelection && !showShareScore) {
       // Let button handle start
     } else if (running && !gameOver) {
       gameLogic.handleJump();
-    } else if (gameOver) {
+    } else if (gameOver && !showShareScore) {
       setShowBikeSelection(true);
     }
-  }, [running, gameOver, showBikeSelection, gameLogic]);
+  }, [running, gameOver, showBikeSelection, showShareScore, gameLogic]);
 
   const getGameOverMessage = (distance: number) => {
     if (distance < 500) {
@@ -158,14 +172,14 @@ const MobileOptimizedGame = () => {
       
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-      {gameOver && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
+      {gameOver && !showShareScore && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
           <div className="flex gap-4 mt-8">
-            <button onClick={() => setShowShareScore(true)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2">
+            <button onClick={handleShareScore} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2">
               Share Score
             </button>
-            <button onClick={() => setShowBikeSelection(true)} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl">
+            <button onClick={handlePlayAgain} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl">
               Play Again
             </button>
           </div>
@@ -174,7 +188,7 @@ const MobileOptimizedGame = () => {
       {showShareScore && (
         <ShareScore 
           score={finalScore} 
-          onClose={() => setShowShareScore(false)} 
+          onClose={handleCloseShareScore} 
         />
       )}
     </div>;
