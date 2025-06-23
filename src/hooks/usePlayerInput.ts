@@ -8,7 +8,6 @@ export const usePlayerInput = (handleJump: () => void, gameOver: boolean) => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.code === 'Space' && !gameOver && !jumpKeyPressedRef.current) {
                 e.preventDefault(); // Prevent page scroll
-                console.log('Space key pressed, attempting jump'); // Debug log
                 handleJump();
                 jumpKeyPressedRef.current = true;
             }
