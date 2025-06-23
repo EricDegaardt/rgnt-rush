@@ -6,11 +6,13 @@ interface GuestScore {
   score: number;
   distance: number;
   bikeUsed: string;
+  username: string;
   timestamp: string;
 }
 
 export const useGuestScores = () => {
   const [scores, setScores] = useState<GuestScore[]>([]);
+  const [username, setUsername] = useState<string>('');
 
   useEffect(() => {
     const loadScores = () => {
@@ -25,8 +27,29 @@ export const useGuestScores = () => {
       }
     };
 
+    const loadUsername = () => {
+      try {
+        const savedUsername = localStorage.getItem('playerUsername');
+        if (savedUsername) {
+          setUsername(savedUsername);
+        }
+      } catch (error) {
+        console.error('Error loading username:', error);
+      }
+    };
+
     loadScores();
+    loadUsername();
   }, []);
+
+  const updateUsername = (newUsername: string) => {
+    try {
+      setUsername(newUsername);
+      localStorage.setItem('playerUsername', newUsername);
+    } catch (error) {
+      console.error('Error saving username:', error);
+    }
+  };
 
   const submitGuestScore = (score: number, distance: number, bikeUsed: string) => {
     try {
@@ -35,6 +58,7 @@ export const useGuestScores = () => {
         score,
         distance,
         bikeUsed,
+        username: username || 'Anonymous Player',
         timestamp: new Date().toISOString(),
       };
 
@@ -55,6 +79,8 @@ export const useGuestScores = () => {
 
   return {
     scores,
+    username,
+    updateUsername,
     submitGuestScore,
     getTopScores,
   };

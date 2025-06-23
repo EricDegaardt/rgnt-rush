@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useGuestScores } from '@/hooks/useGuestScores';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trophy, Medal, Award } from 'lucide-react';
+import { Trophy, Medal, Award, Edit } from 'lucide-react';
 
 interface GuestLeaderboardProps {
   onClose: () => void;
@@ -11,8 +12,10 @@ interface GuestLeaderboardProps {
 }
 
 const GuestLeaderboard = ({ onClose, currentScore }: GuestLeaderboardProps) => {
-  const { getTopScores } = useGuestScores();
+  const { getTopScores, username, updateUsername } = useGuestScores();
   const scores = getTopScores();
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [tempUsername, setTempUsername] = useState(username);
 
   const getRankIcon = (index: number) => {
     switch (index) {
@@ -27,8 +30,14 @@ const GuestLeaderboard = ({ onClose, currentScore }: GuestLeaderboardProps) => {
     }
   };
 
+  const handleSaveUsername = () => {
+    updateUsername(tempUsername);
+    setIsEditingUsername(false);
+  };
+
   const shareScore = async (score: number) => {
-    const shareText = `🏍️ I just scored ${score} points in RGNT RUSH! Can you beat my score? Play now!`;
+    const playerName = username || 'Anonymous Player';
+    const shareText = `🏍️ ${playerName} just scored ${score} points in RGNT RUSH! Can you beat this score? Play now!`;
     const shareUrl = window.location.origin;
 
     if (navigator.share) {
@@ -59,6 +68,44 @@ const GuestLeaderboard = ({ onClose, currentScore }: GuestLeaderboardProps) => {
           <CardTitle className="text-xl md:text-3xl text-center text-purple-400">
             Local Leaderboard
           </CardTitle>
+          
+          <div className="flex items-center gap-2 justify-center">
+            {isEditingUsername ? (
+              <div className="flex items-center gap-2">
+                <Input
+                  value={tempUsername}
+                  onChange={(e) => setTempUsername(e.target.value)}
+                  placeholder="Enter username"
+                  className="bg-gray-800 border-gray-600 text-white text-sm"
+                  maxLength={20}
+                />
+                <Button
+                  onClick={handleSaveUsername}
+                  size="sm"
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  Save
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-gray-300 text-sm">
+                  Playing as: {username || 'Anonymous Player'}
+                </span>
+                <Button
+                  onClick={() => {
+                    setTempUsername(username);
+                    setIsEditingUsername(true);
+                  }}
+                  size="sm"
+                  variant="ghost"
+                  className="p-1 h-6 w-6"
+                >
+                  <Edit className="w-3 h-3" />
+                </Button>
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {scores.length === 0 ? (
@@ -79,7 +126,7 @@ const GuestLeaderboard = ({ onClose, currentScore }: GuestLeaderboardProps) => {
                   <div className="flex items-center gap-3">
                     {getRankIcon(index)}
                     <div>
-                      <div className="text-white font-semibold">Anonymous Player</div>
+                      <div className="text-white font-semibold">{entry.username}</div>
                       <div className="text-xs text-gray-400">
                         {entry.bikeUsed} • {new Date(entry.timestamp).toLocaleDateString()}
                       </div>
