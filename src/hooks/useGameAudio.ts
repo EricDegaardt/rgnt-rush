@@ -21,8 +21,12 @@ export const useGameAudio = () => {
         gameOver: 0,
     });
 
+    const isInitializedRef = useRef(false);
+
     // Load all audio files
     useEffect(() => {
+        if (isInitializedRef.current) return;
+        
         audioRefs.current.backgroundMusic = new Audio('/lovable-uploads/sounds/background-music.mp3');
         audioRefs.current.bikeJump = new Audio('/lovable-uploads/sounds/bike-jump.mp3');
         audioRefs.current.hittingBarrel = new Audio('/lovable-uploads/sounds/hitting-barell.mp3');
@@ -33,6 +37,13 @@ export const useGameAudio = () => {
         if (audioRefs.current.backgroundMusic) {
             audioRefs.current.backgroundMusic.loop = true;
             audioRefs.current.backgroundMusic.volume = 0.3;
+            
+            // Start background music immediately if not muted
+            if (!isMuted) {
+                audioRefs.current.backgroundMusic.play().catch(() => {
+                    // Ignore autoplay policy errors
+                });
+            }
         }
 
         // Configure sound effects
@@ -42,26 +53,22 @@ export const useGameAudio = () => {
             }
         });
 
-        // Start background music immediately when audio is loaded
-        if (!isMuted && audioRefs.current.backgroundMusic) {
-            audioRefs.current.backgroundMusic.play().catch(() => {
-                // Ignore autoplay policy errors
-            });
-        }
-    }, []);
+        isInitializedRef.current = true;
+    }, [isMuted]);
 
-    // Handle mute state
+    // Handle mute state changes
     useEffect(() => {
         localStorage.setItem('gameAudioMuted', JSON.stringify(isMuted));
         
+        // Control all audio based on mute state
         Object.values(audioRefs.current).forEach(audio => {
             if (audio) {
                 audio.muted = isMuted;
             }
         });
 
-        // Control background music based on mute state
-        if (audioRefs.current.backgroundMusic) {
+        // Control background music playback
+        if (audioRefs.current.backgroundMusic && isInitializedRef.current) {
             if (isMuted) {
                 audioRefs.current.backgroundMusic.pause();
             } else {
@@ -73,7 +80,7 @@ export const useGameAudio = () => {
     }, [isMuted]);
 
     const playSound = useCallback((soundName: keyof typeof audioRefs.current) => {
-        if (isMuted) return;
+        if (isMuted || !isInitializedRef.current) return;
 
         const audio = audioRefs.current[soundName];
         if (!audio) return;
@@ -97,7 +104,7 @@ export const useGameAudio = () => {
     }, [isMuted]);
 
     const startBackgroundMusic = useCallback(() => {
-        if (!isMuted && audioRefs.current.backgroundMusic) {
+        if (!isMuted && audioRefs.current.backgroundMusic && isInitializedRef.current) {
             audioRefs.current.backgroundMusic.play().catch(() => {
                 // Ignore autoplay policy errors
             });
@@ -105,12 +112,15 @@ export const useGameAudio = () => {
     }, [isMuted]);
 
     const stopBackgroundMusic = useCallback(() => {
-        // Don't stop background music anymore - it should play continuously
-        // This function is kept for compatibility but doesn't stop the music
+        // Background music continues playing - this is kept for compatibility
     }, []);
 
     const toggleMute = useCallback(() => {
-        setIsMuted(prev => !prev);
+        setIsMuted(prev => {
+            const newMuted = !prev;
+            console.log('Toggling mute:', prev, '->', newMuted); // Debug log
+            return newMuted;
+        });
     }, []);
 
     return {
