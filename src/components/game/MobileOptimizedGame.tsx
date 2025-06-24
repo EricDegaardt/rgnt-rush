@@ -146,6 +146,7 @@ const MobileOptimizedGame = () => {
   if (showStartScreen) {
     return (
       <div className="w-full h-full">
+        <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
         <AnimatedStartScreen onStartGame={handleStartFromMenu} />
       </div>
     );
@@ -154,6 +155,7 @@ const MobileOptimizedGame = () => {
   if (isPreloading) {
     return (
       <div className="w-full h-full">
+        <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
         <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
       </div>
     );
@@ -162,6 +164,7 @@ const MobileOptimizedGame = () => {
   if (showBikeSelection) {
     return (
       <div className="relative w-full h-full">
+        <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
         <BikeSelection onBikeSelect={handleBikeSelect} />
       </div>
     );
@@ -180,7 +183,7 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
     >
-      <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+      <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
       
       <Skyline />
       <Road />
