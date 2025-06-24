@@ -100,11 +100,13 @@ const MobileOptimizedGame = () => {
   };
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-
+    // Don't prevent default or stop propagation - let the game continue running
+    
     if (!running && !gameOver && !showBikeSelection && !showShareScore) {
       // Let button handle start
+      return;
     } else if (running && !gameOver) {
+      // Only handle jump, don't interfere with game loop
       gameLogic.handleJump();
     } else if (gameOver && !showShareScore) {
       // Only trigger play again if not showing share score
@@ -176,6 +178,18 @@ const MobileOptimizedGame = () => {
       }} 
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
+      onMouseMove={(e) => {
+        // Prevent any mouse move interference
+        e.stopPropagation();
+      }}
+      onMouseEnter={(e) => {
+        // Prevent any mouse enter interference
+        e.stopPropagation();
+      }}
+      onMouseLeave={(e) => {
+        // Prevent any mouse leave interference
+        e.stopPropagation();
+      }}
     >
       <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
       <Skyline />
