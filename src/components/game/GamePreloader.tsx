@@ -75,7 +75,7 @@ const GamePreloader = ({ onComplete, bikeImages }: GamePreloaderProps) => {
   }, [gameAssets, onComplete, totalAssets]);
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-black text-white p-4">
+    <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4">
       <h2 className="text-2xl md:text-3xl mb-8 text-purple-400">Loading Game...</h2>
       
       <div className="w-64 mb-4">

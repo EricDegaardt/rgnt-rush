@@ -93,7 +93,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-black text-white p-4">
+    <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4">
       <h2 className="text-xl md:text-2xl mb-6 text-purple-400 whitespace-nowrap">Choose Your Bike</h2>
       
       <div className="w-full max-w-md mb-6">

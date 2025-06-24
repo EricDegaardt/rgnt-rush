@@ -14,7 +14,6 @@ import AnimatedStartScreen from './AnimatedStartScreen';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
-import { GAME_WIDTH, GAME_HEIGHT } from './constants';
 import Road from './Road';
 
 const MobileOptimizedGame = () => {
@@ -141,16 +140,24 @@ const MobileOptimizedGame = () => {
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
   
   if (showStartScreen) {
-    return <AnimatedStartScreen onStartGame={handleStartFromMenu} isMuted={isMuted} onToggleMute={toggleMute} />;
+    return (
+      <div className="w-full h-full">
+        <AnimatedStartScreen onStartGame={handleStartFromMenu} isMuted={isMuted} onToggleMute={toggleMute} />
+      </div>
+    );
   }
   
   if (isPreloading) {
-    return <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />;
+    return (
+      <div className="w-full h-full">
+        <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
+      </div>
+    );
   }
   
   if (showBikeSelection) {
     return (
-      <div className="relative h-screen w-full">
+      <div className="relative w-full h-full">
         <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
         <BikeSelection onBikeSelect={handleBikeSelect} />
       </div>
@@ -161,7 +168,7 @@ const MobileOptimizedGame = () => {
 
   return (
     <div 
-      className="relative bg-black w-full h-screen overflow-hidden touch-none select-none" 
+      className="relative bg-black w-full h-full overflow-hidden touch-none select-none" 
       style={{
         WebkitTouchCallout: 'none',
         WebkitUserSelect: 'none',
