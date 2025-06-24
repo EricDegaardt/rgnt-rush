@@ -16,25 +16,21 @@ const ShareScore = ({ score, onClose }: ShareScoreProps) => {
   const shareOptions = [
     {
       name: 'LinkedIn',
-      icon: '💼',
       url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(gameUrl)}&title=${encodeURIComponent(shareText)}`,
       color: 'bg-blue-600 hover:bg-blue-700'
     },
     {
       name: 'X (Twitter)',
-      icon: '🐦',
       url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(gameUrl)}`,
       color: 'bg-black hover:bg-gray-800'
     },
     {
       name: 'Facebook',
-      icon: '📘',
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(gameUrl)}&quote=${encodeURIComponent(shareText)}`,
       color: 'bg-blue-500 hover:bg-blue-600'
     },
     {
       name: 'Email',
-      icon: '📧',
       url: `mailto:?subject=${encodeURIComponent('Check out my RGNT RUSH score!')}&body=${encodeURIComponent(shareText + '\n\n' + gameUrl)}`,
       color: 'bg-gray-600 hover:bg-gray-700'
     }
@@ -87,9 +83,8 @@ const ShareScore = ({ score, onClose }: ShareScoreProps) => {
             <Button
               key={option.name}
               onClick={() => handleShare(option.url)}
-              className={`${option.color} text-white flex items-center gap-2 h-12`}
+              className={`${option.color} text-white flex items-center justify-center h-12`}
             >
-              <span className="text-lg">{option.icon}</span>
               <span className="text-sm">{option.name}</span>
             </Button>
           ))}
