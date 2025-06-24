@@ -29,7 +29,9 @@ const MobileOptimizedGame = () => {
   const {
     playSound,
     startBackgroundMusic,
-    stopBackgroundMusic
+    stopBackgroundMusic,
+    toggleMute,
+    isMuted
   } = useGameAudio();
   
   const handleGameOver = useCallback((score: number) => {
@@ -185,7 +187,12 @@ const MobileOptimizedGame = () => {
       {gameLogic.collectionEffects.map(effect => <CollectionEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleEffectComplete(effect.id)} />)}
       {gameLogic.splashEffects.map(effect => <SplashEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleSplashComplete(effect.id)} />)}
       
-      <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
+      <GameUI 
+        distance={gameLogic.distance} 
+        energy={gameLogic.energy} 
+        isMuted={isMuted}
+        onToggleMute={toggleMute}
+      />
 
       {gameOver && !showShareScore && (
         <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
