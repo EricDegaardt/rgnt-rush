@@ -30,10 +30,20 @@ const GameUI = ({
   // Clamp energy between 0 and 100 to ensure valid percentage
   const clampedEnergy = Math.max(0, Math.min(100, energy));
 
-  // Handle mute toggle with event prevention
-  const handleMuteToggle = (e: React.MouseEvent | React.TouchEvent) => {
+  // Handle mute toggle with complete event isolation
+  const handleMuteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation();
+    if (onToggleMute) {
+      onToggleMute();
+    }
+  };
+
+  const handleMuteTouch = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
     if (onToggleMute) {
       onToggleMute();
     }
@@ -60,12 +70,33 @@ const GameUI = ({
             </div>
           </div>
           
-          {/* Mute Toggle Button */}
+          {/* Mute Toggle Button - Completely isolated */}
           {onToggleMute && (
             <button
-              onClick={handleMuteToggle}
-              onTouchStart={handleMuteToggle}
-              className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50"
+              onClick={handleMuteClick}
+              onTouchStart={handleMuteTouch}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+              }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+              }}
+              onMouseUp={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+              }}
+              className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50 select-none touch-manipulation"
+              style={{ 
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+                touchAction: 'manipulation'
+              }}
               aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
             >
               {isMuted ? (
