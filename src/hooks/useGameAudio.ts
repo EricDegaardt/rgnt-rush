@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useCallback, useState } from 'react';
 
 export const useGameAudio = () => {
@@ -20,7 +19,7 @@ export const useGameAudio = () => {
 
     const isInitializedRef = useRef(false);
 
-    // Load all audio files and start background music immediately
+    // Load all audio files (but don't start background music automatically)
     useEffect(() => {
         if (isInitializedRef.current) return;
         
@@ -34,11 +33,6 @@ export const useGameAudio = () => {
         if (audioRefs.current.backgroundMusic) {
             audioRefs.current.backgroundMusic.loop = true;
             audioRefs.current.backgroundMusic.volume = 0.3 * volume;
-            
-            // Start background music immediately
-            audioRefs.current.backgroundMusic.play().catch(() => {
-                // Ignore autoplay policy errors
-            });
         }
 
         // Configure sound effects
@@ -92,14 +86,17 @@ export const useGameAudio = () => {
 
     const startBackgroundMusic = useCallback(() => {
         if (audioRefs.current.backgroundMusic && isInitializedRef.current) {
-            audioRefs.current.backgroundMusic.play().catch(() => {
-                // Ignore autoplay policy errors
+            audioRefs.current.backgroundMusic.play().catch((error) => {
+                console.warn('Failed to start background music:', error);
             });
         }
     }, []);
 
     const stopBackgroundMusic = useCallback(() => {
-        // Background music continues playing - this is kept for compatibility
+        if (audioRefs.current.backgroundMusic) {
+            audioRefs.current.backgroundMusic.pause();
+            audioRefs.current.backgroundMusic.currentTime = 0;
+        }
     }, []);
 
     // Remove mute functionality - these are kept for compatibility but do nothing

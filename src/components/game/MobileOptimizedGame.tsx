@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import OptimizedPlayer from './OptimizedPlayer';
 import GameUI from './GameUI';
@@ -40,8 +39,9 @@ const MobileOptimizedGame = () => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
+    stopBackgroundMusic();
     playSound('gameOver');
-  }, [playSound]);
+  }, [playSound, stopBackgroundMusic]);
   
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
@@ -65,6 +65,7 @@ const MobileOptimizedGame = () => {
     setFinalScore(0);
     gameLogic.resetGame();
     setRunning(true);
+    startBackgroundMusic();
   };
   
   const handleStartFromMenu = () => {
