@@ -4,47 +4,60 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    background: linear-gradient(to bottom, 
+        #1a0b2e 0%,     /* Deep purple at top */
+        #16213e 25%,    /* Purple-blue */
+        #0f3460 50%,    /* Dark blue */
+        #16213e 75%,    /* Purple-blue again */
+        #1a0b2e 100%    /* Deep purple at bottom */
+    );
     overflow: hidden;
 }
 
-#city-background, #city-far, #city-near, #windows {
+#city-far, #city-near {
     position: absolute;
     bottom: 60px; /* Road height */
     left: 0;
     width: 200%;
-    height: 250px; /* Increased height */
+    height: 250px;
     background-repeat: repeat-x;
-    pointer-events: none; /* Ensure no interference with game interactions */
-}
-
-#city-background {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="5" y="180" width="30" height="70" fill="%2310151d"/><rect x="45" y="160" width="40" height="90" fill="%2310151d"/><rect x="100" y="200" width="25" height="50" fill="%2310151d"/><rect x="140" y="150" width="50" height="100" fill="%2310151d"/><rect x="210" y="190" width="30" height="60" fill="%2310151d"/><rect x="260" y="140" width="60" height="110" fill="%2310151d"/><rect x="350" y="170" width="40" height="80" fill="%2310151d"/><rect x="410" y="210" width="20" height="40" fill="%2310151d"/><rect x="450" y="160" width="50" height="90" fill="%2310151d"/><rect x="530" y="130" width="70" height="120" fill="%2310151d"/><rect x="620" y="180" width="30" height="70" fill="%2310151d"/><rect x="680" y="160" width="60" height="90" fill="%2310151d"/><rect x="750" y="190" width="40" height="60" fill="%2310151d"/></svg>');
-    background-size: 800px 250px;
-    animation: slide 60s linear infinite;
-    opacity: 0.4;
+    pointer-events: none;
 }
 
 #city-far {
-    /* Taller buildings */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="10" y="130" width="40" height="120" fill="%231a202c"/><rect x="60" y="100" width="50" height="150" fill="%231a202c"/><rect x="120" y="160" width="30" height="90" fill="%231a202c"/><rect x="160" y="70" width="60" height="180" fill="%231a202c"/><rect x="230" y="145" width="40" height="105" fill="%231a202c"/><rect x="300" y="115" width="70" height="135" fill="%231a202c"/><rect x="400" y="85" width="50" height="165" fill="%231a202c"/><rect x="480" y="175" width="20" height="75" fill="%231a202c"/><rect x="520" y="130" width="60" height="120" fill="%231a202c"/><rect x="600" y="55" width="80" height="195" fill="%231a202c"/><rect x="700" y="160" width="40" height="90" fill="%231a202c"/></svg>');
+    /* Far buildings - taller and more distant */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="10" y="100" width="60" height="150" fill="%23162447"/><rect x="80" y="70" width="80" height="180" fill="%23162447"/><rect x="170" y="120" width="50" height="130" fill="%23162447"/><rect x="230" y="80" width="70" height="170" fill="%23162447"/><rect x="310" y="130" width="40" height="120" fill="%23162447"/><rect x="360" y="60" width="90" height="190" fill="%23162447"/><rect x="460" y="110" width="60" height="140" fill="%23162447"/><rect x="530" y="40" width="100" height="210" fill="%23162447"/><rect x="640" y="90" width="70" height="160" fill="%23162447"/><rect x="720" y="130" width="50" height="120" fill="%23162447"/></svg>');
     background-size: 800px 250px;
-    animation: slide 30s linear infinite;
-    opacity: 0.6;
+    animation: slide 40s linear infinite;
+    opacity: 0.4;
+    z-index: 1;
 }
 
 #city-near {
-    /* Taller buildings */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="20" y="100" width="60" height="150" fill="%232d3748"/><rect x="100" y="70" width="80" height="180" fill="%232d3748" /><rect x="200" y="120" width="50" height="130" fill="%232d3748" /><rect x="280" y="90" width="70" height="160" fill="%232d3748" /><rect x="380" y="130" width="40" height="120" fill="%232d3748" /><rect x="450" y="80" width="90" height="170" fill="%232d3748" /><rect x="560" y="110" width="60" height="140" fill="%232d3748" /><rect x="650" y="40" width="100" height="210" fill="%232d3748" /></svg>');
+    /* Near buildings - closer and more detailed */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="20" y="80" width="80" height="170" fill="%232d3748"/><rect x="110" y="50" width="100" height="200" fill="%232d3748"/><rect x="220" y="100" width="60" height="150" fill="%232d3748"/><rect x="290" y="70" width="90" height="180" fill="%232d3748"/><rect x="390" y="110" width="50" height="140" fill="%232d3748"/><rect x="450" y="40" width="110" height="210" fill="%232d3748"/><rect x="570" y="90" width="80" height="160" fill="%232d3748"/><rect x="660" y="20" width="120" height="230" fill="%232d3748"/></svg>');
     background-size: 800px 250px;
-    animation: slide 15s linear infinite;
+    animation: slide 20s linear infinite;
+    opacity: 0.7;
+    z-index: 2;
+    
+    /* Add subtle neon glow effect to near buildings */
+    filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.1));
 }
 
-#windows {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="35" y="120" width="3" height="4" fill="%23888470"/><rect x="55" y="180" width="3" height="4" fill="%23888470"/><rect x="110" y="90" width="3" height="4" fill="%23888470"/><rect x="130" y="150" width="3" height="4" fill="%23888470"/><rect x="160" y="200" width="3" height="4" fill="%23888470"/><rect x="220" y="140" width="3" height="4" fill="%23888470"/><rect x="290" y="110" width="3" height="4" fill="%23888470"/><rect x="330" y="180" width="3" height="4" fill="%23888470"/><rect x="390" y="150" width="3" height="4" fill="%23888470"/><rect x="470" y="100" width="3" height="4" fill="%23888470"/><rect x="500" y="160" width="3" height="4" fill="%23888470"/><rect x="580" y="130" width="3" height="4" fill="%23888470"/><rect x="670" y="80" width="3" height="4" fill="%23888470"/><rect x="700" y="140" width="3" height="4" fill="%23888470"/><rect x="730" y="200" width="3" height="4" fill="%23888470"/></svg>');
+/* Add some subtle neon window lights */
+#city-near::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="35" y="120" width="3" height="4" fill="%23a855f7"/><rect x="55" y="180" width="3" height="4" fill="%23a855f7"/><rect x="130" y="90" width="3" height="4" fill="%23a855f7"/><rect x="160" y="150" width="3" height="4" fill="%23a855f7"/><rect x="240" y="140" width="3" height="4" fill="%23a855f7"/><rect x="320" y="110" width="3" height="4" fill="%23a855f7"/><rect x="480" y="100" width="3" height="4" fill="%23a855f7"/><rect x="500" y="160" width="3" height="4" fill="%23a855f7"/><rect x="680" y="80" width="3" height="4" fill="%23a855f7"/><rect x="700" y="140" width="3" height="4" fill="%23a855f7"/></svg>');
     background-size: 800px 250px;
-    animation: slide 15s linear infinite, blink 3s ease-in-out infinite;
-    z-index: 1;
+    animation: slide 20s linear infinite, blink 4s ease-in-out infinite;
+    opacity: 0.6;
+    z-index: 3;
 }
 
 @keyframes slide {
@@ -53,9 +66,8 @@
 }
 
 @keyframes blink {
-    0%, 100% { opacity: 0.5; }
-    20% { opacity: 0.2; }
-    40% { opacity: 0.6; }
-    60% { opacity: 0.1; }
-    80% { opacity: 0.4; }
+    0%, 100% { opacity: 0.6; }
+    25% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    75% { opacity: 0.2; }
 }
