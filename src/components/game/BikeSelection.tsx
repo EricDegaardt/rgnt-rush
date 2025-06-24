@@ -86,7 +86,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-black text-white p-4">
-      <h2 className="text-2xl md:text-3xl mb-6 text-purple-400">Choose Your Bike</h2>
+      <h2 className="text-xl md:text-2xl mb-6 text-purple-400 whitespace-nowrap">Choose Your Bike</h2>
       
       <div className="w-full max-w-md mb-6">
         <Carousel className="w-full" setApi={setApi}>
@@ -103,7 +103,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       <img 
                         src={bike.image} 
                         alt={bike.name}
-                        className="w-32 h-16 object-contain mb-4"
+                        className="w-48 h-24 object-contain mb-4"
                       />
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
@@ -152,8 +152,8 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="text-white border-purple-400 -left-8" />
-          <CarouselNext className="text-white border-purple-400 -right-8" />
+          <CarouselPrevious className="text-white border-purple-400 -left-6" />
+          <CarouselNext className="text-white border-purple-400 -right-6" />
         </Carousel>
       </div>
 
