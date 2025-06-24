@@ -27,7 +27,7 @@ const GameUI = ({
   const clampedEnergy = Math.max(0, Math.min(100, energy));
 
   return (
-    <div className="absolute top-2.5 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm pointer-events-none">
+    <div className="absolute top-8 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm pointer-events-none">
       {/* First Row: Speed and Distance */}
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
