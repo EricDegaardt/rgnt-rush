@@ -95,7 +95,7 @@ const GameUI = ({
     <div className="absolute top-0 left-0 right-0 text-white pointer-events-none">
       {/* Volume Slider at the very top */}
       {onVolumeChange && (
-        <div className="w-full bg-black bg-opacity-40 backdrop-blur-sm p-2 pointer-events-auto">
+        <div className="w-full bg-black bg-opacity-40 backdrop-blur-sm p-2 pointer-events-auto" data-volume-slider>
           <div className="flex items-center gap-3 max-w-sm mx-auto">
             <div className="flex items-center gap-1">
               {volume === 0 ? (

@@ -105,11 +105,8 @@ const MobileOptimizedGame = () => {
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     // Check if the event target is the volume slider or its children
     const target = e.target as HTMLElement;
-    if (target.closest('[data-volume-slider]') || 
-        target.closest('.pointer-events-auto')) {
+    if (target.closest('[data-volume-slider]')) {
       // Completely ignore volume slider interactions for game logic
-      e.preventDefault();
-      e.stopPropagation();
       return;
     }
 

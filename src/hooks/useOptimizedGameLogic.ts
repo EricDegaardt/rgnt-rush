@@ -66,20 +66,19 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         const newObstacles = moveObstacles(gameStateRef.current.obstacles, visualSpeedRef.current);
         const newCollectibles = moveCollectibles(gameStateRef.current.collectibles, visualSpeedRef.current);
 
-        // Spawn new obstacles and collectibles (less frequently)
+        // Spawn new obstacles and collectibles
         let finalObstacles = newObstacles;
         let finalCollectibles = newCollectibles;
 
-        if (frameCountRef.current % 3 === 0) { // Reduce spawning frequency
-            const newObstacle = createObstacle(newObstacles, newCollectibles);
-            if (newObstacle) {
-                finalObstacles = [...newObstacles, newObstacle];
-            }
+        // Spawn obstacles and collectibles every frame for proper frequency
+        const newObstacle = createObstacle(newObstacles, newCollectibles);
+        if (newObstacle) {
+            finalObstacles = [...newObstacles, newObstacle];
+        }
 
-            const newCollectible = createCollectible(finalObstacles, newCollectibles);
-            if (newCollectible) {
-                finalCollectibles = [...newCollectibles, newCollectible];
-            }
+        const newCollectible = createCollectible(finalObstacles, newCollectibles);
+        if (newCollectible) {
+            finalCollectibles = [...newCollectibles, newCollectible];
         }
 
         // Check collisions
