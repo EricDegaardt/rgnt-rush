@@ -175,14 +175,14 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
             />
           </div>
           
-          <Button
-            onClick={onStartGame}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-lg text-xl md:text-2xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25"
-          >
-            <span className="flex items-center gap-3">
-              🏍️ START RACING
-            </span>
-          </Button>
+          <div className="mx-8">
+            <Button
+              onClick={onStartGame}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-lg text-xl md:text-2xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25"
+            >
+              START RACING
+            </Button>
+          </div>
           
           <div className="mt-6 text-xs text-gray-500">
             <p>🎮 Tap screen or press SPACE to jump</p>
