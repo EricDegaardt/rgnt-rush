@@ -34,7 +34,6 @@ const GameUI = ({
   const handleMuteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();
     if (onToggleMute) {
       onToggleMute();
     }
@@ -43,7 +42,6 @@ const GameUI = ({
   const handleMuteTouch = (e: React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();
     if (onToggleMute) {
       onToggleMute();
     }
@@ -78,17 +76,14 @@ const GameUI = ({
               onTouchEnd={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                e.stopImmediatePropagation();
               }}
               onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                e.stopImmediatePropagation();
               }}
               onMouseUp={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                e.stopImmediatePropagation();
               }}
               className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50 select-none touch-manipulation"
               style={{ 
