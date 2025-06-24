@@ -16,7 +16,11 @@ import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import Road from './Road';
 
-const MobileOptimizedGame = () => {
+interface MobileOptimizedGameProps {
+  isMobile?: boolean;
+}
+
+const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [username, setUsername] = useState('');
@@ -146,7 +150,7 @@ const MobileOptimizedGame = () => {
   if (showStartScreen) {
     return (
       <div className="w-full h-full">
-        <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
+        {!isMobile && <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />}
         <AnimatedStartScreen onStartGame={handleStartFromMenu} />
       </div>
     );
@@ -155,7 +159,7 @@ const MobileOptimizedGame = () => {
   if (isPreloading) {
     return (
       <div className="w-full h-full">
-        <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
+        {!isMobile && <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />}
         <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
       </div>
     );
@@ -164,7 +168,7 @@ const MobileOptimizedGame = () => {
   if (showBikeSelection) {
     return (
       <div className="relative w-full h-full">
-        <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
+        {!isMobile && <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />}
         <BikeSelection onBikeSelect={handleBikeSelect} />
       </div>
     );
@@ -183,7 +187,7 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
     >
-      <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />
+      {!isMobile && <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />}
       
       <Skyline />
       <Road />
