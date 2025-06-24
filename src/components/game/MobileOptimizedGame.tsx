@@ -98,25 +98,35 @@ const MobileOptimizedGame = () => {
     setShowBikeSelection(true);
   };
 
-  // Isolated mute toggle handler that doesn't interfere with game
-  const handleMuteToggle = useCallback(() => {
-    toggleMute();
+  // Completely isolated mute toggle handler
+  const handleMuteToggle = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }
+    // Use setTimeout to ensure this doesn't interfere with any game state updates
+    setTimeout(() => {
+      toggleMute();
+    }, 0);
   }, [toggleMute]);
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    // Check if the click/touch is on the mute button or its children
+    // Prevent any interaction if the event originated from the mute button area
     const target = e.target as HTMLElement;
-    if (target.closest('button[title*="Mute"]') || target.closest('button[title*="Unmute"]')) {
-      // Don't handle game interactions if mute button was clicked
+    const muteButton = target.closest('[data-mute-button]');
+    if (muteButton) {
+      e.preventDefault();
+      e.stopPropagation();
       return;
     }
 
-    // Only handle specific game actions without interfering with the game loop
+    // Only handle specific game actions
     if (!running && !gameOver && !showBikeSelection && !showShareScore) {
       // Let button handle start
       return;
     } else if (running && !gameOver) {
-      // Only trigger jump action - don't interfere with anything else
+      // Only trigger jump action
       gameLogic.handleJump();
     } else if (gameOver && !showShareScore) {
       // Only trigger play again if not showing share score
@@ -189,7 +199,17 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
     >
-      <SoundToggle isMuted={isMuted} onToggle={handleMuteToggle} />
+      {/* Mute button with complete isolation */}
+      <div 
+        data-mute-button="true"
+        className="absolute top-32 right-4 z-50 pointer-events-auto"
+        onClick={handleMuteToggle}
+        onTouchStart={handleMuteToggle}
+        onTouchEnd={(e) => e.preventDefault()}
+      >
+        <SoundToggle isMuted={isMuted} onToggle={() => {}} />
+      </div>
+      
       <Skyline />
       <Road />
       
