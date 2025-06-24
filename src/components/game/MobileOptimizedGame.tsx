@@ -103,7 +103,6 @@ const MobileOptimizedGame = () => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
-      e.stopImmediatePropagation();
     }
     // Use setTimeout to ensure this doesn't interfere with any game state updates
     setTimeout(() => {
