@@ -167,22 +167,20 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         </div>
 
         <div className={`transition-all duration-1000 delay-500 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="mb-8 text-sm md:text-base text-gray-400 max-w-md leading-relaxed">
+          <p className="mb-6 text-sm md:text-base text-gray-400 max-w-md leading-relaxed">
             Race through neon city streets on your electric bike! Tap the screen or press space to jump, collect batteries, and dodge obstacles to go the distance!
           </p>
           
-          <div className="mb-6">
+          <div className="flex flex-col items-center gap-3">
             <input
               type="text"
               placeholder="Enter Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="bg-gray-800/80 border-2 border-purple-400/50 p-3 rounded-lg mb-4 text-center w-72 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-colors backdrop-blur-sm"
+              className="bg-gray-800/80 border-2 border-purple-400/50 p-3 rounded-lg text-center w-72 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-colors backdrop-blur-sm"
               required
             />
-          </div>
-          
-          <div className="mx-8">
+            
             <Button
               onClick={handleStartGame}
               disabled={!username.trim()}
