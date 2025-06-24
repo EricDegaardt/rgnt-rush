@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Zap, Gauge, Milestone, Volume2, VolumeX } from 'lucide-react';
 
 const GameUI = ({
