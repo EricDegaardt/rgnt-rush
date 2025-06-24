@@ -32,7 +32,7 @@ const bikes: Bike[] = [
       acceleration: '4 sec',
       brakingSystem: 'Combined',
       batterySystem: '7.5 kWh',
-      chargeTime: '2.1 h (upgradable down to 1h)',
+      chargeTime: '2.1 h (upgradable to 1h)',
       license: 'A1'
     }
   },
@@ -47,7 +47,7 @@ const bikes: Bike[] = [
       acceleration: '4 sec',
       brakingSystem: 'Combined',
       batterySystem: '7.5 kWh',
-      chargeTime: '2.1 h (upgradable down to 1h)',
+      chargeTime: '2.1 h (upgradable to 1h)',
       license: 'A1'
     }
   }
@@ -107,39 +107,44 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       />
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
-                      <div className="grid grid-cols-2 gap-2 text-xs w-full">
-                        <div className="text-gray-300">
-                          <div className="font-semibold">Top Speed</div>
-                          <div>{bike.specs.topSpeed}</div>
-                        </div>
-                        <div className="text-gray-300">
-                          <div className="font-semibold">Mixed Range</div>
-                          <div>{bike.specs.mixedRange}</div>
-                        </div>
-                        <div className="text-gray-300">
-                          <div className="font-semibold">Turbo Power</div>
-                          <div>{bike.specs.turboPower}</div>
-                        </div>
-                        <div className="text-gray-300">
-                          <div className="font-semibold">Accel 0-100 km/h</div>
-                          <div>{bike.specs.acceleration}</div>
-                        </div>
-                        <div className="text-gray-300">
-                          <div className="font-semibold">Braking System</div>
-                          <div>{bike.specs.brakingSystem}</div>
-                        </div>
-                        <div className="text-gray-300">
-                          <div className="font-semibold">Battery System</div>
-                          <div>{bike.specs.batterySystem}</div>
-                        </div>
-                        <div className="text-gray-300">
-                          <div className="font-semibold">Charge 20-80%</div>
-                          <div className="text-xs">{bike.specs.chargeTime}</div>
-                        </div>
-                        <div className="text-gray-300">
-                          <div className="font-semibold">License</div>
-                          <div>{bike.specs.license}</div>
-                        </div>
+                      {/* Table format for specifications */}
+                      <div className="w-full text-xs">
+                        <table className="w-full border-collapse">
+                          <tbody>
+                            <tr className="border-b border-gray-700">
+                              <td className="py-1 pr-2 text-gray-300 font-medium">Top Speed</td>
+                              <td className="py-1 text-gray-300">{bike.specs.topSpeed}</td>
+                            </tr>
+                            <tr className="border-b border-gray-700">
+                              <td className="py-1 pr-2 text-gray-300 font-medium">Mixed Range</td>
+                              <td className="py-1 text-gray-300">{bike.specs.mixedRange}</td>
+                            </tr>
+                            <tr className="border-b border-gray-700">
+                              <td className="py-1 pr-2 text-gray-300 font-medium">Turbo Power</td>
+                              <td className="py-1 text-gray-300">{bike.specs.turboPower}</td>
+                            </tr>
+                            <tr className="border-b border-gray-700">
+                              <td className="py-1 pr-2 text-gray-300 font-medium">Accel 0–100 km/h</td>
+                              <td className="py-1 text-gray-300">{bike.specs.acceleration}</td>
+                            </tr>
+                            <tr className="border-b border-gray-700">
+                              <td className="py-1 pr-2 text-gray-300 font-medium">Braking System</td>
+                              <td className="py-1 text-gray-300">{bike.specs.brakingSystem}</td>
+                            </tr>
+                            <tr className="border-b border-gray-700">
+                              <td className="py-1 pr-2 text-gray-300 font-medium">Battery System</td>
+                              <td className="py-1 text-gray-300">{bike.specs.batterySystem}</td>
+                            </tr>
+                            <tr className="border-b border-gray-700">
+                              <td className="py-1 pr-2 text-gray-300 font-medium">Charge 20–80%</td>
+                              <td className="py-1 text-gray-300">{bike.specs.chargeTime}</td>
+                            </tr>
+                            <tr>
+                              <td className="py-1 pr-2 text-gray-300 font-medium">License</td>
+                              <td className="py-1 text-gray-300">{bike.specs.license}</td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </CardContent>
                   </Card>
@@ -147,8 +152,8 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="text-white border-purple-400" />
-          <CarouselNext className="text-white border-purple-400" />
+          <CarouselPrevious className="text-white border-purple-400 -left-8" />
+          <CarouselNext className="text-white border-purple-400 -right-8" />
         </Carousel>
       </div>
 
