@@ -78,7 +78,28 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         }
       `}</style>
       
-      <SoundToggle isMuted={isMuted} onToggle={onToggleMute} />
+      {/* Mute toggle in top right corner */}
+      <div className="absolute top-4 right-4 z-50">
+        <button
+          onClick={onToggleMute}
+          className="p-2 bg-black bg-opacity-50 rounded text-white hover:bg-opacity-70 transition-all"
+          title={isMuted ? 'Unmute' : 'Mute'}
+          type="button"
+        >
+          {isMuted ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          )}
+        </button>
+      </div>
       
       {/* Animated City Background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -153,13 +174,13 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         ))}
       </div>
 
-      {/* Main Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center z-20">
+      {/* Main Content - reduced top spacing */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center z-20 pt-8">
         <div className={`transition-all duration-1000 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h1 className="text-4xl md:text-6xl mb-2 text-purple-400 font-bold tracking-wider drop-shadow-lg">
+          <h1 className="text-4xl md:text-6xl mb-1 text-purple-400 font-bold tracking-wider drop-shadow-lg">
             RGNT RUSH
           </h1>
-          <div className="text-lg md:text-xl mb-8 text-gray-300 font-medium">
+          <div className="text-lg md:text-xl mb-6 text-gray-300 font-medium">
             <span className="inline-block animate-pulse">⚡</span>
             <span className="mx-2">Electric Racing Adventure</span>
             <span className="inline-block animate-pulse">⚡</span>
@@ -167,7 +188,7 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         </div>
 
         <div className={`transition-all duration-1000 delay-500 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="mb-6 text-sm md:text-base text-gray-400 max-w-md leading-relaxed">
+          <p className="mb-4 text-sm md:text-base text-gray-400 max-w-md leading-relaxed">
             Race through neon city streets on your electric bike! Tap the screen or press space to jump, collect batteries, and dodge obstacles to go the distance!
           </p>
           
