@@ -23,8 +23,11 @@ const GameUI = ({
     return 'text-red-400';
   };
 
+  // Clamp energy between 0 and 100 to ensure valid percentage
+  const clampedEnergy = Math.max(0, Math.min(100, energy));
+
   return (
-    <div className="absolute top-2.5 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm">
+    <div className="absolute top-2.5 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm pointer-events-none">
       {/* First Row: Speed and Distance */}
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
@@ -46,16 +49,20 @@ const GameUI = ({
       
       {/* Second Row: Energy */}
       <div className="flex items-center gap-3">
-        <Zap size={20} className={getEnergyIconColor(energy)} />
+        <Zap size={20} className={getEnergyIconColor(clampedEnergy)} />
         <div className="flex-1">
           <div className="flex justify-between items-center mb-1">
             <span className="text-[10px] text-gray-300 uppercase tracking-wide">Energy</span>
-            <span className="text-xs font-medium">{Math.round(energy)}%</span>
+            <span className="text-xs font-medium">{Math.round(clampedEnergy)}%</span>
           </div>
-          <div className={`w-full h-3 bg-gray-700 rounded-full overflow-hidden border-2 ${getEnergyColor(energy).split(' ')[1]}`}>
+          <div className={`w-full h-3 bg-gray-700 rounded-full overflow-hidden border-2 ${getEnergyColor(clampedEnergy).split(' ')[1]}`}>
             <div 
-              className={`h-full transition-all duration-300 ${getEnergyColor(energy).split(' ')[0]}`} 
-              style={{ width: `${energy}%` }}
+              className={`h-full ${getEnergyColor(clampedEnergy).split(' ')[0]}`} 
+              style={{ 
+                width: `${clampedEnergy}%`,
+                transition: 'none', // Remove transitions that might interfere
+                willChange: 'width' // Optimize for width changes
+              }}
             />
           </div>
         </div>
