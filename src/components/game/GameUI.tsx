@@ -30,6 +30,15 @@ const GameUI = ({
   // Clamp energy between 0 and 100 to ensure valid percentage
   const clampedEnergy = Math.max(0, Math.min(100, energy));
 
+  // Handle mute toggle with event prevention
+  const handleMuteToggle = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onToggleMute) {
+      onToggleMute();
+    }
+  };
+
   return (
     <div className="absolute top-2.5 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm pointer-events-none">
       {/* First Row: Speed, Distance, and Mute Toggle */}
@@ -54,7 +63,8 @@ const GameUI = ({
           {/* Mute Toggle Button */}
           {onToggleMute && (
             <button
-              onClick={onToggleMute}
+              onClick={handleMuteToggle}
+              onTouchStart={handleMuteToggle}
               className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50"
               aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
             >
