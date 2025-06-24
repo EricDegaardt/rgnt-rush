@@ -4,8 +4,103 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    background: linear-gradient(
+        to bottom,
+        #2d1b69 0%,     /* Deep purple at top */
+        #4c1d95 25%,    /* Purple */
+        #6b21a8 50%,    /* Lighter purple */
+        #7c3aed 75%,    /* Neon purple */
+        #1e1b4b 100%    /* Dark blue-purple at bottom */
+    );
     overflow: hidden;
+}
+
+/* Cloud stripes */
+.cloud-stripe {
+    position: absolute;
+    left: 0;
+    width: 200%;
+    height: 8px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 10%,
+        rgba(255, 255, 255, 0.3) 20%,
+        rgba(255, 255, 255, 0.5) 30%,
+        rgba(255, 255, 255, 0.3) 40%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 60%,
+        rgba(255, 255, 255, 0.2) 70%,
+        rgba(255, 255, 255, 0.4) 80%,
+        rgba(255, 255, 255, 0.2) 90%,
+        transparent 100%
+    );
+    animation: cloudDrift 25s linear infinite;
+    border-radius: 4px;
+    filter: blur(1px);
+}
+
+.cloud-stripe:nth-child(1) {
+    top: 15%;
+    animation-duration: 30s;
+    animation-delay: 0s;
+}
+
+.cloud-stripe:nth-child(2) {
+    top: 25%;
+    animation-duration: 35s;
+    animation-delay: -5s;
+    height: 12px;
+}
+
+.cloud-stripe:nth-child(3) {
+    top: 35%;
+    animation-duration: 28s;
+    animation-delay: -10s;
+    height: 6px;
+}
+
+.cloud-stripe:nth-child(4) {
+    top: 45%;
+    animation-duration: 40s;
+    animation-delay: -15s;
+    height: 10px;
+}
+
+.cloud-stripe:nth-child(5) {
+    top: 55%;
+    animation-duration: 32s;
+    animation-delay: -20s;
+    height: 8px;
+}
+
+.cloud-stripe:nth-child(6) {
+    top: 65%;
+    animation-duration: 38s;
+    animation-delay: -25s;
+    height: 14px;
+}
+
+@keyframes cloudDrift {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0%); }
+}
+
+/* Subtle glow effect */
+.parallax-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        ellipse at center top,
+        rgba(139, 92, 246, 0.1) 0%,
+        rgba(139, 92, 246, 0.05) 30%,
+        transparent 70%
+    );
+    pointer-events: none;
 }
 
 #city-background, #city-far, #city-near, #windows {
