@@ -84,7 +84,6 @@ const MobileOptimizedGame = () => {
 
   const handleShareScore = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('Share Score button clicked'); // Debug log
     setShowShareScore(true);
   };
 
@@ -98,8 +97,20 @@ const MobileOptimizedGame = () => {
     setShowShareScore(false);
     setShowBikeSelection(true);
   };
+
+  // Isolated mute toggle handler that doesn't interfere with game
+  const handleMuteToggle = useCallback(() => {
+    toggleMute();
+  }, [toggleMute]);
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    // Check if the click/touch is on the mute button or its children
+    const target = e.target as HTMLElement;
+    if (target.closest('button[title*="Mute"]') || target.closest('button[title*="Unmute"]')) {
+      // Don't handle game interactions if mute button was clicked
+      return;
+    }
+
     // Only handle specific game actions without interfering with the game loop
     if (!running && !gameOver && !showBikeSelection && !showShareScore) {
       // Let button handle start
@@ -143,7 +154,7 @@ const MobileOptimizedGame = () => {
   if (showStartScreen) {
     return (
       <div className="w-full h-full">
-        <AnimatedStartScreen onStartGame={handleStartFromMenu} isMuted={isMuted} onToggleMute={toggleMute} />
+        <AnimatedStartScreen onStartGame={handleStartFromMenu} isMuted={isMuted} onToggleMute={handleMuteToggle} />
       </div>
     );
   }
@@ -159,7 +170,7 @@ const MobileOptimizedGame = () => {
   if (showBikeSelection) {
     return (
       <div className="relative w-full h-full">
-        <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
+        <SoundToggle isMuted={isMuted} onToggle={handleMuteToggle} />
         <BikeSelection onBikeSelect={handleBikeSelect} />
       </div>
     );
@@ -178,7 +189,7 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
     >
-      <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
+      <SoundToggle isMuted={isMuted} onToggle={handleMuteToggle} />
       <Skyline />
       <Road />
       

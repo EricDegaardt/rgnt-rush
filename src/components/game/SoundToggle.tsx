@@ -8,17 +8,34 @@ interface SoundToggleProps {
 
 const SoundToggle = ({ isMuted, onToggle }: SoundToggleProps) => {
     const handleClick = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent event bubbling
-        console.log('Sound toggle clicked, current muted state:', isMuted); // Debug log
+        e.preventDefault();
+        e.stopPropagation(); // Prevent event bubbling to game container
+        e.stopImmediatePropagation(); // Extra protection against event propagation
+        onToggle();
+    };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent touch events from bubbling
+        e.stopImmediatePropagation();
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         onToggle();
     };
 
     return (
         <button
             onClick={handleClick}
-            className="absolute top-32 right-4 p-2 bg-black bg-opacity-50 rounded text-white hover:bg-opacity-70 transition-all z-50"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="absolute top-32 right-4 p-2 bg-black bg-opacity-50 rounded text-white hover:bg-opacity-70 transition-all z-50 pointer-events-auto"
             title={isMuted ? 'Unmute' : 'Mute'}
             type="button"
+            style={{ touchAction: 'none' }} // Prevent default touch behaviors
         >
             {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
         </button>
