@@ -178,16 +178,21 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
 
   return (
     <div 
-      className="relative bg-black w-full h-full overflow-hidden touch-none select-none" 
+      className="relative bg-black w-full h-full overflow-hidden touch-none select-none"
       style={{
         WebkitTouchCallout: 'none',
         WebkitUserSelect: 'none',
-        userSelect: 'none'
-      }} 
-      onClick={handleScreenInteraction} 
+        userSelect: 'none',
+        willChange: 'transform',
+      }}
+      onClick={handleScreenInteraction}
       onTouchStart={handleScreenInteraction}
     >
-      {!isMobile && <VolumeSlider volume={volume} onVolumeChange={setVolume} className="mb-1" />}
+      {!isMobile && (
+        <div className="absolute top-2 right-4 z-50">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
+      )}
       
       <Skyline />
       <Road />
@@ -201,32 +206,49 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
       
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-      {gameOver && !showShareScore && (
-        <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
-          <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
-          <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
-          <div className="flex gap-4 mt-8">
-            <button 
-              onClick={handleShareScore}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
-            >
-              Share Score
-            </button>
-            <button 
-              onClick={handlePlayAgain}
-              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl"
-            >
-              Play Again
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showShareScore && (
-        <ShareScore 
-          score={finalScore} 
-          onClose={handleCloseShareScore} 
-        />
+      {showStartScreen ? (
+        <AnimatedStartScreen onStartGame={handleStartFromMenu} />
+      ) : isPreloading ? (
+        <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
+      ) : showBikeSelection ? (
+        <BikeSelection onBikeSelect={handleBikeSelect} />
+      ) : (
+        <>
+          <Skyline />
+          <Road />
+          <OptimizedPlayer y={gameLogic.playerY} isSpinning={gameLogic.isSpinning} gameOver={gameOver} selectedBike={selectedBike} isVisible={true} />
+          {gameLogic.obstacles.map(o => <Obstacle key={o.id} {...o} />)}
+          {gameLogic.collectibles.map(c => <Collectible key={c.id} {...c} />)}
+          {gameLogic.collectionEffects.map(effect => <CollectionEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleEffectComplete(effect.id)} />)}
+          {gameLogic.splashEffects.map(effect => <SplashEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleSplashComplete(effect.id)} />)}
+          <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
+          {gameOver && !showShareScore && (
+            <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
+              <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
+              <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
+              <div className="flex gap-4 mt-8">
+                <button 
+                  onClick={handleShareScore}
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
+                >
+                  Share Score
+                </button>
+                <button 
+                  onClick={handlePlayAgain}
+                  className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl"
+                >
+                  Play Again
+                </button>
+              </div>
+            </div>
+          )}
+          {showShareScore && (
+            <ShareScore 
+              score={finalScore} 
+              onClose={handleCloseShareScore} 
+            />
+          )}
+        </>
       )}
     </div>
   );
