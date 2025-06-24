@@ -15,7 +15,7 @@
     overflow: hidden;
 }
 
-/* Cloud stripes - reduced to 3 clouds, much thicker */
+/* Cloud stripes - reduced to 3 clouds, much thicker, positioned lower */
 .cloud-stripe {
     position: absolute;
     left: 0;
@@ -41,21 +41,21 @@
 }
 
 .cloud-stripe:nth-child(1) {
-    top: 8%;
+    top: 35%; /* Moved down from 8% to 35% */
     height: 25px; /* Extra thick first cloud */
     animation-duration: 35s;
     animation-delay: 0s;
 }
 
 .cloud-stripe:nth-child(2) {
-    top: 18%;
+    top: 45%; /* Moved down from 18% to 45% */
     height: 18px; /* Medium thick second cloud */
     animation-duration: 40s;
     animation-delay: -10s;
 }
 
 .cloud-stripe:nth-child(3) {
-    top: 28%;
+    top: 55%; /* Moved down from 28% to 55% */
     height: 22px; /* Thick third cloud */
     animation-duration: 30s;
     animation-delay: -20s;

@@ -29,10 +29,10 @@ export const checkCollisions = (
     let newCollectionEffects = [...collectionEffects];
     let newSplashEffects = [...splashEffects];
 
-    // Check obstacle collisions - reduced hitbox by 30% on all sides
+    // Check obstacle collisions - significantly reduced hitbox by 50% on all sides
     for (let i = obstacles.length - 1; i >= 0; i--) {
         const obstacle = obstacles[i];
-        const hitboxReduction = 0.3; // 30% reduction
+        const hitboxReduction = 0.5; // Increased from 30% to 50% reduction
         const widthReduction = obstacle.width * hitboxReduction;
         const heightReduction = obstacle.height * hitboxReduction;
         
@@ -43,11 +43,23 @@ export const checkCollisions = (
             height: obstacle.height - heightReduction 
         };
         
+        // Also reduce player hitbox for more forgiving collisions
+        const playerHitboxReduction = 0.4; // 40% reduction on player hitbox
+        const playerWidthReduction = PLAYER_WIDTH * playerHitboxReduction;
+        const playerHeightReduction = PLAYER_HEIGHT * playerHitboxReduction;
+        
+        const reducedPlayerRect = {
+            x: playerRect.x + playerWidthReduction / 2,
+            y: playerRect.y + playerHeightReduction / 2,
+            width: PLAYER_WIDTH - playerWidthReduction,
+            height: PLAYER_HEIGHT - playerHeightReduction
+        };
+        
         if (
-            playerRect.x < obstacleRect.x + obstacleRect.width &&
-            playerRect.x + playerRect.width > obstacleRect.x &&
-            playerRect.y < obstacleRect.y + obstacleRect.height &&
-            playerRect.y + playerRect.height > obstacleRect.y
+            reducedPlayerRect.x < obstacleRect.x + obstacleRect.width &&
+            reducedPlayerRect.x + reducedPlayerRect.width > obstacleRect.x &&
+            reducedPlayerRect.y < obstacleRect.y + obstacleRect.height &&
+            reducedPlayerRect.y + reducedPlayerRect.height > obstacleRect.y
         ) {
             energyChange -= 5;
             hitObstacle = true;
