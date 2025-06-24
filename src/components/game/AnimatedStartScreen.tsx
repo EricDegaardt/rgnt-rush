@@ -36,6 +36,12 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
     };
   }, []);
 
+  const handleStartGame = () => {
+    if (username.trim()) {
+      onStartGame();
+    }
+  };
+
   return (
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900 min-h-screen">
       {/* CSS Animations */}
@@ -172,21 +178,18 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="bg-gray-800/80 border-2 border-purple-400/50 p-3 rounded-lg mb-4 text-center w-72 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-colors backdrop-blur-sm"
+              required
             />
           </div>
           
           <div className="mx-8">
             <Button
-              onClick={onStartGame}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-lg text-xl md:text-2xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25"
+              onClick={handleStartGame}
+              disabled={!username.trim()}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-lg text-xl md:text-2xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               START RACING
             </Button>
-          </div>
-          
-          <div className="mt-6 text-xs text-gray-500">
-            <p>🎮 Tap screen or press SPACE to jump</p>
-            <p>⚡ Collect batteries • 🛢️ Avoid oil barrels</p>
           </div>
         </div>
       </div>
