@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ROAD_HEIGHT } from '../components/game/constants';
 import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './game/types';
@@ -28,6 +27,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     const isSpinningRef = useRef(false);
     const runningRef = useRef(running);
     const frameCountRef = useRef(0);
+    const gameLoopIdRef = useRef<number | null>(null);
     
     // Single state object to reduce re-renders
     const [gameState, setGameState] = useState<OptimizedGameState>({
@@ -41,17 +41,21 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         isSpinning: false,
     });
 
-    // Use refs for frequent updates
+    // Use refs for frequent updates to prevent external interference
     const gameStateRef = useRef(gameState);
     gameStateRef.current = gameState;
     runningRef.current = running;
 
+    // Stable game loop function that doesn't depend on external state
     const gameLoop = useCallback(() => {
-        if (!runningRef.current) return;
+        if (!runningRef.current) {
+            gameLoopIdRef.current = null;
+            return;
+        }
 
         frameCountRef.current++;
         
-        // Update physics
+        // Update physics - completely isolated from external state
         playerPhysicsRef.current = updatePlayerPhysics(playerPhysicsRef.current);
         
         // Update distance and energy
@@ -109,6 +113,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         }
 
         if (finalEnergy <= 0) {
+            gameLoopIdRef.current = null;
             onGameOver(newDistance);
             return; 
         }
@@ -125,16 +130,34 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
             isSpinning: isSpinningRef.current,
         });
 
-        requestAnimationFrame(gameLoop);
+        gameLoopIdRef.current = requestAnimationFrame(gameLoop);
     }, [onGameOver, onSoundEvent]);
     
+    // Start/stop game loop based on running state
     useEffect(() => {
-        if (running) {
-            requestAnimationFrame(gameLoop);
+        if (running && !gameLoopIdRef.current) {
+            gameLoopIdRef.current = requestAnimationFrame(gameLoop);
+        } else if (!running && gameLoopIdRef.current) {
+            cancelAnimationFrame(gameLoopIdRef.current);
+            gameLoopIdRef.current = null;
         }
+
+        // Cleanup on unmount
+        return () => {
+            if (gameLoopIdRef.current) {
+                cancelAnimationFrame(gameLoopIdRef.current);
+                gameLoopIdRef.current = null;
+            }
+        };
     }, [running, gameLoop]);
     
     const resetGame = useCallback(() => {
+        // Stop any running game loop
+        if (gameLoopIdRef.current) {
+            cancelAnimationFrame(gameLoopIdRef.current);
+            gameLoopIdRef.current = null;
+        }
+
         playerPhysicsRef.current = {
             playerY: ROAD_HEIGHT,
             playerVelocityY: 0,

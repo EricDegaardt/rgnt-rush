@@ -20,7 +20,7 @@ export const useGameAudio = () => {
 
     const isInitializedRef = useRef(false);
 
-    // Load all audio files ONLY ONCE - no dependencies to prevent re-initialization
+    // Load all audio files ONLY ONCE - completely isolated from any state changes
     useEffect(() => {
         if (isInitializedRef.current) return;
         
@@ -35,7 +35,7 @@ export const useGameAudio = () => {
             audioRefs.current.backgroundMusic.loop = true;
             audioRefs.current.backgroundMusic.volume = 0.3;
             
-            // Start background music immediately - mute state will be handled separately
+            // Start background music immediately
             audioRefs.current.backgroundMusic.play().catch(() => {
                 // Ignore autoplay policy errors
             });
@@ -51,7 +51,7 @@ export const useGameAudio = () => {
         isInitializedRef.current = true;
     }, []); // Empty dependency array - initialize only once!
 
-    // Update audio mute state when isMuted changes - separate from initialization
+    // Handle mute state changes without affecting initialization
     useEffect(() => {
         if (!isInitializedRef.current) return;
         
@@ -62,11 +62,12 @@ export const useGameAudio = () => {
         });
     }, [isMuted]);
 
+    // Stable playSound function that doesn't change
     const playSound = useCallback((soundName: keyof typeof audioRefs.current) => {
-        if (!isInitializedRef.current || isMuted) return;
+        if (!isInitializedRef.current) return;
 
         const audio = audioRefs.current[soundName];
-        if (!audio) return;
+        if (!audio || audio.muted) return;
 
         // Prevent rapid-fire sounds (except background music)
         if (soundName !== 'backgroundMusic') {
@@ -84,20 +85,21 @@ export const useGameAudio = () => {
         } catch (error) {
             console.warn(`Failed to play ${soundName}:`, error);
         }
-    }, [isMuted]);
+    }, []); // No dependencies to prevent function recreation
 
     const startBackgroundMusic = useCallback(() => {
-        if (audioRefs.current.backgroundMusic && isInitializedRef.current && !isMuted) {
+        if (audioRefs.current.backgroundMusic && isInitializedRef.current) {
             audioRefs.current.backgroundMusic.play().catch(() => {
                 // Ignore autoplay policy errors
             });
         }
-    }, [isMuted]);
+    }, []);
 
     const stopBackgroundMusic = useCallback(() => {
         // Background music continues playing - this is kept for compatibility
     }, []);
 
+    // Isolated toggle function that only changes mute state
     const toggleMute = useCallback(() => {
         setIsMuted(prev => !prev);
     }, []);
