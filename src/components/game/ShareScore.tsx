@@ -20,7 +20,7 @@ const ShareScore = ({ score, onClose }: ShareScoreProps) => {
       color: 'bg-blue-600 hover:bg-blue-700'
     },
     {
-      name: 'X (Twitter)',
+      name: 'X',
       url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(gameUrl)}`,
       color: 'bg-black hover:bg-gray-800'
     },
