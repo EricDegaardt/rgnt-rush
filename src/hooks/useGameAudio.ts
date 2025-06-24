@@ -20,7 +20,7 @@ export const useGameAudio = () => {
 
     const isInitializedRef = useRef(false);
 
-    // Load all audio files and start background music immediately
+    // Load all audio files ONLY ONCE - no dependencies to prevent re-initialization
     useEffect(() => {
         if (isInitializedRef.current) return;
         
@@ -35,12 +35,10 @@ export const useGameAudio = () => {
             audioRefs.current.backgroundMusic.loop = true;
             audioRefs.current.backgroundMusic.volume = 0.3;
             
-            // Start background music immediately if not muted
-            if (!isMuted) {
-                audioRefs.current.backgroundMusic.play().catch(() => {
-                    // Ignore autoplay policy errors
-                });
-            }
+            // Start background music immediately - mute state will be handled separately
+            audioRefs.current.backgroundMusic.play().catch(() => {
+                // Ignore autoplay policy errors
+            });
         }
 
         // Configure sound effects
@@ -51,10 +49,12 @@ export const useGameAudio = () => {
         });
 
         isInitializedRef.current = true;
-    }, [isMuted]);
+    }, []); // Empty dependency array - initialize only once!
 
-    // Update audio mute state when isMuted changes
+    // Update audio mute state when isMuted changes - separate from initialization
     useEffect(() => {
+        if (!isInitializedRef.current) return;
+        
         Object.values(audioRefs.current).forEach(audio => {
             if (audio) {
                 audio.muted = isMuted;
