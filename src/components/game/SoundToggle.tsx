@@ -10,20 +10,17 @@ const SoundToggle = ({ isMuted, onToggle }: SoundToggleProps) => {
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation(); // Prevent event bubbling to game container
-        e.stopImmediatePropagation(); // Extra protection against event propagation
         onToggle();
     };
 
     const handleTouchStart = (e: React.TouchEvent) => {
         e.preventDefault();
         e.stopPropagation(); // Prevent touch events from bubbling
-        e.stopImmediatePropagation();
     };
 
     const handleTouchEnd = (e: React.TouchEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
         onToggle();
     };
 
