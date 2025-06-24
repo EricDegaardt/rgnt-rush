@@ -15,7 +15,7 @@
     overflow: hidden;
 }
 
-/* Cloud stripes */
+/* Cloud stripes - moved much higher */
 .cloud-stripe {
     position: absolute;
     left: 0;
@@ -41,41 +41,41 @@
 }
 
 .cloud-stripe:nth-child(1) {
-    top: 15%;
+    top: 5%;  /* Moved from 15% to 5% */
     animation-duration: 30s;
     animation-delay: 0s;
 }
 
 .cloud-stripe:nth-child(2) {
-    top: 25%;
+    top: 10%; /* Moved from 25% to 10% */
     animation-duration: 35s;
     animation-delay: -5s;
     height: 12px;
 }
 
 .cloud-stripe:nth-child(3) {
-    top: 35%;
+    top: 15%; /* Moved from 35% to 15% */
     animation-duration: 28s;
     animation-delay: -10s;
     height: 6px;
 }
 
 .cloud-stripe:nth-child(4) {
-    top: 45%;
+    top: 20%; /* Moved from 45% to 20% */
     animation-duration: 40s;
     animation-delay: -15s;
     height: 10px;
 }
 
 .cloud-stripe:nth-child(5) {
-    top: 55%;
+    top: 25%; /* Moved from 55% to 25% */
     animation-duration: 32s;
     animation-delay: -20s;
     height: 8px;
 }
 
 .cloud-stripe:nth-child(6) {
-    top: 65%;
+    top: 30%; /* Moved from 65% to 30% */
     animation-duration: 38s;
     animation-delay: -25s;
     height: 14px;
