@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import type { CarouselApi } from '@/components/ui/carousel';
 
 interface Bike {
@@ -61,6 +61,7 @@ interface BikeSelectionProps {
 const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
   const [selectedBike, setSelectedBike] = useState<string>('purple-rain');
   const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     if (!api) {
@@ -70,6 +71,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
     const onSelect = () => {
       const selectedIndex = api.selectedScrollSnap();
       setSelectedBike(bikes[selectedIndex].id);
+      setCurrent(selectedIndex);
     };
 
     onSelect(); // Set initial selection
@@ -107,8 +109,8 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       />
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
-                      {/* Table format for specifications with extra small text and right-aligned values */}
-                      <div className="w-full text-[8px] leading-tight">
+                      {/* Table format for specifications with extra small text, right-aligned values, and right padding */}
+                      <div className="w-full text-[8px] leading-tight pr-4">
                         <table className="w-full border-collapse">
                           <tbody>
                             <tr className="border-b border-gray-700">
@@ -152,9 +154,19 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="text-white border-purple-400 -left-6" />
-          <CarouselNext className="text-white border-purple-400 -right-6" />
         </Carousel>
+        
+        {/* Sliding Indicator */}
+        <div className="flex justify-center mt-4 space-x-2">
+          {bikes.map((_, index) => (
+            <div
+              key={index}
+              className={`h-2 w-8 rounded-full transition-all duration-300 ${
+                index === current ? 'bg-purple-400' : 'bg-gray-600'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="flex gap-4">
