@@ -97,7 +97,7 @@ const MobileOptimizedGame = () => {
     setShowBikeSelection(true);
   };
   
-  // Completely isolated volume change that doesn't interfere with game
+  // Volume control function that doesn't interfere with game
   const handleVolumeChange = useCallback((newVolume: number) => {
     setVolumeLevel(newVolume);
   }, [setVolumeLevel]);
