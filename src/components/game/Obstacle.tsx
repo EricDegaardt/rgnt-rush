@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { ROAD_HEIGHT } from './constants';
 
-const Obstacle = ({ x, width, height }: { x: number; width: number; height: number; }) => {
+const Obstacle = React.memo(({ x, width, height }: { x: number; width: number; height: number; }) => {
     return (
         <div 
             className="absolute"
@@ -20,6 +19,8 @@ const Obstacle = ({ x, width, height }: { x: number; width: number; height: numb
             }}
         />
     );
-};
+});
+
+Obstacle.displayName = 'Obstacle';
 
 export default Obstacle;
