@@ -168,7 +168,7 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
 
         <div className={`transition-all duration-1000 delay-500 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <p className="mb-8 text-sm md:text-base text-gray-400 max-w-md leading-relaxed">
-            Race through the neon-lit city streets! Collect batteries, dodge obstacles, and see how far you can go in this high-speed electric bike adventure.
+            Race through neon city streets on your electric bike! Tap the screen or press space to jump, collect batteries, and dodge obstacles to go the distance!
           </p>
           
           <div className="mb-6">
