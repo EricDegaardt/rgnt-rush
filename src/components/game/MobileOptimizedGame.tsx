@@ -40,7 +40,6 @@ const MobileOptimizedGame = () => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
-    // Don't stop background music on game over
     playSound('gameOver');
   }, [playSound]);
   
@@ -66,7 +65,6 @@ const MobileOptimizedGame = () => {
     setFinalScore(0);
     gameLogic.resetGame();
     setRunning(true);
-    // Background music is already playing continuously
   };
   
   const handleStartFromMenu = () => {
@@ -85,7 +83,9 @@ const MobileOptimizedGame = () => {
     startGame();
   };
 
-  const handleShareScore = () => {
+  const handleShareScore = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Share Score button clicked'); // Debug log
     setShowShareScore(true);
   };
 
@@ -93,7 +93,8 @@ const MobileOptimizedGame = () => {
     setShowShareScore(false);
   };
 
-  const handlePlayAgain = () => {
+  const handlePlayAgain = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setGameOver(false);
     setShowShareScore(false);
     setShowBikeSelection(true);
@@ -188,19 +189,13 @@ const MobileOptimizedGame = () => {
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
           <div className="flex gap-4 mt-8">
             <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                handleShareScore();
-              }}
+              onClick={handleShareScore}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
             >
               Share Score
             </button>
             <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePlayAgain();
-              }}
+              onClick={handlePlayAgain}
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl"
             >
               Play Again
