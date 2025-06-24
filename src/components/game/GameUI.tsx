@@ -30,24 +30,36 @@ const GameUI = ({
   // Clamp energy between 0 and 100 to ensure valid percentage
   const clampedEnergy = Math.max(0, Math.min(100, energy));
 
-  // Handle mute toggle with complete event isolation
-  const handleMuteClick = (e: React.MouseEvent) => {
+  // Completely isolated mute button handler
+  const handleMuteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.stopPropagation();
+    e.stopImmediatePropagation();
+    
+    // Additional event isolation
+    if (e.nativeEvent) {
+      e.nativeEvent.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+    }
+    
     if (onToggleMute) {
       onToggleMute();
     }
-  };
+  }, [onToggleMute]);
 
-  const handleMuteTouch = (e: React.TouchEvent) => {
+  const handleMuteTouch = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    e.nativeEvent.stopPropagation();
+    
+    // Additional event isolation for touch
+    if (e.nativeEvent) {
+      e.nativeEvent.stopPropagation();
+    }
+    
     if (onToggleMute) {
       onToggleMute();
     }
-  };
+  }, [onToggleMute]);
 
   return (
     <div className="absolute top-2.5 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm pointer-events-none">
@@ -70,54 +82,40 @@ const GameUI = ({
             </div>
           </div>
           
-          {/* Mute Toggle Button - Completely isolated with higher z-index */}
+          {/* Mute Toggle Button - Completely isolated */}
           {onToggleMute && (
-            <div 
-              className="relative z-[9999]"
-              onClickCapture={(e) => {
+            <button
+              data-mute-button="true"
+              onClick={handleMuteClick}
+              onTouchStart={handleMuteTouch}
+              onTouchEnd={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
-              onTouchStartCapture={(e) => {
+              onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
+              onMouseUp={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50 select-none touch-manipulation relative z-[9999]"
+              style={{ 
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+                touchAction: 'manipulation',
+                isolation: 'isolate'
+              }}
+              aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
             >
-              <button
-                onClick={handleMuteClick}
-                onTouchStart={handleMuteTouch}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.nativeEvent.stopPropagation();
-                }}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.nativeEvent.stopPropagation();
-                }}
-                onMouseUp={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.nativeEvent.stopPropagation();
-                }}
-                className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50 select-none touch-manipulation relative z-[9999]"
-                style={{ 
-                  WebkitTouchCallout: 'none',
-                  WebkitUserSelect: 'none',
-                  userSelect: 'none',
-                  touchAction: 'manipulation',
-                  isolation: 'isolate'
-                }}
-                aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
-              >
-                {isMuted ? (
-                  <VolumeX size={16} className="text-red-400" />
-                ) : (
-                  <Volume2 size={16} className="text-gray-300" />
-                )}
-              </button>
-            </div>
+              {isMuted ? (
+                <VolumeX size={16} className="text-red-400" />
+              ) : (
+                <Volume2 size={16} className="text-gray-300" />
+              )}
+            </button>
           )}
         </div>
       </div>
@@ -135,8 +133,8 @@ const GameUI = ({
               className={`h-full ${getEnergyColor(clampedEnergy).split(' ')[0]}`} 
               style={{ 
                 width: `${clampedEnergy}%`,
-                transition: 'none', // Remove transitions that might interfere
-                willChange: 'width' // Optimize for width changes
+                transition: 'none',
+                willChange: 'width'
               }}
             />
           </div>

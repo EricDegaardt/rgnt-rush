@@ -97,11 +97,19 @@ const MobileOptimizedGame = () => {
     setShowBikeSelection(true);
   };
   
+  // Isolated mute toggle handler that doesn't interfere with game
+  const handleMuteToggle = useCallback(() => {
+    toggleMute();
+  }, [toggleMute]);
+  
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     // Check if the event target is the mute button or its children
     const target = e.target as HTMLElement;
-    if (target.closest('[aria-label*="mute"]') || target.closest('[aria-label*="Mute"]')) {
-      return; // Don't handle game interactions for mute button
+    if (target.closest('button[aria-label*="mute"]') || 
+        target.closest('button[aria-label*="Mute"]') ||
+        target.closest('[data-mute-button]')) {
+      // Completely ignore mute button interactions for game logic
+      return;
     }
 
     e.preventDefault();
@@ -197,7 +205,7 @@ const MobileOptimizedGame = () => {
         distance={gameLogic.distance} 
         energy={gameLogic.energy} 
         isMuted={isMuted}
-        onToggleMute={toggleMute}
+        onToggleMute={handleMuteToggle}
       />
 
       {gameOver && !showShareScore && (
