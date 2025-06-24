@@ -148,7 +148,7 @@ const MobileOptimizedGame = () => {
   
   if (showBikeSelection) {
     return (
-      <div className="relative">
+      <div className="relative h-screen w-full">
         <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
         <BikeSelection onBikeSelect={handleBikeSelect} />
       </div>
@@ -157,13 +157,17 @@ const MobileOptimizedGame = () => {
 
   const gameOverMessage = getGameOverMessage(finalScore);
 
-  return <div className="relative bg-black w-full overflow-hidden touch-none select-none" style={{
-    maxWidth: `${GAME_WIDTH}px`,
-    aspectRatio: '3 / 4',
-    WebkitTouchCallout: 'none',
-    WebkitUserSelect: 'none',
-    userSelect: 'none'
-  }} onClick={handleScreenInteraction} onTouchStart={handleScreenInteraction}>
+  return (
+    <div 
+      className="relative bg-black w-full h-screen overflow-hidden touch-none select-none" 
+      style={{
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none'
+      }} 
+      onClick={handleScreenInteraction} 
+      onTouchStart={handleScreenInteraction}
+    >
       <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
       <Skyline />
       <Road />
@@ -177,7 +181,8 @@ const MobileOptimizedGame = () => {
       
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-      {gameOver && !showShareScore && <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
+      {gameOver && !showShareScore && (
+        <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
           <div className="flex gap-4 mt-8">
@@ -188,7 +193,8 @@ const MobileOptimizedGame = () => {
               Play Again
             </button>
           </div>
-        </div>}
+        </div>
+      )}
 
       {showShareScore && (
         <ShareScore 
@@ -196,6 +202,8 @@ const MobileOptimizedGame = () => {
           onClose={handleCloseShareScore} 
         />
       )}
-    </div>;
+    </div>
+  );
 };
+
 export default MobileOptimizedGame;

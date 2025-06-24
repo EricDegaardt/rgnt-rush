@@ -43,7 +43,7 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
   };
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900 min-h-screen">
+    <div className="w-full h-screen relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
       {/* CSS Animations */}
       <style>{`
         @keyframes speedLine {
