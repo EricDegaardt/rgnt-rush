@@ -14,17 +14,14 @@ const SoundToggle = ({ isMuted, onToggle }: SoundToggleProps) => {
     };
 
     return (
-        <div className="absolute top-4 right-4 flex items-center gap-2 p-2 bg-black bg-opacity-50 rounded text-white z-50">
-            <span className="text-sm text-gray-300">Sound</span>
-            <button
-                onClick={handleClick}
-                className="hover:bg-opacity-70 transition-all p-1 rounded"
-                title={isMuted ? 'Unmute' : 'Mute'}
-                type="button"
-            >
-                {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-            </button>
-        </div>
+        <button
+            onClick={handleClick}
+            className="absolute top-40 right-4 p-2 bg-black bg-opacity-50 rounded text-white hover:bg-opacity-70 transition-all z-50"
+            title={isMuted ? 'Unmute' : 'Mute'}
+            type="button"
+        >
+            {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+        </button>
     );
 };
 
