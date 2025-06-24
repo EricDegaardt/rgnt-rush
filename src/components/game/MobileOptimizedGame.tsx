@@ -5,7 +5,6 @@ import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
 import CollectionEffect from './CollectionEffect';
-import SoundToggle from './SoundToggle';
 import SplashEffect from './SplashEffect';
 import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
@@ -30,9 +29,7 @@ const MobileOptimizedGame = () => {
   const {
     playSound,
     startBackgroundMusic,
-    stopBackgroundMusic,
-    toggleMute,
-    isMuted
+    stopBackgroundMusic
   } = useGameAudio();
   
   const handleGameOver = useCallback((score: number) => {
@@ -97,28 +94,9 @@ const MobileOptimizedGame = () => {
     setShowShareScore(false);
     setShowBikeSelection(true);
   };
-
-  // Completely isolated mute toggle handler
-  const handleMuteToggle = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    // Use setTimeout to ensure this doesn't interfere with any game state updates
-    setTimeout(() => {
-      toggleMute();
-    }, 0);
-  }, [toggleMute]);
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    // Prevent any interaction if the event originated from the mute button area
-    const target = e.target as HTMLElement;
-    const muteButton = target.closest('[data-mute-button]');
-    if (muteButton) {
-      e.preventDefault();
-      e.stopPropagation();
-      return;
-    }
+    e.preventDefault();
 
     // Only handle specific game actions
     if (!running && !gameOver && !showBikeSelection && !showShareScore) {
@@ -163,7 +141,7 @@ const MobileOptimizedGame = () => {
   if (showStartScreen) {
     return (
       <div className="w-full h-full">
-        <AnimatedStartScreen onStartGame={handleStartFromMenu} isMuted={isMuted} onToggleMute={handleMuteToggle} />
+        <AnimatedStartScreen onStartGame={handleStartFromMenu} />
       </div>
     );
   }
@@ -179,7 +157,6 @@ const MobileOptimizedGame = () => {
   if (showBikeSelection) {
     return (
       <div className="relative w-full h-full">
-        <SoundToggle isMuted={isMuted} onToggle={handleMuteToggle} />
         <BikeSelection onBikeSelect={handleBikeSelect} />
       </div>
     );
@@ -198,17 +175,6 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
     >
-      {/* Mute button with complete isolation */}
-      <div 
-        data-mute-button="true"
-        className="absolute top-32 right-4 z-50 pointer-events-auto"
-        onClick={handleMuteToggle}
-        onTouchStart={handleMuteToggle}
-        onTouchEnd={(e) => e.preventDefault()}
-      >
-        <SoundToggle isMuted={isMuted} onToggle={() => {}} />
-      </div>
-      
       <Skyline />
       <Road />
       
