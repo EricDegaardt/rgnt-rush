@@ -99,12 +99,17 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         </div>
       </div>
       
-      {/* Racing Bikes */}
+      {/* Road */}
+      <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 border-t-4 border-gray-500">
+        <div className="absolute top-6 left-0 w-full h-1 bg-white opacity-30"></div>
+      </div>
+
+      {/* Racing Bikes - positioned on the gray street */}
       <div 
         className="absolute z-10 transition-transform duration-75 ease-linear"
         style={{
           left: `${purpleBikeX}px`,
-          bottom: '120px',
+          bottom: '20px', // Positioned on the gray street
           width: '126px',
           height: '63px',
           backgroundImage: "url('/lovable-uploads/purple-rain.png')",
@@ -120,7 +125,7 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         className="absolute z-10 transition-transform duration-75 ease-linear"
         style={{
           left: `${blackBikeX}px`,
-          bottom: '130px',
+          bottom: '25px', // Positioned on the gray street, slightly offset
           width: '126px',
           height: '63px',
           backgroundImage: "url('/lovable-uploads/black-thunder.png')",
@@ -146,11 +151,6 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
             }}
           />
         ))}
-      </div>
-
-      {/* Road */}
-      <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 border-t-4 border-gray-500">
-        <div className="absolute top-6 left-0 w-full h-1 bg-white opacity-30"></div>
       </div>
 
       {/* Main Content */}

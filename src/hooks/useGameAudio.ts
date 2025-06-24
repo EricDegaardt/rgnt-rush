@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 export const useGameAudio = () => {
@@ -42,6 +41,13 @@ export const useGameAudio = () => {
                 audio.volume = 0.7;
             }
         });
+
+        // Start background music immediately when audio is loaded
+        if (!isMuted && audioRefs.current.backgroundMusic) {
+            audioRefs.current.backgroundMusic.play().catch(() => {
+                // Ignore autoplay policy errors
+            });
+        }
     }, []);
 
     // Handle mute state
@@ -53,6 +59,17 @@ export const useGameAudio = () => {
                 audio.muted = isMuted;
             }
         });
+
+        // Control background music based on mute state
+        if (audioRefs.current.backgroundMusic) {
+            if (isMuted) {
+                audioRefs.current.backgroundMusic.pause();
+            } else {
+                audioRefs.current.backgroundMusic.play().catch(() => {
+                    // Ignore autoplay policy errors
+                });
+            }
+        }
     }, [isMuted]);
 
     const playSound = useCallback((soundName: keyof typeof audioRefs.current) => {
@@ -88,10 +105,8 @@ export const useGameAudio = () => {
     }, [isMuted]);
 
     const stopBackgroundMusic = useCallback(() => {
-        if (audioRefs.current.backgroundMusic) {
-            audioRefs.current.backgroundMusic.pause();
-            audioRefs.current.backgroundMusic.currentTime = 0;
-        }
+        // Don't stop background music anymore - it should play continuously
+        // This function is kept for compatibility but doesn't stop the music
     }, []);
 
     const toggleMute = useCallback(() => {

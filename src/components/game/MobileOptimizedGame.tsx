@@ -40,9 +40,9 @@ const MobileOptimizedGame = () => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
-    stopBackgroundMusic();
+    // Don't stop background music on game over
     playSound('gameOver');
-  }, [stopBackgroundMusic, playSound]);
+  }, [playSound]);
   
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
@@ -66,7 +66,7 @@ const MobileOptimizedGame = () => {
     setFinalScore(0);
     gameLogic.resetGame();
     setRunning(true);
-    startBackgroundMusic();
+    // Background music is already playing continuously
   };
   
   const handleStartFromMenu = () => {
@@ -147,7 +147,12 @@ const MobileOptimizedGame = () => {
   }
   
   if (showBikeSelection) {
-    return <BikeSelection onBikeSelect={handleBikeSelect} />;
+    return (
+      <div className="relative">
+        <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
+        <BikeSelection onBikeSelect={handleBikeSelect} />
+      </div>
+    );
   }
 
   const gameOverMessage = getGameOverMessage(finalScore);
