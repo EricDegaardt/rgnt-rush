@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
 import BikeExplosionEffect from './BikeExplosionEffect';
-import { PLAYER_X_POSITION } from './constants';
+import { getPlayerXPosition } from './constants';
 
 const bikeImages = {
   'purple-rain': '/lovable-uploads/purple-rain.png',
@@ -26,6 +25,7 @@ const OptimizedPlayer = React.memo(({
     const [bounceOffset, setBounceOffset] = useState(0);
     const [showExplosion, setShowExplosion] = useState(false);
     const [explosionCompleted, setExplosionCompleted] = useState(false);
+    const [playerXPosition, setPlayerXPosition] = useState(getPlayerXPosition());
 
     // Only run bounce animation when visible and not spinning
     useEffect(() => {
@@ -44,6 +44,16 @@ const OptimizedPlayer = React.memo(({
         }
     }, [gameOver, explosionCompleted]);
 
+    // Update player position on window resize
+    useEffect(() => {
+        const handleResize = () => {
+            setPlayerXPosition(getPlayerXPosition());
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Memoize bounce calculation
     const bounceY = useMemo(() => {
         return isSpinning ? 0 : Math.sin(bounceOffset) * 2.5;
@@ -61,7 +71,7 @@ const OptimizedPlayer = React.memo(({
 
     // Memoize player style
     const playerStyle = useMemo(() => ({
-        left: `${PLAYER_X_POSITION}px`,
+        left: `${playerXPosition}px`,
         bottom: `${y + bounceY - 10}px`,
         width: '126px',
         height: '63px',
@@ -75,7 +85,7 @@ const OptimizedPlayer = React.memo(({
         opacity: showExplosion ? 0 : 1,
         transform: 'translateZ(0)', // Force hardware acceleration
         willChange: 'transform', // Optimize for animations
-    }), [y, bounceY, bikeImageUrl, isSpinning, showExplosion]);
+    }), [playerXPosition, y, bounceY, bikeImageUrl, isSpinning, showExplosion]);
 
     if (!isVisible) return null;
 
@@ -90,7 +100,7 @@ const OptimizedPlayer = React.memo(({
             <div className="absolute" style={playerStyle} />
             {showExplosion && (
                 <BikeExplosionEffect
-                    x={PLAYER_X_POSITION + 63}
+                    x={playerXPosition + 63}
                     y={y + 31.5}
                     onComplete={handleExplosionComplete}
                 />

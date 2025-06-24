@@ -1,5 +1,18 @@
 import { ObstacleType, CollectibleType } from './types';
-import { GAME_WIDTH, ROAD_HEIGHT } from '../../components/game/constants';
+import { getPlayerXPosition } from '../../components/game/constants';
+
+// Get dynamic game width based on screen size
+const getGameWidth = () => {
+    if (typeof window !== 'undefined') {
+        const container = document.querySelector('[class*="aspect-"]');
+        if (container) {
+            return container.clientWidth;
+        }
+        // Fallback based on screen size
+        return window.innerWidth >= 768 ? 900 : 384; // Desktop max width or mobile max width
+    }
+    return 600; // Default fallback
+};
 
 export const shouldSpawnObstacle = (): boolean => {
     return Math.random() < 0.009; // Increased slightly to match collectible rate
@@ -30,7 +43,8 @@ export const canSpawnAtPosition = (
 export const createObstacle = (obstacles: ObstacleType[], collectibles: CollectibleType[]): ObstacleType | null => {
     if (!shouldSpawnObstacle()) return null;
 
-    const newX = GAME_WIDTH + 50;
+    const gameWidth = getGameWidth();
+    const newX = gameWidth + 50; // Spawn from the right edge of the screen
     // 10% smaller than previous size (was 80x60, now 72x54)
     const potentialWidth = 72; // Medium size barrel, 10% smaller
     const potentialHeight = 54; // Medium size barrel, 10% smaller
@@ -49,8 +63,9 @@ export const createObstacle = (obstacles: ObstacleType[], collectibles: Collecti
 export const createCollectible = (obstacles: ObstacleType[], collectibles: CollectibleType[]): CollectibleType | null => {
     if (!shouldSpawnCollectible()) return null;
 
-    const newX = GAME_WIDTH + 50;
-    const newY = ROAD_HEIGHT + 50 + Math.random() * 250;
+    const gameWidth = getGameWidth();
+    const newX = gameWidth + 50; // Spawn from the right edge of the screen
+    const newY = 60 + 50 + Math.random() * 250; // ROAD_HEIGHT + offset + random height
     const potentialWidth = 30;
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {

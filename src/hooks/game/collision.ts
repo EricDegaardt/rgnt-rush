@@ -1,6 +1,5 @@
-
 import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './types';
-import { PLAYER_X_POSITION, ROAD_HEIGHT } from '../../components/game/constants';
+import { ROAD_HEIGHT, getPlayerXPosition } from '../../components/game/constants';
 
 const PLAYER_WIDTH = 126; // Updated to match new bike size
 const PLAYER_HEIGHT = 63; // Updated to match new bike size
@@ -21,7 +20,8 @@ export const checkCollisions = (
     collectionEffects: CollectionEffectType[],
     splashEffects: SplashEffectType[]
 ): CollisionResult => {
-    const playerRect = { x: PLAYER_X_POSITION, y: playerY, width: PLAYER_WIDTH, height: PLAYER_HEIGHT };
+    const playerXPosition = getPlayerXPosition();
+    const playerRect = { x: playerXPosition, y: playerY, width: PLAYER_WIDTH, height: PLAYER_HEIGHT };
     let energyChange = 0;
     let hitObstacle = false;
     let newObstacles = [...obstacles];

@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
 import BikeExplosionEffect from './BikeExplosionEffect';
-import { PLAYER_X_POSITION } from './constants';
+import { getPlayerXPosition } from './constants';
 
 const bikeImages = {
   'purple-rain': '/lovable-uploads/purple-rain.png',
@@ -23,6 +22,7 @@ const Player = ({
     const [bounceOffset, setBounceOffset] = useState(0);
     const [showExplosion, setShowExplosion] = useState(false);
     const [explosionCompleted, setExplosionCompleted] = useState(false);
+    const [playerXPosition, setPlayerXPosition] = useState(getPlayerXPosition());
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -37,6 +37,16 @@ const Player = ({
             setShowExplosion(true);
         }
     }, [gameOver, explosionCompleted]);
+
+    // Update player position on window resize
+    useEffect(() => {
+        const handleResize = () => {
+            setPlayerXPosition(getPlayerXPosition());
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Create a subtle bounce effect (2-3px amplitude)
     const bounceY = Math.sin(bounceOffset) * 2.5;
@@ -63,7 +73,7 @@ const Player = ({
             <div
                 className="absolute"
                 style={{
-                    left: `${PLAYER_X_POSITION}px`,
+                    left: `${playerXPosition}px`,
                     bottom: `${y + bounceY - 10}px`, // Position 10px lower to drive in the street
                     width: '126px',
                     height: '63px',
@@ -81,7 +91,7 @@ const Player = ({
             />
             {showExplosion && (
                 <BikeExplosionEffect
-                    x={PLAYER_X_POSITION + 63} // Center of bike
+                    x={playerXPosition + 63} // Center of bike
                     y={y + 31.5} // Center of bike
                     onComplete={handleExplosionComplete}
                 />
