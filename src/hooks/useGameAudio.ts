@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 
 export const useGameAudio = () => {
-    const [isMuted, setIsMuted] = useState(false);
+    const [volume, setVolume] = useState(70); // Default volume at 70%
     
     const audioRefs = useRef({
         backgroundMusic: null as HTMLAudioElement | null,
@@ -33,7 +33,7 @@ export const useGameAudio = () => {
         // Configure background music
         if (audioRefs.current.backgroundMusic) {
             audioRefs.current.backgroundMusic.loop = true;
-            audioRefs.current.backgroundMusic.volume = 0.3;
+            audioRefs.current.backgroundMusic.volume = 0.3 * (volume / 100);
             
             // Start background music immediately
             audioRefs.current.backgroundMusic.play().catch(() => {
@@ -44,30 +44,38 @@ export const useGameAudio = () => {
         // Configure sound effects
         Object.values(audioRefs.current).forEach(audio => {
             if (audio && audio !== audioRefs.current.backgroundMusic) {
-                audio.volume = 0.7;
+                audio.volume = 0.7 * (volume / 100);
             }
         });
 
         isInitializedRef.current = true;
     }, []); // Empty dependency array - initialize only once!
 
-    // Handle mute state changes without affecting initialization
+    // Handle volume changes without affecting initialization
     useEffect(() => {
         if (!isInitializedRef.current) return;
         
-        Object.values(audioRefs.current).forEach(audio => {
-            if (audio) {
-                audio.muted = isMuted;
+        const volumeMultiplier = volume / 100;
+        
+        // Update background music volume
+        if (audioRefs.current.backgroundMusic) {
+            audioRefs.current.backgroundMusic.volume = 0.3 * volumeMultiplier;
+        }
+        
+        // Update sound effects volume
+        Object.entries(audioRefs.current).forEach(([key, audio]) => {
+            if (audio && key !== 'backgroundMusic') {
+                audio.volume = 0.7 * volumeMultiplier;
             }
         });
-    }, [isMuted]);
+    }, [volume]);
 
     // Stable playSound function that doesn't change
     const playSound = useCallback((soundName: keyof typeof audioRefs.current) => {
-        if (!isInitializedRef.current) return;
+        if (!isInitializedRef.current || volume === 0) return;
 
         const audio = audioRefs.current[soundName];
-        if (!audio || audio.muted) return;
+        if (!audio) return;
 
         // Prevent rapid-fire sounds (except background music)
         if (soundName !== 'backgroundMusic') {
@@ -99,16 +107,17 @@ export const useGameAudio = () => {
         // Background music continues playing - this is kept for compatibility
     }, []);
 
-    // Isolated toggle function that only changes mute state
-    const toggleMute = useCallback(() => {
-        setIsMuted(prev => !prev);
+    // Volume control function
+    const setVolumeLevel = useCallback((newVolume: number) => {
+        const clampedVolume = Math.max(0, Math.min(100, newVolume));
+        setVolume(clampedVolume);
     }, []);
 
     return {
         playSound,
         startBackgroundMusic,
         stopBackgroundMusic,
-        toggleMute,
-        isMuted,
+        volume,
+        setVolumeLevel,
     };
 };

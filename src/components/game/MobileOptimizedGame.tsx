@@ -30,8 +30,8 @@ const MobileOptimizedGame = () => {
     playSound,
     startBackgroundMusic,
     stopBackgroundMusic,
-    toggleMute,
-    isMuted
+    volume,
+    setVolumeLevel
   } = useGameAudio();
   
   const handleGameOver = useCallback((score: number) => {
@@ -97,17 +97,17 @@ const MobileOptimizedGame = () => {
     setShowBikeSelection(true);
   };
   
-  // Completely isolated mute toggle that doesn't interfere with game
-  const handleMuteToggle = useCallback(() => {
-    toggleMute();
-  }, [toggleMute]);
+  // Completely isolated volume change that doesn't interfere with game
+  const handleVolumeChange = useCallback((newVolume: number) => {
+    setVolumeLevel(newVolume);
+  }, [setVolumeLevel]);
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    // Check if the event target is the mute button or its children
+    // Check if the event target is the volume slider or its children
     const target = e.target as HTMLElement;
-    if (target.closest('button[data-mute-button]') || 
-        target.closest('[data-mute-button]')) {
-      // Completely ignore mute button interactions for game logic
+    if (target.closest('[data-volume-slider]') || 
+        target.closest('.pointer-events-auto')) {
+      // Completely ignore volume slider interactions for game logic
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -205,8 +205,8 @@ const MobileOptimizedGame = () => {
       <GameUI 
         distance={gameLogic.distance} 
         energy={gameLogic.energy} 
-        isMuted={isMuted}
-        onToggleMute={handleMuteToggle}
+        volume={volume}
+        onVolumeChange={handleVolumeChange}
       />
 
       {gameOver && !showShareScore && (
