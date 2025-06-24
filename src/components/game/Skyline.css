@@ -42,41 +42,44 @@
     bottom: 60px; /* Road height */
     left: 0;
     width: 200%;
-    height: 250px; /* Increased height */
+    height: calc(100vh - 60px); /* Full height minus road */
     background-repeat: repeat-x;
     pointer-events: none; /* Ensure no interference with game interactions */
+    background-position: bottom;
 }
 
 #city-background {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="5" y="180" width="30" height="70" fill="%2310151d"/><rect x="45" y="160" width="40" height="90" fill="%2310151d"/><rect x="100" y="200" width="25" height="50" fill="%2310151d"/><rect x="140" y="150" width="50" height="100" fill="%2310151d"/><rect x="210" y="190" width="30" height="60" fill="%2310151d"/><rect x="260" y="140" width="60" height="110" fill="%2310151d"/><rect x="350" y="170" width="40" height="80" fill="%2310151d"/><rect x="410" y="210" width="20" height="40" fill="%2310151d"/><rect x="450" y="160" width="50" height="90" fill="%2310151d"/><rect x="530" y="130" width="70" height="120" fill="%2310151d"/><rect x="620" y="180" width="30" height="70" fill="%2310151d"/><rect x="680" y="160" width="60" height="90" fill="%2310151d"/><rect x="750" y="190" width="40" height="60" fill="%2310151d"/></svg>');
-    background-size: 800px 250px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400"><rect x="5" y="280" width="30" height="120" fill="%2310151d"/><rect x="45" y="260" width="40" height="140" fill="%2310151d"/><rect x="100" y="300" width="25" height="100" fill="%2310151d"/><rect x="140" y="250" width="50" height="150" fill="%2310151d"/><rect x="210" y="290" width="30" height="110" fill="%2310151d"/><rect x="260" y="240" width="60" height="160" fill="%2310151d"/><rect x="350" y="270" width="40" height="130" fill="%2310151d"/><rect x="410" y="310" width="20" height="90" fill="%2310151d"/><rect x="450" y="260" width="50" height="140" fill="%2310151d"/><rect x="530" y="230" width="70" height="170" fill="%2310151d"/><rect x="620" y="280" width="30" height="120" fill="%2310151d"/><rect x="680" y="260" width="60" height="140" fill="%2310151d"/><rect x="750" y="290" width="40" height="110" fill="%2310151d"/></svg>');
+    background-size: 800px 100%;
     animation: slide 60s linear infinite;
     opacity: 0.4;
 }
 
 #city-far {
     /* Taller buildings */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="10" y="130" width="40" height="120" fill="%231a202c"/><rect x="60" y="100" width="50" height="150" fill="%231a202c"/><rect x="120" y="160" width="30" height="90" fill="%231a202c"/><rect x="160" y="70" width="60" height="180" fill="%231a202c"/><rect x="230" y="145" width="40" height="105" fill="%231a202c"/><rect x="300" y="115" width="70" height="135" fill="%231a202c"/><rect x="400" y="85" width="50" height="165" fill="%231a202c"/><rect x="480" y="175" width="20" height="75" fill="%231a202c"/><rect x="520" y="130" width="60" height="120" fill="%231a202c"/><rect x="600" y="55" width="80" height="195" fill="%231a202c"/><rect x="700" y="160" width="40" height="90" fill="%231a202c"/></svg>');
-    background-size: 800px 250px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400"><rect x="10" y="200" width="40" height="200" fill="%231a202c"/><rect x="60" y="150" width="50" height="250" fill="%231a202c"/><rect x="120" y="240" width="30" height="160" fill="%231a202c"/><rect x="160" y="100" width="60" height="300" fill="%231a202c"/><rect x="230" y="220" width="40" height="180" fill="%231a202c"/><rect x="300" y="180" width="70" height="220" fill="%231a202c"/><rect x="400" y="130" width="50" height="270" fill="%231a202c"/><rect x="480" y="260" width="20" height="140" fill="%231a202c"/><rect x="520" y="200" width="60" height="200" fill="%231a202c"/><rect x="600" y="80" width="80" height="320" fill="%231a202c"/><rect x="700" y="240" width="40" height="160" fill="%231a202c"/></svg>');
+    background-size: 800px 100%;
     animation: slide 30s linear infinite;
     opacity: 0.6;
 }
 
 #city-near {
-    /* Taller buildings with subtle purple neon glow */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="20" y="100" width="60" height="150" fill="%232d3748"/><rect x="100" y="70" width="80" height="180" fill="%232d3748" /><rect x="200" y="120" width="50" height="130" fill="%232d3748" /><rect x="280" y="90" width="70" height="160" fill="%232d3748" /><rect x="380" y="130" width="40" height="120" fill="%232d3748" /><rect x="450" y="80" width="90" height="170" fill="%232d3748" /><rect x="560" y="110" width="60" height="140" fill="%232d3748" /><rect x="650" y="40" width="100" height="210" fill="%232d3748" /></svg>');
-    background-size: 800px 250px;
+    /* Taller buildings with subtle purple neon glow - extends to full height */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400"><rect x="20" y="120" width="60" height="280" fill="%232d3748"/><rect x="100" y="80" width="80" height="320" fill="%232d3748" /><rect x="200" y="160" width="50" height="240" fill="%232d3748" /><rect x="280" y="100" width="70" height="300" fill="%232d3748" /><rect x="380" y="180" width="40" height="220" fill="%232d3748" /><rect x="450" y="60" width="90" height="340" fill="%232d3748" /><rect x="560" y="140" width="60" height="260" fill="%232d3748" /><rect x="650" y="20" width="100" height="380" fill="%232d3748" /></svg>');
+    background-size: 800px 100%;
     animation: slide 15s linear infinite;
-    /* Add subtle purple neon glow */
-    filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.3)) drop-shadow(0 0 16px rgba(147, 51, 234, 0.1));
+    /* Enhanced purple neon glow that extends fully */
+    filter: drop-shadow(0 0 12px rgba(147, 51, 234, 0.4)) 
+            drop-shadow(0 0 24px rgba(147, 51, 234, 0.2)) 
+            drop-shadow(0 0 36px rgba(147, 51, 234, 0.1));
     /* Add subtle purple tint */
     background-blend-mode: multiply;
-    background-color: rgba(147, 51, 234, 0.05);
+    background-color: rgba(147, 51, 234, 0.08);
 }
 
 #windows {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="35" y="120" width="3" height="4" fill="%23888470"/><rect x="55" y="180" width="3" height="4" fill="%23888470"/><rect x="110" y="90" width="3" height="4" fill="%23888470"/><rect x="130" y="150" width="3" height="4" fill="%23888470"/><rect x="160" y="200" width="3" height="4" fill="%23888470"/><rect x="220" y="140" width="3" height="4" fill="%23888470"/><rect x="290" y="110" width="3" height="4" fill="%23888470"/><rect x="330" y="180" width="3" height="4" fill="%23888470"/><rect x="390" y="150" width="3" height="4" fill="%23888470"/><rect x="470" y="100" width="3" height="4" fill="%23888470"/><rect x="500" y="160" width="3" height="4" fill="%23888470"/><rect x="580" y="130" width="3" height="4" fill="%23888470"/><rect x="670" y="80" width="3" height="4" fill="%23888470"/><rect x="700" y="140" width="3" height="4" fill="%23888470"/><rect x="730" y="200" width="3" height="4" fill="%23888470"/></svg>');
-    background-size: 800px 250px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400"><rect x="35" y="160" width="3" height="4" fill="%23888470"/><rect x="55" y="220" width="3" height="4" fill="%23888470"/><rect x="110" y="120" width="3" height="4" fill="%23888470"/><rect x="130" y="180" width="3" height="4" fill="%23888470"/><rect x="160" y="240" width="3" height="4" fill="%23888470"/><rect x="220" y="200" width="3" height="4" fill="%23888470"/><rect x="290" y="140" width="3" height="4" fill="%23888470"/><rect x="330" y="220" width="3" height="4" fill="%23888470"/><rect x="390" y="200" width="3" height="4" fill="%23888470"/><rect x="470" y="100" width="3" height="4" fill="%23888470"/><rect x="500" y="180" width="3" height="4" fill="%23888470"/><rect x="580" y="160" width="3" height="4" fill="%23888470"/><rect x="670" y="80" width="3" height="4" fill="%23888470"/><rect x="700" y="160" width="3" height="4" fill="%23888470"/><rect x="730" y="240" width="3" height="4" fill="%23888470"/></svg>');
+    background-size: 800px 100%;
     animation: slide 15s linear infinite, blink 3s ease-in-out infinite;
     z-index: 1;
 }
