@@ -86,6 +86,12 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
     onBikeSelect(selectedBike);
   };
 
+  const handlePillClick = (index: number) => {
+    if (api) {
+      api.scrollTo(index);
+    }
+  };
+
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-black text-white p-4">
       <h2 className="text-xl md:text-2xl mb-6 text-purple-400 whitespace-nowrap">Choose Your Bike</h2>
@@ -109,40 +115,40 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       />
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
-                      {/* Table format for specifications with extra small text, right-aligned values, and right padding */}
-                      <div className="w-full text-[8px] leading-tight pr-4">
+                      {/* Table format for specifications with smaller text, right-aligned values, and more right padding */}
+                      <div className="w-full text-[7px] leading-tight pr-8">
                         <table className="w-full border-collapse">
                           <tbody>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Top Speed</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Top Speed</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.topSpeed}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Mixed Range</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Mixed Range</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.mixedRange}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Turbo Power</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Turbo Power</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.turboPower}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Accel 0–100 km/h</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Accel 0–100 km/h</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.acceleration}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Braking System</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Braking System</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.brakingSystem}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Battery System</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Battery System</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.batterySystem}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Charge 20–80%</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Charge 20–80%</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.chargeTime}</td>
                             </tr>
                             <tr>
-                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">License</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">License</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.license}</td>
                             </tr>
                           </tbody>
@@ -156,14 +162,16 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
           </CarouselContent>
         </Carousel>
         
-        {/* Sliding Indicator */}
+        {/* Clickable Sliding Indicator */}
         <div className="flex justify-center mt-4 space-x-2">
           {bikes.map((_, index) => (
-            <div
+            <button
               key={index}
-              className={`h-2 w-8 rounded-full transition-all duration-300 ${
-                index === current ? 'bg-purple-400' : 'bg-gray-600'
+              onClick={() => handlePillClick(index)}
+              className={`h-2 w-8 rounded-full transition-all duration-300 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 ${
+                index === current ? 'bg-purple-400' : 'bg-gray-600 hover:bg-gray-500'
               }`}
+              aria-label={`Select ${bikes[index].name}`}
             />
           ))}
         </div>
