@@ -170,7 +170,6 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
     >
-      <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
       <Skyline />
       <Road />
       
@@ -182,6 +181,11 @@ const MobileOptimizedGame = () => {
       {gameLogic.splashEffects.map(effect => <SplashEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleSplashComplete(effect.id)} />)}
       
       <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
+      
+      {/* Sound Toggle positioned below GameUI on the right */}
+      <div className="absolute top-32 right-4">
+        <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
+      </div>
 
       {gameOver && !showShareScore && (
         <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
