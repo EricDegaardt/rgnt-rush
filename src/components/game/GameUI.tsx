@@ -24,21 +24,40 @@ const GameUI = ({
   };
 
   return (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-white flex flex-row items-center gap-2 sm:gap-3 px-3 py-2 bg-black bg-opacity-50 rounded text-xs min-w-max">
-      <div className="flex items-center gap-1 whitespace-nowrap">
-        <Gauge size={16} className="text-purple-400" />
-        <span className="text-xs">120 km/h</span>
+    <div className="absolute top-4 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm">
+      {/* First Row: Speed and Distance */}
+      <div className="flex justify-between items-center mb-3">
+        <div className="flex items-center gap-2">
+          <Gauge size={24} className="text-purple-400" />
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-300 uppercase tracking-wide">Speed</span>
+            <span className="text-lg font-bold">120 km/h</span>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Milestone size={24} className="text-purple-400" />
+          <div className="flex flex-col text-right">
+            <span className="text-xs text-gray-300 uppercase tracking-wide">Distance</span>
+            <span className="text-lg font-bold">{formattedDistance}</span>
+          </div>
+        </div>
       </div>
-      <div className="flex items-center gap-1 whitespace-nowrap">
-        <Milestone size={16} className="text-purple-400" />
-        <span className="text-xs">{formattedDistance}</span>
-      </div>
-      <div className="flex items-center gap-1 whitespace-nowrap">
-        <Zap size={16} className={getEnergyIconColor(energy)} />
-        <div className={`w-16 sm:w-20 h-3 bg-gray-700 rounded overflow-hidden border ${getEnergyColor(energy).split(' ')[1]}`}>
-          <div className={`h-full ${getEnergyColor(energy).split(' ')[0]}`} style={{
-            width: `${energy}%`
-          }} />
+      
+      {/* Second Row: Energy */}
+      <div className="flex items-center gap-3">
+        <Zap size={24} className={getEnergyIconColor(energy)} />
+        <div className="flex-1">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs text-gray-300 uppercase tracking-wide">Energy</span>
+            <span className="text-sm font-medium">{Math.round(energy)}%</span>
+          </div>
+          <div className={`w-full h-4 bg-gray-700 rounded-full overflow-hidden border-2 ${getEnergyColor(energy).split(' ')[1]}`}>
+            <div 
+              className={`h-full transition-all duration-300 ${getEnergyColor(energy).split(' ')[0]}`} 
+              style={{ width: `${energy}%` }}
+            />
+          </div>
         </div>
       </div>
     </div>
