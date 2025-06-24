@@ -28,31 +28,31 @@ const GameUI = ({
       {/* First Row: Speed and Distance */}
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
-          <Gauge size={24} className="text-purple-400" />
+          <Gauge size={20} className="text-purple-400" />
           <div className="flex flex-col">
-            <span className="text-xs text-gray-300 uppercase tracking-wide">Speed</span>
-            <span className="text-lg font-bold">120 km/h</span>
+            <span className="text-[10px] text-gray-300 uppercase tracking-wide">Speed</span>
+            <span className="text-sm font-bold">120 km/h</span>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
-          <Milestone size={24} className="text-purple-400" />
+          <Milestone size={20} className="text-purple-400" />
           <div className="flex flex-col text-right">
-            <span className="text-xs text-gray-300 uppercase tracking-wide">Distance</span>
-            <span className="text-lg font-bold">{formattedDistance}</span>
+            <span className="text-[10px] text-gray-300 uppercase tracking-wide">Distance</span>
+            <span className="text-sm font-bold">{formattedDistance}</span>
           </div>
         </div>
       </div>
       
       {/* Second Row: Energy */}
       <div className="flex items-center gap-3">
-        <Zap size={24} className={getEnergyIconColor(energy)} />
+        <Zap size={20} className={getEnergyIconColor(energy)} />
         <div className="flex-1">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-gray-300 uppercase tracking-wide">Energy</span>
-            <span className="text-sm font-medium">{Math.round(energy)}%</span>
+            <span className="text-[10px] text-gray-300 uppercase tracking-wide">Energy</span>
+            <span className="text-xs font-medium">{Math.round(energy)}%</span>
           </div>
-          <div className={`w-full h-4 bg-gray-700 rounded-full overflow-hidden border-2 ${getEnergyColor(energy).split(' ')[1]}`}>
+          <div className={`w-full h-3 bg-gray-700 rounded-full overflow-hidden border-2 ${getEnergyColor(energy).split(' ')[1]}`}>
             <div 
               className={`h-full transition-all duration-300 ${getEnergyColor(energy).split(' ')[0]}`} 
               style={{ width: `${energy}%` }}
