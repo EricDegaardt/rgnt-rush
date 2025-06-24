@@ -107,41 +107,41 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       />
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
-                      {/* Table format for specifications with even smaller text and right-aligned values */}
-                      <div className="w-full text-[10px]">
+                      {/* Table format for specifications with extra small text and right-aligned values */}
+                      <div className="w-full text-[8px] leading-tight">
                         <table className="w-full border-collapse">
                           <tbody>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">Top Speed</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.topSpeed}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Top Speed</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.topSpeed}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">Mixed Range</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.mixedRange}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Mixed Range</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.mixedRange}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">Turbo Power</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.turboPower}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Turbo Power</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.turboPower}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">Accel 0–100 km/h</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.acceleration}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Accel 0–100 km/h</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.acceleration}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">Braking System</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.brakingSystem}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Braking System</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.brakingSystem}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">Battery System</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.batterySystem}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Battery System</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.batterySystem}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">Charge 20–80%</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.chargeTime}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">Charge 20–80%</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.chargeTime}</td>
                             </tr>
                             <tr>
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium">License</td>
-                              <td className="py-0.5 text-gray-300 text-right">{bike.specs.license}</td>
+                              <td className="py-0.5 pr-1 text-gray-300 font-medium whitespace-nowrap">License</td>
+                              <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.license}</td>
                             </tr>
                           </tbody>
                         </table>
