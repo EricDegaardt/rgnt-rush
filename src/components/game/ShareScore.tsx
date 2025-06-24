@@ -67,9 +67,9 @@ const ShareScore = ({ score, onClose }: ShareScoreProps) => {
             onClick={onClose}
             variant="ghost"
             size="icon"
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-white hover:bg-gray-700 rounded-full p-2 transition-all duration-200"
           >
-            <X size={20} />
+            <X size={24} />
           </Button>
         </div>
         
