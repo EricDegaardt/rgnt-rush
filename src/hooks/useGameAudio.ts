@@ -1,6 +1,8 @@
-import { useEffect, useRef, useCallback } from 'react';
+
+import { useEffect, useRef, useCallback, useState } from 'react';
 
 export const useGameAudio = () => {
+    const [volume, setVolume] = useState(0.7);
     const audioRefs = useRef({
         backgroundMusic: null as HTMLAudioElement | null,
         bikeJump: null as HTMLAudioElement | null,
@@ -31,7 +33,7 @@ export const useGameAudio = () => {
         // Configure background music
         if (audioRefs.current.backgroundMusic) {
             audioRefs.current.backgroundMusic.loop = true;
-            audioRefs.current.backgroundMusic.volume = 0.3;
+            audioRefs.current.backgroundMusic.volume = 0.3 * volume;
             
             // Start background music immediately
             audioRefs.current.backgroundMusic.play().catch(() => {
@@ -42,12 +44,27 @@ export const useGameAudio = () => {
         // Configure sound effects
         Object.values(audioRefs.current).forEach(audio => {
             if (audio && audio !== audioRefs.current.backgroundMusic) {
-                audio.volume = 0.7;
+                audio.volume = volume;
             }
         });
 
         isInitializedRef.current = true;
-    }, []);
+    }, [volume]);
+
+    // Update volume for all audio elements when volume changes
+    useEffect(() => {
+        if (!isInitializedRef.current) return;
+
+        if (audioRefs.current.backgroundMusic) {
+            audioRefs.current.backgroundMusic.volume = 0.3 * volume;
+        }
+
+        Object.values(audioRefs.current).forEach(audio => {
+            if (audio && audio !== audioRefs.current.backgroundMusic) {
+                audio.volume = volume;
+            }
+        });
+    }, [volume]);
 
     const playSound = useCallback((soundName: keyof typeof audioRefs.current) => {
         if (!isInitializedRef.current) return;
@@ -90,11 +107,17 @@ export const useGameAudio = () => {
         // No-op - mute functionality removed
     }, []);
 
+    const setGameVolume = useCallback((newVolume: number) => {
+        setVolume(Math.max(0, Math.min(1, newVolume)));
+    }, []);
+
     return {
         playSound,
         startBackgroundMusic,
         stopBackgroundMusic,
         toggleMute,
         isMuted: false, // Always false since mute is removed
+        volume,
+        setVolume: setGameVolume,
     };
 };

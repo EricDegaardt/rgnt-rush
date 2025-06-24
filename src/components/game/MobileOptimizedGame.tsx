@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import OptimizedPlayer from './OptimizedPlayer';
 import GameUI from './GameUI';
@@ -10,6 +11,7 @@ import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
 import ShareScore from './ShareScore';
 import AnimatedStartScreen from './AnimatedStartScreen';
+import VolumeSlider from './VolumeSlider';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -29,7 +31,9 @@ const MobileOptimizedGame = () => {
   const {
     playSound,
     startBackgroundMusic,
-    stopBackgroundMusic
+    stopBackgroundMusic,
+    volume,
+    setVolume
   } = useGameAudio();
   
   const handleGameOver = useCallback((score: number) => {
@@ -175,6 +179,8 @@ const MobileOptimizedGame = () => {
       onClick={handleScreenInteraction} 
       onTouchStart={handleScreenInteraction}
     >
+      <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+      
       <Skyline />
       <Road />
       
