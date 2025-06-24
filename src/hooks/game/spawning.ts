@@ -15,11 +15,11 @@ const getGameWidth = () => {
 };
 
 export const shouldSpawnObstacle = (): boolean => {
-    return Math.random() < 0.018; // Doubled from 0.009 to 0.018 (100% increase)
+    return Math.random() < 0.009; // Keep original obstacle spawn rate
 };
 
 export const shouldSpawnCollectible = (): boolean => {
-    return Math.random() < 0.018; // Doubled from 0.009 to 0.018 (100% increase)
+    return Math.random() < 0.018; // Double the spawn rate (2x obstacles)
 };
 
 export const canSpawnAtPosition = (
