@@ -34,6 +34,7 @@ const GameUI = ({
   const handleMuteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.stopPropagation();
     if (onToggleMute) {
       onToggleMute();
     }
@@ -42,6 +43,7 @@ const GameUI = ({
   const handleMuteTouch = (e: React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.stopPropagation();
     if (onToggleMute) {
       onToggleMute();
     }
@@ -68,38 +70,54 @@ const GameUI = ({
             </div>
           </div>
           
-          {/* Mute Toggle Button - Completely isolated */}
+          {/* Mute Toggle Button - Completely isolated with higher z-index */}
           {onToggleMute && (
-            <button
-              onClick={handleMuteClick}
-              onTouchStart={handleMuteTouch}
-              onTouchEnd={(e) => {
+            <div 
+              className="relative z-[9999]"
+              onClickCapture={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
-              onMouseDown={(e) => {
+              onTouchStartCapture={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
-              onMouseUp={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50 select-none touch-manipulation"
-              style={{ 
-                WebkitTouchCallout: 'none',
-                WebkitUserSelect: 'none',
-                userSelect: 'none',
-                touchAction: 'manipulation'
-              }}
-              aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
             >
-              {isMuted ? (
-                <VolumeX size={16} className="text-red-400" />
-              ) : (
-                <Volume2 size={16} className="text-gray-300" />
-              )}
-            </button>
+              <button
+                onClick={handleMuteClick}
+                onTouchStart={handleMuteTouch}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.nativeEvent.stopPropagation();
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.nativeEvent.stopPropagation();
+                }}
+                onMouseUp={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.nativeEvent.stopPropagation();
+                }}
+                className="pointer-events-auto p-1.5 rounded-md bg-gray-800/80 hover:bg-gray-700/80 transition-colors border border-gray-600/50 hover:border-gray-500/50 select-none touch-manipulation relative z-[9999]"
+                style={{ 
+                  WebkitTouchCallout: 'none',
+                  WebkitUserSelect: 'none',
+                  userSelect: 'none',
+                  touchAction: 'manipulation',
+                  isolation: 'isolate'
+                }}
+                aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+              >
+                {isMuted ? (
+                  <VolumeX size={16} className="text-red-400" />
+                ) : (
+                  <Volume2 size={16} className="text-gray-300" />
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>
