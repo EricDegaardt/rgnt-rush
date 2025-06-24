@@ -34,7 +34,6 @@ const GameUI = ({
   const handleMuteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();
     
     // Additional event isolation
     if (e.nativeEvent) {
