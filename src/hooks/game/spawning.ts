@@ -15,11 +15,11 @@ const getGameWidth = () => {
 };
 
 export const shouldSpawnObstacle = (): boolean => {
-    return Math.random() < 0.009; // Keep original obstacle spawn rate
+    return Math.random() < 0.018; // Doubled from 0.009 to 0.018 to match batteries
 };
 
 export const shouldSpawnCollectible = (): boolean => {
-    return Math.random() < 0.018; // Double the spawn rate (2x obstacles)
+    return Math.random() < 0.018; // Keep at 0.018 for equal distribution
 };
 
 export const canSpawnAtPosition = (
@@ -28,7 +28,7 @@ export const canSpawnAtPosition = (
     obstacles: ObstacleType[],
     collectibles: CollectibleType[]
 ): boolean => {
-    const buffer = 120; // Reduced from 150 to 120 to allow closer spawning
+    const buffer = 100; // Reduced from 120 to 100 to allow closer spawning for more frequent obstacles
 
     const tooCloseToObstacle = obstacles.some(
         o => (newX + potentialWidth >= o.x - buffer) && (newX <= o.x + o.width + buffer)
