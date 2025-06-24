@@ -15,11 +15,11 @@ const getGameWidth = () => {
 };
 
 export const shouldSpawnObstacle = (): boolean => {
-    return Math.random() < 0.009; // Increased slightly to match collectible rate
+    return Math.random() < 0.018; // Doubled from 0.009 to 0.018 (100% increase)
 };
 
 export const shouldSpawnCollectible = (): boolean => {
-    return Math.random() < 0.009; // Reduced slightly to match obstacle rate
+    return Math.random() < 0.018; // Doubled from 0.009 to 0.018 (100% increase)
 };
 
 export const canSpawnAtPosition = (
@@ -28,7 +28,7 @@ export const canSpawnAtPosition = (
     obstacles: ObstacleType[],
     collectibles: CollectibleType[]
 ): boolean => {
-    const buffer = 150; // Increased buffer to account for larger barrels
+    const buffer = 120; // Reduced from 150 to 120 to allow closer spawning
 
     const tooCloseToObstacle = obstacles.some(
         o => (newX + potentialWidth >= o.x - buffer) && (newX <= o.x + o.width + buffer)
@@ -51,7 +51,7 @@ export const createObstacle = (obstacles: ObstacleType[], collectibles: Collecti
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {
         return {
-            id: Date.now(),
+            id: Date.now() + Math.random(), // Add randomness to prevent ID conflicts
             x: newX,
             width: potentialWidth,
             height: potentialHeight,
@@ -70,7 +70,7 @@ export const createCollectible = (obstacles: ObstacleType[], collectibles: Colle
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {
         return {
-            id: Date.now(),
+            id: Date.now() + Math.random(), // Add randomness to prevent ID conflicts
             x: newX,
             y: newY,
         };
