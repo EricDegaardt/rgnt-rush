@@ -3,8 +3,8 @@ import MobileOptimizedGame from "../components/game/MobileOptimizedGame";
 const Index = () => {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
-      {/* 4:5 aspect ratio for both mobile and desktop */}
-      <div className="w-full h-full max-w-sm aspect-[4/5] md:max-w-[600px] md:aspect-[4/5] md:max-h-screen">
+      {/* Consistent mobile-optimized size for all devices */}
+      <div className="w-full max-w-sm aspect-[4/5] h-full max-h-[80vh]">
         <MobileOptimizedGame />
       </div>
     </div>
