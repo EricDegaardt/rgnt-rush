@@ -125,7 +125,7 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         <div className="absolute top-6 left-0 w-full h-1 bg-white opacity-30"></div>
       </div>
 
-      {/* Racing Bikes - positioned on the gray street */}
+      {/* Racing Bikes - positioned on the gray street with more space */}
       <div 
         className="absolute z-10 transition-transform duration-75 ease-linear"
         style={{
@@ -174,13 +174,13 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         ))}
       </div>
 
-      {/* Main Content - reduced top spacing */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center z-20 pt-8">
+      {/* Main Content - moved much closer to the top */}
+      <div className="absolute top-16 left-0 right-0 flex flex-col items-center text-white p-4 text-center z-20">
         <div className={`transition-all duration-1000 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h1 className="text-4xl md:text-6xl mb-1 text-purple-400 font-bold tracking-wider drop-shadow-lg">
+          <h1 className="text-3xl md:text-5xl mb-1 text-purple-400 font-bold tracking-wider drop-shadow-lg">
             RGNT RUSH
           </h1>
-          <div className="text-lg md:text-xl mb-6 text-gray-300 font-medium">
+          <div className="text-base md:text-lg mb-4 text-gray-300 font-medium">
             <span className="inline-block animate-pulse">⚡</span>
             <span className="mx-2">Electric Racing Adventure</span>
             <span className="inline-block animate-pulse">⚡</span>
@@ -188,24 +188,24 @@ const AnimatedStartScreen = ({ onStartGame, isMuted, onToggleMute }: AnimatedSta
         </div>
 
         <div className={`transition-all duration-1000 delay-500 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="mb-4 text-sm md:text-base text-gray-400 max-w-md leading-relaxed">
+          <p className="mb-3 text-xs md:text-sm text-gray-400 max-w-md leading-relaxed">
             Race through neon city streets on your electric bike! Tap the screen or press space to jump, collect batteries, and dodge obstacles to go the distance!
           </p>
           
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2">
             <input
               type="text"
               placeholder="Enter Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="bg-gray-800/80 border-2 border-purple-400/50 p-3 rounded-lg text-center w-72 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-colors backdrop-blur-sm"
+              className="bg-gray-800/80 border-2 border-purple-400/50 p-2.5 rounded-lg text-center w-64 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-colors backdrop-blur-sm text-sm"
               required
             />
             
             <Button
               onClick={handleStartGame}
               disabled={!username.trim()}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-lg text-xl md:text-2xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg text-lg md:text-xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               START RACING
             </Button>
