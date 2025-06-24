@@ -107,6 +107,7 @@ const MobileOptimizedGame = () => {
     } else if (running && !gameOver) {
       gameLogic.handleJump();
     } else if (gameOver && !showShareScore) {
+      // Only trigger play again if not showing share score
       setShowBikeSelection(true);
     }
   }, [running, gameOver, showBikeSelection, showShareScore, gameLogic]);
@@ -186,10 +187,22 @@ const MobileOptimizedGame = () => {
           <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
           <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
           <div className="flex gap-4 mt-8">
-            <button onClick={handleShareScore} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleShareScore();
+              }}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
+            >
               Share Score
             </button>
-            <button onClick={handlePlayAgain} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePlayAgain();
+              }}
+              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl"
+            >
               Play Again
             </button>
           </div>
