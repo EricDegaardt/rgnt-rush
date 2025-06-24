@@ -15,12 +15,12 @@
     overflow: hidden;
 }
 
-/* Cloud stripes - moved much higher */
+/* Cloud stripes - reduced to 3 clouds, much thicker */
 .cloud-stripe {
     position: absolute;
     left: 0;
     width: 200%;
-    height: 8px;
+    height: 20px; /* Increased from 8px to 20px */
     background: linear-gradient(
         90deg,
         transparent 0%,
@@ -36,49 +36,29 @@
         transparent 100%
     );
     animation: cloudDrift 25s linear infinite;
-    border-radius: 4px;
-    filter: blur(1px);
+    border-radius: 10px; /* Increased border radius for thicker clouds */
+    filter: blur(2px); /* Slightly more blur for softer appearance */
 }
 
 .cloud-stripe:nth-child(1) {
-    top: 5%;  /* Moved from 15% to 5% */
-    animation-duration: 30s;
+    top: 8%;
+    height: 25px; /* Extra thick first cloud */
+    animation-duration: 35s;
     animation-delay: 0s;
 }
 
 .cloud-stripe:nth-child(2) {
-    top: 10%; /* Moved from 25% to 10% */
-    animation-duration: 35s;
-    animation-delay: -5s;
-    height: 12px;
+    top: 18%;
+    height: 18px; /* Medium thick second cloud */
+    animation-duration: 40s;
+    animation-delay: -10s;
 }
 
 .cloud-stripe:nth-child(3) {
-    top: 15%; /* Moved from 35% to 15% */
-    animation-duration: 28s;
-    animation-delay: -10s;
-    height: 6px;
-}
-
-.cloud-stripe:nth-child(4) {
-    top: 20%; /* Moved from 45% to 20% */
-    animation-duration: 40s;
-    animation-delay: -15s;
-    height: 10px;
-}
-
-.cloud-stripe:nth-child(5) {
-    top: 25%; /* Moved from 55% to 25% */
-    animation-duration: 32s;
+    top: 28%;
+    height: 22px; /* Thick third cloud */
+    animation-duration: 30s;
     animation-delay: -20s;
-    height: 8px;
-}
-
-.cloud-stripe:nth-child(6) {
-    top: 30%; /* Moved from 65% to 30% */
-    animation-duration: 38s;
-    animation-delay: -25s;
-    height: 14px;
 }
 
 @keyframes cloudDrift {

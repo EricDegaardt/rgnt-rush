@@ -4,10 +4,7 @@ import './Skyline.css';
 const Skyline = () => {
     return (
         <div className="parallax-bg">
-            {/* Cloud stripes */}
-            <div className="cloud-stripe"></div>
-            <div className="cloud-stripe"></div>
-            <div className="cloud-stripe"></div>
+            {/* Reduced to only 3 cloud stripes */}
             <div className="cloud-stripe"></div>
             <div className="cloud-stripe"></div>
             <div className="cloud-stripe"></div>
