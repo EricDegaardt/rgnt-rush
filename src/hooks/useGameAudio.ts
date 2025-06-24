@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 
 export const useGameAudio = () => {
-    const [volume, setVolume] = useState(70); // Default volume at 70%
+    const [isMuted, setIsMuted] = useState(false);
     
     const audioRefs = useRef({
         backgroundMusic: null as HTMLAudioElement | null,
@@ -20,7 +20,7 @@ export const useGameAudio = () => {
 
     const isInitializedRef = useRef(false);
 
-    // Load all audio files ONLY ONCE - completely isolated from any state changes
+    // Load all audio files and start background music immediately
     useEffect(() => {
         if (isInitializedRef.current) return;
         
@@ -33,46 +33,37 @@ export const useGameAudio = () => {
         // Configure background music
         if (audioRefs.current.backgroundMusic) {
             audioRefs.current.backgroundMusic.loop = true;
-            audioRefs.current.backgroundMusic.volume = 0.3 * (volume / 100);
+            audioRefs.current.backgroundMusic.volume = 0.3;
             
-            // Start background music immediately
-            audioRefs.current.backgroundMusic.play().catch(() => {
-                // Ignore autoplay policy errors
-            });
+            // Start background music immediately if not muted
+            if (!isMuted) {
+                audioRefs.current.backgroundMusic.play().catch(() => {
+                    // Ignore autoplay policy errors
+                });
+            }
         }
 
         // Configure sound effects
         Object.values(audioRefs.current).forEach(audio => {
             if (audio && audio !== audioRefs.current.backgroundMusic) {
-                audio.volume = 0.7 * (volume / 100);
+                audio.volume = 0.7;
             }
         });
 
         isInitializedRef.current = true;
-    }, []); // Empty dependency array - initialize only once!
+    }, [isMuted]);
 
-    // Handle volume changes without affecting initialization
+    // Update audio mute state when isMuted changes
     useEffect(() => {
-        if (!isInitializedRef.current) return;
-        
-        const volumeMultiplier = volume / 100;
-        
-        // Update background music volume
-        if (audioRefs.current.backgroundMusic) {
-            audioRefs.current.backgroundMusic.volume = 0.3 * volumeMultiplier;
-        }
-        
-        // Update sound effects volume
-        Object.entries(audioRefs.current).forEach(([key, audio]) => {
-            if (audio && key !== 'backgroundMusic') {
-                audio.volume = 0.7 * volumeMultiplier;
+        Object.values(audioRefs.current).forEach(audio => {
+            if (audio) {
+                audio.muted = isMuted;
             }
         });
-    }, [volume]);
+    }, [isMuted]);
 
-    // Stable playSound function that doesn't change
     const playSound = useCallback((soundName: keyof typeof audioRefs.current) => {
-        if (!isInitializedRef.current || volume === 0) return;
+        if (!isInitializedRef.current || isMuted) return;
 
         const audio = audioRefs.current[soundName];
         if (!audio) return;
@@ -93,31 +84,29 @@ export const useGameAudio = () => {
         } catch (error) {
             console.warn(`Failed to play ${soundName}:`, error);
         }
-    }, []); // No dependencies to prevent function recreation
+    }, [isMuted]);
 
     const startBackgroundMusic = useCallback(() => {
-        if (audioRefs.current.backgroundMusic && isInitializedRef.current) {
+        if (audioRefs.current.backgroundMusic && isInitializedRef.current && !isMuted) {
             audioRefs.current.backgroundMusic.play().catch(() => {
                 // Ignore autoplay policy errors
             });
         }
-    }, []);
+    }, [isMuted]);
 
     const stopBackgroundMusic = useCallback(() => {
         // Background music continues playing - this is kept for compatibility
     }, []);
 
-    // Volume control function
-    const setVolumeLevel = useCallback((newVolume: number) => {
-        const clampedVolume = Math.max(0, Math.min(100, newVolume));
-        setVolume(clampedVolume);
+    const toggleMute = useCallback(() => {
+        setIsMuted(prev => !prev);
     }, []);
 
     return {
         playSound,
         startBackgroundMusic,
         stopBackgroundMusic,
-        volume,
-        setVolumeLevel,
+        toggleMute,
+        isMuted,
     };
 };

@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ROAD_HEIGHT } from '../components/game/constants';
 import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './game/types';
@@ -19,12 +20,6 @@ interface OptimizedGameState {
 export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore: number) => void, onSoundEvent?: (eventType: string) => void) => {
     const gameSpeedRef = useRef(7);
     const visualSpeedRef = useRef(5);
-    const distanceRef = useRef(0);
-    const energyRef = useRef(100);
-    const obstaclesRef = useRef<ObstacleType[]>([]);
-    const collectiblesRef = useRef<CollectibleType[]>([]);
-    const collectionEffectsRef = useRef<CollectionEffectType[]>([]);
-    const splashEffectsRef = useRef<SplashEffectType[]>([]);
     const playerPhysicsRef = useRef<PlayerPhysics>({
         playerY: ROAD_HEIGHT,
         playerVelocityY: 0,
@@ -32,7 +27,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     });
     const isSpinningRef = useRef(false);
     const runningRef = useRef(running);
-    const gameLoopIdRef = useRef<number | null>(null);
+    const frameCountRef = useRef(0);
     
     // Single state object to reduce re-renders
     const [gameState, setGameState] = useState<OptimizedGameState>({
@@ -46,51 +41,54 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         isSpinning: false,
     });
 
+    // Use refs for frequent updates
+    const gameStateRef = useRef(gameState);
+    gameStateRef.current = gameState;
     runningRef.current = running;
 
-    // Stable game loop function
     const gameLoop = useCallback(() => {
-        if (!runningRef.current) {
-            gameLoopIdRef.current = null;
-            return;
-        }
+        if (!runningRef.current) return;
+
+        frameCountRef.current++;
         
         // Update physics
         playerPhysicsRef.current = updatePlayerPhysics(playerPhysicsRef.current);
         
         // Update distance and energy
-        distanceRef.current += gameSpeedRef.current * 0.08;
-        energyRef.current -= 0.06;
+        const newDistance = gameStateRef.current.distance + gameSpeedRef.current * 0.08;
+        const newEnergy = Math.max(0, Math.min(100, gameStateRef.current.energy - 0.06));
 
         // Move obstacles and collectibles
-        obstaclesRef.current = moveObstacles(obstaclesRef.current, visualSpeedRef.current);
-        collectiblesRef.current = moveCollectibles(collectiblesRef.current, visualSpeedRef.current);
+        const newObstacles = moveObstacles(gameStateRef.current.obstacles, visualSpeedRef.current);
+        const newCollectibles = moveCollectibles(gameStateRef.current.collectibles, visualSpeedRef.current);
 
-        // Spawn new obstacles and collectibles
-        const newObstacle = createObstacle(obstaclesRef.current, collectiblesRef.current);
-        if (newObstacle) {
-            obstaclesRef.current.push(newObstacle);
-        }
+        // Spawn new obstacles and collectibles (less frequently)
+        let finalObstacles = newObstacles;
+        let finalCollectibles = newCollectibles;
 
-        const newCollectible = createCollectible(obstaclesRef.current, collectiblesRef.current);
-        if (newCollectible) {
-            collectiblesRef.current.push(newCollectible);
+        if (frameCountRef.current % 3 === 0) { // Reduce spawning frequency
+            const newObstacle = createObstacle(newObstacles, newCollectibles);
+            if (newObstacle) {
+                finalObstacles = [...newObstacles, newObstacle];
+            }
+
+            const newCollectible = createCollectible(finalObstacles, newCollectibles);
+            if (newCollectible) {
+                finalCollectibles = [...newCollectibles, newCollectible];
+            }
         }
 
         // Check collisions
         const collisionResult = checkCollisions(
             playerPhysicsRef.current.playerY,
-            obstaclesRef.current,
-            collectiblesRef.current,
-            collectionEffectsRef.current,
-            splashEffectsRef.current
+            finalObstacles,
+            finalCollectibles,
+            gameStateRef.current.collectionEffects,
+            gameStateRef.current.splashEffects
         );
 
-        obstaclesRef.current = collisionResult.obstacles;
-        collectiblesRef.current = collisionResult.collectibles;
-        collectionEffectsRef.current = collisionResult.collectionEffects;
-        splashEffectsRef.current = collisionResult.splashEffects;
-        energyRef.current += collisionResult.energyChange;
+        let finalEnergy = newEnergy + collisionResult.energyChange;
+        finalEnergy = Math.max(0, Math.min(100, finalEnergy));
 
         // Handle sound events
         if (onSoundEvent) {
@@ -106,71 +104,44 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
             isSpinningRef.current = true;
             setTimeout(() => {
                 isSpinningRef.current = false;
+                setGameState(prev => ({ ...prev, isSpinning: false }));
             }, 800);
         }
 
-        // Clamp energy
-        energyRef.current = Math.max(0, Math.min(100, energyRef.current));
-
-        if (energyRef.current <= 0) {
-            energyRef.current = 0;
-            gameLoopIdRef.current = null;
-            onGameOver(distanceRef.current);
+        if (finalEnergy <= 0) {
+            onGameOver(newDistance);
             return; 
         }
 
-        // Update state
+        // Update state only once per frame
         setGameState({
-            distance: distanceRef.current,
-            energy: energyRef.current,
+            distance: newDistance,
+            energy: finalEnergy,
             playerY: playerPhysicsRef.current.playerY,
-            obstacles: [...obstaclesRef.current],
-            collectibles: [...collectiblesRef.current],
-            collectionEffects: [...collectionEffectsRef.current],
-            splashEffects: [...splashEffectsRef.current],
+            obstacles: collisionResult.obstacles,
+            collectibles: collisionResult.collectibles,
+            collectionEffects: collisionResult.collectionEffects,
+            splashEffects: collisionResult.splashEffects,
             isSpinning: isSpinningRef.current,
         });
 
-        gameLoopIdRef.current = requestAnimationFrame(gameLoop);
+        requestAnimationFrame(gameLoop);
     }, [onGameOver, onSoundEvent]);
     
-    // Start/stop game loop based on running state
     useEffect(() => {
-        if (running && !gameLoopIdRef.current) {
-            gameLoopIdRef.current = requestAnimationFrame(gameLoop);
-        } else if (!running && gameLoopIdRef.current) {
-            cancelAnimationFrame(gameLoopIdRef.current);
-            gameLoopIdRef.current = null;
+        if (running) {
+            requestAnimationFrame(gameLoop);
         }
-
-        // Cleanup on unmount
-        return () => {
-            if (gameLoopIdRef.current) {
-                cancelAnimationFrame(gameLoopIdRef.current);
-                gameLoopIdRef.current = null;
-            }
-        };
     }, [running, gameLoop]);
     
     const resetGame = useCallback(() => {
-        // Stop any running game loop
-        if (gameLoopIdRef.current) {
-            cancelAnimationFrame(gameLoopIdRef.current);
-            gameLoopIdRef.current = null;
-        }
-
-        distanceRef.current = 0;
-        energyRef.current = 100;
-        obstaclesRef.current = [];
-        collectiblesRef.current = [];
-        collectionEffectsRef.current = [];
-        splashEffectsRef.current = [];
         playerPhysicsRef.current = {
             playerY: ROAD_HEIGHT,
             playerVelocityY: 0,
             isOnGround: true
         };
         isSpinningRef.current = false;
+        frameCountRef.current = 0;
         
         setGameState({
             distance: 0,
@@ -194,7 +165,6 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     }, [onSoundEvent]);
 
     const handleEffectComplete = useCallback((id: number) => {
-        collectionEffectsRef.current = collectionEffectsRef.current.filter(effect => effect.id !== id);
         setGameState(prev => ({
             ...prev,
             collectionEffects: prev.collectionEffects.filter(effect => effect.id !== id)
@@ -202,7 +172,6 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     }, []);
 
     const handleSplashComplete = useCallback((id: number) => {
-        splashEffectsRef.current = splashEffectsRef.current.filter(effect => effect.id !== id);
         setGameState(prev => ({
             ...prev,
             splashEffects: prev.splashEffects.filter(effect => effect.id !== id)
