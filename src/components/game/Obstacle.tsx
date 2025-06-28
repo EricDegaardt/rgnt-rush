@@ -2,6 +2,10 @@ import React from 'react';
 import { ROAD_HEIGHT } from './constants';
 
 const Obstacle = React.memo(({ x, width, height }: { x: number; width: number; height: number; }) => {
+    // Convert from bottom-based positioning to top-based positioning
+    const gameHeight = window.innerHeight;
+    const topPosition = gameHeight - ROAD_HEIGHT - height;
+    
     return (
         <div 
             className="absolute"
@@ -13,7 +17,7 @@ const Obstacle = React.memo(({ x, width, height }: { x: number; width: number; h
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
                 imageRendering: 'pixelated',
-                transform: `translate3d(${x}px, ${-ROAD_HEIGHT}px, 0) scale(1.5)`,
+                transform: `translate3d(${x}px, ${topPosition}px, 0) scale(1.5)`,
                 willChange: 'transform',
             }}
         />

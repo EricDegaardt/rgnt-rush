@@ -40,6 +40,10 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
         }
     `;
 
+    // Convert from bottom-based positioning to top-based positioning
+    const gameHeight = window.innerHeight;
+    const topPosition = gameHeight - y + 15;
+
     return (
         <>
             <style>{splashKeyframes}</style>
@@ -48,7 +52,7 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
                 style={{
                     width: '60px',
                     height: '60px',
-                    transform: `translate3d(${x - 30}px, ${-y + 15}px, 0)`,
+                    transform: `translate3d(${x - 30}px, ${topPosition}px, 0)`,
                     willChange: 'transform',
                     zIndex: 998
                 }}
