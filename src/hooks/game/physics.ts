@@ -1,3 +1,4 @@
+
 import { GRAVITY, ROAD_HEIGHT, PLAYER_JUMP_VELOCITY } from '../../components/game/constants';
 
 export interface PlayerPhysics {
@@ -15,7 +16,7 @@ export const updatePlayerPhysics = (physics: PlayerPhysics): PlayerPhysics => {
     // Update player position
     playerY += playerVelocityY;
 
-    // Ground collision - using updated ROAD_HEIGHT (75)
+    // Ground collision
     if (playerY <= ROAD_HEIGHT) {
         playerY = ROAD_HEIGHT;
         playerVelocityY = 0;

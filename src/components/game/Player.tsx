@@ -74,7 +74,7 @@ const Player = ({
                 className="absolute"
                 style={{
                     left: `${playerXPosition}px`,
-                    bottom: `${y + bounceY + 5}px`, // Changed from -10px to +5px (15px down)
+                    bottom: `${y + bounceY - 10}px`, // Position 10px lower to drive in the street
                     width: '126px',
                     height: '63px',
                     imageRendering: 'pixelated',
@@ -92,7 +92,7 @@ const Player = ({
             {showExplosion && (
                 <BikeExplosionEffect
                     x={playerXPosition + 63} // Center of bike
-                    y={y + 31.5 + 15} // Center of bike, moved down by 15px
+                    y={y + 31.5} // Center of bike
                     onComplete={handleExplosionComplete}
                 />
             )}

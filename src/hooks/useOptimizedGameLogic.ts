@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ROAD_HEIGHT } from '../components/game/constants';
 import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './game/types';
@@ -20,7 +21,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     const gameSpeedRef = useRef(7);
     const visualSpeedRef = useRef(5);
     const playerPhysicsRef = useRef<PlayerPhysics>({
-        playerY: ROAD_HEIGHT, // Using updated ROAD_HEIGHT (75)
+        playerY: ROAD_HEIGHT,
         playerVelocityY: 0,
         isOnGround: true
     });
@@ -32,7 +33,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     const [gameState, setGameState] = useState<OptimizedGameState>({
         distance: 0,
         energy: 100,
-        playerY: ROAD_HEIGHT, // Using updated ROAD_HEIGHT (75)
+        playerY: ROAD_HEIGHT,
         obstacles: [],
         collectibles: [],
         collectionEffects: [],
@@ -135,7 +136,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     
     const resetGame = useCallback(() => {
         playerPhysicsRef.current = {
-            playerY: ROAD_HEIGHT, // Using updated ROAD_HEIGHT (75)
+            playerY: ROAD_HEIGHT,
             playerVelocityY: 0,
             isOnGround: true
         };
@@ -145,7 +146,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         setGameState({
             distance: 0,
             energy: 100,
-            playerY: ROAD_HEIGHT, // Using updated ROAD_HEIGHT (75)
+            playerY: ROAD_HEIGHT,
             obstacles: [],
             collectibles: [],
             collectionEffects: [],

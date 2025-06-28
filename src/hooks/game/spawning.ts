@@ -65,7 +65,7 @@ export const createCollectible = (obstacles: ObstacleType[], collectibles: Colle
 
     const gameWidth = getGameWidth();
     const newX = gameWidth + 50; // Spawn from the right edge of the screen
-    const newY = 75 + 50 + Math.random() * 250; // Updated ROAD_HEIGHT (75) + offset + random height
+    const newY = 60 + 50 + Math.random() * 250; // ROAD_HEIGHT + offset + random height
     const potentialWidth = 30;
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {

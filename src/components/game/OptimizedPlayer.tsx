@@ -69,10 +69,10 @@ const OptimizedPlayer = React.memo(({
         return bikeImages[selectedBike as keyof typeof bikeImages] || bikeImages['purple-rain'];
     }, [selectedBike]);
 
-    // Memoize player style - moved down by 15px (from -10px to 5px)
+    // Memoize player style
     const playerStyle = useMemo(() => ({
         left: `${playerXPosition}px`,
-        bottom: `${y + bounceY + 5}px`, // Changed from -10px to +5px (15px down)
+        bottom: `${y + bounceY - 10}px`,
         width: '126px',
         height: '63px',
         imageRendering: 'pixelated' as const,
@@ -101,7 +101,7 @@ const OptimizedPlayer = React.memo(({
             {showExplosion && (
                 <BikeExplosionEffect
                     x={playerXPosition + 63}
-                    y={y + 31.5 + 15} // Moved explosion down by 15px
+                    y={y + 31.5}
                     onComplete={handleExplosionComplete}
                 />
             )}
