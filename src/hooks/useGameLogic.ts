@@ -17,7 +17,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     const collectiblesRef = useRef<CollectibleType[]>([]);
     const collectionEffectsRef = useRef<CollectionEffectType[]>([]);
     const playerPhysicsRef = useRef<PlayerPhysics>({
-        playerY: ROAD_HEIGHT,
+        playerY: ROAD_HEIGHT, // Using updated ROAD_HEIGHT (75)
         playerVelocityY: 0,
         isOnGround: true
     });
@@ -26,7 +26,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
-    const [playerY, setPlayerY] = useState(ROAD_HEIGHT);
+    const [playerY, setPlayerY] = useState(ROAD_HEIGHT); // Using updated ROAD_HEIGHT (75)
     const [obstacles, setObstacles] = useState<ObstacleType[]>([]);
     const [collectibles, setCollectibles] = useState<CollectibleType[]>([]);
     const [collectionEffects, setCollectionEffects] = useState<CollectionEffectType[]>([]);
@@ -126,7 +126,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         distanceRef.current = 0;
         energyRef.current = 100;
         playerPhysicsRef.current = {
-            playerY: ROAD_HEIGHT,
+            playerY: ROAD_HEIGHT, // Using updated ROAD_HEIGHT (75)
             playerVelocityY: 0,
             isOnGround: true
         };
@@ -137,7 +137,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         splashEffectsRef.current = [];
         setDistance(0);
         setEnergy(100);
-        setPlayerY(ROAD_HEIGHT);
+        setPlayerY(ROAD_HEIGHT); // Using updated ROAD_HEIGHT (75)
         setObstacles([]);
         setCollectibles([]);
         setCollectionEffects([]);
