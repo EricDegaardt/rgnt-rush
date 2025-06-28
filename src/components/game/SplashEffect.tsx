@@ -42,7 +42,7 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
 
     // Convert from bottom-based positioning to top-based positioning
     const gameHeight = window.innerHeight;
-    const topPosition = gameHeight - y + 15;
+    const topPosition = gameHeight - y + 15 - 30; // Added 30px adjustment
 
     return (
         <>

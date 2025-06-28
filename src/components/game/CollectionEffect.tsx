@@ -63,7 +63,7 @@ const CollectionEffect = ({ x, y, onComplete }: { x: number; y: number; onComple
 
     // Convert from bottom-based positioning to top-based positioning
     const gameHeight = window.innerHeight;
-    const topPosition = gameHeight - y;
+    const topPosition = gameHeight - y - 30; // Added 30px adjustment
 
     return (
         // The container is positioned at the collection point using translate3d

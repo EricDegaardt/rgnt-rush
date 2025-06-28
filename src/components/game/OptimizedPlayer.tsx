@@ -74,7 +74,7 @@ const OptimizedPlayer = React.memo(({
         // Convert from bottom-based coordinates to top-based coordinates
         // The game container height needs to be considered
         const gameHeight = window.innerHeight;
-        const topPosition = gameHeight - (y + bounceY) - 63; // 63 is bike height
+        const topPosition = gameHeight - (y + bounceY) - 63 - 30; // 63 is bike height, 30px adjustment
         
         return {
             position: 'absolute' as const,

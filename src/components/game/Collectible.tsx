@@ -4,7 +4,7 @@ import { Zap } from 'lucide-react';
 const Collectible = React.memo(({ x, y }: { x: number; y: number; }) => {
     // Convert from bottom-based positioning to top-based positioning
     const gameHeight = window.innerHeight;
-    const topPosition = gameHeight - y - 30; // 30 is collectible height
+    const topPosition = gameHeight - y - 30 - 30; // 30 is collectible height, 30px adjustment
     
     return (
         <div 

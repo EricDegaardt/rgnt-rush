@@ -4,7 +4,7 @@ import { ROAD_HEIGHT } from './constants';
 const Obstacle = React.memo(({ x, width, height }: { x: number; width: number; height: number; }) => {
     // Convert from bottom-based positioning to top-based positioning
     const gameHeight = window.innerHeight;
-    const topPosition = gameHeight - ROAD_HEIGHT - height;
+    const topPosition = gameHeight - ROAD_HEIGHT - height - 30; // Added 30px adjustment
     
     return (
         <div 
