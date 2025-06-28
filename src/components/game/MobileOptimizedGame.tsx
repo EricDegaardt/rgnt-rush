@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import OptimizedPlayer from './OptimizedPlayer';
 import GameUI from './GameUI';
 import Obstacle from './Obstacle';
@@ -39,13 +39,18 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setVolume
   } = useGameAudio();
   
+  // Start background music when component mounts (start screen)
+  useEffect(() => {
+    startBackgroundMusic();
+  }, [startBackgroundMusic]);
+  
   const handleGameOver = useCallback((score: number) => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
-    stopBackgroundMusic();
+    // Don't stop background music on game over - keep it playing
     playSound('gameOver');
-  }, [playSound, stopBackgroundMusic]);
+  }, [playSound]);
   
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
@@ -69,7 +74,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setFinalScore(0);
     gameLogic.resetGame();
     setRunning(true);
-    startBackgroundMusic();
+    // Background music is already playing, no need to start it again
   };
   
   const handleStartFromMenu = () => {
