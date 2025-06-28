@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 
 interface SplashEffectProps {
@@ -40,20 +41,16 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
         }
     `;
 
-    // Convert from bottom-based positioning to top-based positioning
-    const gameHeight = window.innerHeight;
-    const topPosition = gameHeight - y + 15 - 30 - 10; // Added additional 10px adjustment
-
     return (
         <>
             <style>{splashKeyframes}</style>
             <div
                 className="absolute pointer-events-none"
                 style={{
+                    left: `${x - 30}px`,
+                    bottom: `${y - 15}px`,
                     width: '60px',
                     height: '60px',
-                    transform: `translate3d(${x - 30}px, ${topPosition}px, 0)`,
-                    willChange: 'transform',
                     zIndex: 998
                 }}
             >

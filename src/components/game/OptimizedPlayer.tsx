@@ -69,37 +69,35 @@ const OptimizedPlayer = React.memo(({
         return bikeImages[selectedBike as keyof typeof bikeImages] || bikeImages['purple-rain'];
     }, [selectedBike]);
 
-    // Memoize player style with proper coordinate conversion
-    const playerStyle = useMemo(() => {
-        // Convert from bottom-based coordinates to top-based coordinates
-        // The game container height needs to be considered
-        const gameHeight = window.innerHeight;
-        const topPosition = gameHeight - (y + bounceY) - 63 - 30; // 63 is bike height, 30px adjustment
-        
-        return {
-            position: 'absolute' as const,
-            width: '126px',
-            height: '63px',
-            imageRendering: 'pixelated' as const,
-            zIndex: 999,
-            backgroundImage: `url('${bikeImageUrl}')`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            opacity: showExplosion ? 0 : 1,
-            willChange: 'transform',
-            transform: isSpinning 
-                ? `translate3d(${playerXPosition}px, ${topPosition}px, 0) rotate(360deg)`
-                : `translate3d(${playerXPosition}px, ${topPosition}px, 0)`,
-            transition: isSpinning ? 'transform 800ms ease-out' : 'none',
-        };
-    }, [playerXPosition, y, bounceY, bikeImageUrl, isSpinning, showExplosion]);
+    // Memoize player style
+    const playerStyle = useMemo(() => ({
+        left: `${playerXPosition}px`,
+        bottom: `${y + bounceY - 10}px`,
+        width: '126px',
+        height: '63px',
+        imageRendering: 'pixelated' as const,
+        zIndex: 999,
+        backgroundImage: `url('${bikeImageUrl}')`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        animation: isSpinning ? 'spinOnce 800ms ease-out' : 'none',
+        opacity: showExplosion ? 0 : 1,
+        transform: 'translateZ(0)', // Force hardware acceleration
+        willChange: 'transform', // Optimize for animations
+    }), [playerXPosition, y, bounceY, bikeImageUrl, isSpinning, showExplosion]);
 
     if (!isVisible) return null;
 
     return (
         <>
-            <div style={playerStyle} />
+            <style>{`
+                @keyframes spinOnce {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `}</style>
+            <div className="absolute" style={playerStyle} />
             {showExplosion && (
                 <BikeExplosionEffect
                     x={playerXPosition + 63}

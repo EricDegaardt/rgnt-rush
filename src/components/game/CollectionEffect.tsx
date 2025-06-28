@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 
 const PARTICLE_COUNT = 10;
@@ -61,20 +62,9 @@ const CollectionEffect = ({ x, y, onComplete }: { x: number; y: number; onComple
         };
     }, [onComplete]);
 
-    // Convert from bottom-based positioning to top-based positioning
-    const gameHeight = window.innerHeight;
-    const topPosition = gameHeight - y - 30; // Added 30px adjustment
-
     return (
-        // The container is positioned at the collection point using translate3d
-        <div 
-            className="absolute" 
-            style={{ 
-                transform: `translate3d(${x}px, ${topPosition}px, 0)`,
-                willChange: 'transform',
-                zIndex: 20 
-            }}
-        >
+        // The container is positioned at the collection point
+        <div className="absolute" style={{ left: `${x}px`, bottom: `${y}px`, zIndex: 20 }}>
             {particlesRef.current.map((p, i) => (
                 <div
                     key={i}
