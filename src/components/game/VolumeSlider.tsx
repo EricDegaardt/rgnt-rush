@@ -19,11 +19,11 @@ const VolumeSlider = ({ volume, onVolumeChange, className = "" }: VolumeSliderPr
 
   return (
     <div 
-      className={`absolute top-2 right-4 flex items-center gap-2 bg-black bg-opacity-60 rounded-lg p-2 backdrop-blur-sm z-50 pointer-events-auto ${className}`}
+      className={`w-full flex items-center gap-3 bg-black bg-opacity-60 rounded-lg p-3 backdrop-blur-sm z-40 pointer-events-auto ${className}`}
       onClick={handleClick}
     >
-      <Volume2 size={16} className="text-purple-400" />
-      <div className="w-20">
+      <Volume2 size={18} className="text-purple-400 flex-shrink-0" />
+      <div className="flex-1">
         <Slider
           value={[volume]}
           onValueChange={handleVolumeChange}
@@ -33,6 +33,9 @@ const VolumeSlider = ({ volume, onVolumeChange, className = "" }: VolumeSliderPr
           className="cursor-pointer"
         />
       </div>
+      <span className="text-xs text-gray-300 min-w-[3ch] text-right">
+        {Math.round(volume * 100)}%
+      </span>
     </div>
   );
 };
