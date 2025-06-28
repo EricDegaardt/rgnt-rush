@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 
 interface SplashEffectProps {
@@ -47,10 +46,10 @@ const SplashEffect = ({ x, y, onComplete }: SplashEffectProps) => {
             <div
                 className="absolute pointer-events-none"
                 style={{
-                    left: `${x - 30}px`,
-                    bottom: `${y - 15}px`,
                     width: '60px',
                     height: '60px',
+                    transform: `translate3d(${x - 30}px, ${-y + 15}px, 0)`,
+                    willChange: 'transform',
                     zIndex: 998
                 }}
             >

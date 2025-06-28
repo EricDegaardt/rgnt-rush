@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 
 const PARTICLE_COUNT = 10;
@@ -63,8 +62,15 @@ const CollectionEffect = ({ x, y, onComplete }: { x: number; y: number; onComple
     }, [onComplete]);
 
     return (
-        // The container is positioned at the collection point
-        <div className="absolute" style={{ left: `${x}px`, bottom: `${y}px`, zIndex: 20 }}>
+        // The container is positioned at the collection point using translate3d
+        <div 
+            className="absolute" 
+            style={{ 
+                transform: `translate3d(${x}px, ${-y}px, 0)`,
+                willChange: 'transform',
+                zIndex: 20 
+            }}
+        >
             {particlesRef.current.map((p, i) => (
                 <div
                     key={i}

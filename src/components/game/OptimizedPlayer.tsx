@@ -69,10 +69,9 @@ const OptimizedPlayer = React.memo(({
         return bikeImages[selectedBike as keyof typeof bikeImages] || bikeImages['purple-rain'];
     }, [selectedBike]);
 
-    // Memoize player style
+    // Memoize player style with transform: translate3d optimization
     const playerStyle = useMemo(() => ({
-        left: `${playerXPosition}px`,
-        bottom: `${y + bounceY - 10}px`,
+        position: 'absolute' as const,
         width: '126px',
         height: '63px',
         imageRendering: 'pixelated' as const,
@@ -81,23 +80,19 @@ const OptimizedPlayer = React.memo(({
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
-        animation: isSpinning ? 'spinOnce 800ms ease-out' : 'none',
         opacity: showExplosion ? 0 : 1,
-        transform: 'translateZ(0)', // Force hardware acceleration
-        willChange: 'transform', // Optimize for animations
+        willChange: 'transform',
+        transform: isSpinning 
+            ? `translate3d(${playerXPosition}px, ${-y - bounceY + 10}px, 0) rotate(360deg)`
+            : `translate3d(${playerXPosition}px, ${-y - bounceY + 10}px, 0)`,
+        transition: isSpinning ? 'transform 800ms ease-out' : 'none',
     }), [playerXPosition, y, bounceY, bikeImageUrl, isSpinning, showExplosion]);
 
     if (!isVisible) return null;
 
     return (
         <>
-            <style>{`
-                @keyframes spinOnce {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-            `}</style>
-            <div className="absolute" style={playerStyle} />
+            <div style={playerStyle} />
             {showExplosion && (
                 <BikeExplosionEffect
                     x={playerXPosition + 63}

@@ -6,8 +6,6 @@ const Obstacle = React.memo(({ x, width, height }: { x: number; width: number; h
         <div 
             className="absolute"
             style={{
-                left: `${x}px`,
-                bottom: `${ROAD_HEIGHT}px`,
                 width: `${width}px`,
                 height: `${height}px`,
                 backgroundImage: `url('/lovable-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png')`,
@@ -15,7 +13,8 @@ const Obstacle = React.memo(({ x, width, height }: { x: number; width: number; h
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
                 imageRendering: 'pixelated',
-                transform: 'scale(1.5)', // Make barrels 50% larger
+                transform: `translate3d(${x}px, ${-ROAD_HEIGHT}px, 0) scale(1.5)`,
+                willChange: 'transform',
             }}
         />
     );
