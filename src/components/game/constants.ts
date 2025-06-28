@@ -1,5 +1,5 @@
 export const GAME_WIDTH = 600;
-export const GAME_HEIGHT = 800;
+export const GAME_HEIGHT = 400; // Changed from 800 to 400 for desktop
 export const PLAYER_JUMP_VELOCITY = 22; // Slightly reduced for smoother arc
 export const GRAVITY = 0.8; // Increased for more natural fall
 export const ROAD_HEIGHT = 75; // Increased from 60 to 75 (15px down)

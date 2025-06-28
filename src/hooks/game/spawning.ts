@@ -1,17 +1,18 @@
 import { ObstacleType, CollectibleType } from './types';
 import { getPlayerXPosition } from '../../components/game/constants';
 
-// Get dynamic game width based on screen size
+// Get dynamic game width based on screen size and container
 const getGameWidth = () => {
     if (typeof window !== 'undefined') {
-        const container = document.querySelector('[class*="aspect-"]');
+        const container = document.querySelector('[class*="aspect-"]') || 
+                         document.querySelector('div[style*="aspect-ratio"]');
         if (container) {
             return container.clientWidth;
         }
-        // Fallback based on screen size
-        return window.innerWidth >= 768 ? 900 : 384; // Desktop max width or mobile max width
+        // Desktop: 600px, Mobile: based on screen width with 3:5 ratio
+        return window.innerWidth >= 768 ? 600 : Math.min(430, window.innerWidth - 32);
     }
-    return 600; // Default fallback
+    return 600; // Default fallback for desktop
 };
 
 export const shouldSpawnObstacle = (): boolean => {
@@ -65,7 +66,9 @@ export const createCollectible = (obstacles: ObstacleType[], collectibles: Colle
 
     const gameWidth = getGameWidth();
     const newX = gameWidth + 50; // Spawn from the right edge of the screen
-    const newY = 75 + 50 + Math.random() * 250; // Updated ROAD_HEIGHT (75) + offset + random height
+    // Adjusted for new desktop height (400px instead of 800px)
+    const maxHeight = window.innerWidth >= 768 ? 250 : 400; // Shorter height for desktop
+    const newY = 75 + 50 + Math.random() * maxHeight; // Updated ROAD_HEIGHT (75) + offset + random height
     const potentialWidth = 30;
 
     if (canSpawnAtPosition(newX, potentialWidth, obstacles, collectibles)) {

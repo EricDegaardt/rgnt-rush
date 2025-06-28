@@ -14,10 +14,13 @@ const Index = () => {
       <div
         className={
           isMobile
-            ? "w-full max-w-[430px] h-[90vh] m-4 rounded-2xl shadow-2xl bg-black flex items-center justify-center aspect-[9/16]"
-            : "w-full max-w-[420px] max-h-[700px] m-4 rounded-2xl shadow-2xl bg-black flex items-center justify-center aspect-[9/16]"
+            ? "w-full max-w-[430px] h-[90vh] m-4 rounded-2xl shadow-2xl bg-black flex items-center justify-center"
+            : "w-[600px] h-[400px] m-4 rounded-2xl shadow-2xl bg-black flex items-center justify-center"
         }
-        style={{ boxSizing: "border-box" }}
+        style={{ 
+          boxSizing: "border-box",
+          aspectRatio: isMobile ? "3/5" : "600/400"
+        }}
       >
         <MobileOptimizedGame isMobile={isMobile} />
       </div>

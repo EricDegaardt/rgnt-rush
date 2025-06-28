@@ -41,21 +41,21 @@
 }
 
 .cloud-stripe:nth-child(1) {
-    top: 35%; /* Moved down from 8% to 35% */
+    top: 20%; /* Adjusted for shorter desktop height */
     height: 25px; /* Extra thick first cloud */
     animation-duration: 35s;
     animation-delay: 0s;
 }
 
 .cloud-stripe:nth-child(2) {
-    top: 45%; /* Moved down from 18% to 45% */
+    top: 30%; /* Adjusted for shorter desktop height */
     height: 18px; /* Medium thick second cloud */
     animation-duration: 40s;
     animation-delay: -10s;
 }
 
 .cloud-stripe:nth-child(3) {
-    top: 55%; /* Moved down from 28% to 55% */
+    top: 40%; /* Adjusted for shorter desktop height */
     height: 22px; /* Thick third cloud */
     animation-duration: 30s;
     animation-delay: -20s;
@@ -85,39 +85,39 @@
 
 #city-background, #city-far, #city-near, #windows {
     position: absolute;
-    bottom: 60px; /* Road height */
+    bottom: 75px; /* Updated to match new ROAD_HEIGHT */
     left: 0;
     width: 200%;
-    height: 250px; /* Increased height */
+    height: 200px; /* Reduced from 250px for desktop aspect ratio */
     background-repeat: repeat-x;
     pointer-events: none; /* Ensure no interference with game interactions */
 }
 
 #city-background {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="5" y="180" width="30" height="70" fill="%2310151d"/><rect x="45" y="160" width="40" height="90" fill="%2310151d"/><rect x="100" y="200" width="25" height="50" fill="%2310151d"/><rect x="140" y="150" width="50" height="100" fill="%2310151d"/><rect x="210" y="190" width="30" height="60" fill="%2310151d"/><rect x="260" y="140" width="60" height="110" fill="%2310151d"/><rect x="350" y="170" width="40" height="80" fill="%2310151d"/><rect x="410" y="210" width="20" height="40" fill="%2310151d"/><rect x="450" y="160" width="50" height="90" fill="%2310151d"/><rect x="530" y="130" width="70" height="120" fill="%2310151d"/><rect x="620" y="180" width="30" height="70" fill="%2310151d"/><rect x="680" y="160" width="60" height="90" fill="%2310151d"/><rect x="750" y="190" width="40" height="60" fill="%2310151d"/></svg>');
-    background-size: 800px 250px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200"><rect x="5" y="140" width="30" height="60" fill="%2310151d"/><rect x="45" y="120" width="40" height="80" fill="%2310151d"/><rect x="100" y="160" width="25" height="40" fill="%2310151d"/><rect x="140" y="110" width="50" height="90" fill="%2310151d"/><rect x="210" y="150" width="30" height="50" fill="%2310151d"/><rect x="260" y="100" width="60" height="100" fill="%2310151d"/><rect x="350" y="130" width="40" height="70" fill="%2310151d"/><rect x="410" y="170" width="20" height="30" fill="%2310151d"/><rect x="450" y="120" width="50" height="80" fill="%2310151d"/><rect x="530" y="90" width="70" height="110" fill="%2310151d"/><rect x="620" y="140" width="30" height="60" fill="%2310151d"/><rect x="680" y="120" width="60" height="80" fill="%2310151d"/><rect x="750" y="150" width="40" height="50" fill="%2310151d"/></svg>');
+    background-size: 800px 200px;
     animation: slide 60s linear infinite;
     opacity: 0.4;
 }
 
 #city-far {
-    /* Taller buildings */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="10" y="130" width="40" height="120" fill="%231a202c"/><rect x="60" y="100" width="50" height="150" fill="%231a202c"/><rect x="120" y="160" width="30" height="90" fill="%231a202c"/><rect x="160" y="70" width="60" height="180" fill="%231a202c"/><rect x="230" y="145" width="40" height="105" fill="%231a202c"/><rect x="300" y="115" width="70" height="135" fill="%231a202c"/><rect x="400" y="85" width="50" height="165" fill="%231a202c"/><rect x="480" y="175" width="20" height="75" fill="%231a202c"/><rect x="520" y="130" width="60" height="120" fill="%231a202c"/><rect x="600" y="55" width="80" height="195" fill="%231a202c"/><rect x="700" y="160" width="40" height="90" fill="%231a202c"/></svg>');
-    background-size: 800px 250px;
+    /* Taller buildings adjusted for new height */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200"><rect x="10" y="90" width="40" height="110" fill="%231a202c"/><rect x="60" y="60" width="50" height="140" fill="%231a202c"/><rect x="120" y="120" width="30" height="80" fill="%231a202c"/><rect x="160" y="30" width="60" height="170" fill="%231a202c"/><rect x="230" y="105" width="40" height="95" fill="%231a202c"/><rect x="300" y="75" width="70" height="125" fill="%231a202c"/><rect x="400" y="45" width="50" height="155" fill="%231a202c"/><rect x="480" y="135" width="20" height="65" fill="%231a202c"/><rect x="520" y="90" width="60" height="110" fill="%231a202c"/><rect x="600" y="15" width="80" height="185" fill="%231a202c"/><rect x="700" y="120" width="40" height="80" fill="%231a202c"/></svg>');
+    background-size: 800px 200px;
     animation: slide 30s linear infinite;
     opacity: 0.6;
 }
 
 #city-near {
-    /* Taller buildings */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="20" y="100" width="60" height="150" fill="%232d3748"/><rect x="100" y="70" width="80" height="180" fill="%232d3748" /><rect x="200" y="120" width="50" height="130" fill="%232d3748" /><rect x="280" y="90" width="70" height="160" fill="%232d3748" /><rect x="380" y="130" width="40" height="120" fill="%232d3748" /><rect x="450" y="80" width="90" height="170" fill="%232d3748" /><rect x="560" y="110" width="60" height="140" fill="%232d3748" /><rect x="650" y="40" width="100" height="210" fill="%232d3748" /></svg>');
-    background-size: 800px 250px;
+    /* Taller buildings adjusted for new height */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200"><rect x="20" y="60" width="60" height="140" fill="%232d3748"/><rect x="100" y="30" width="80" height="170" fill="%232d3748" /><rect x="200" y="80" width="50" height="120" fill="%232d3748" /><rect x="280" y="50" width="70" height="150" fill="%232d3748" /><rect x="380" y="90" width="40" height="110" fill="%232d3748" /><rect x="450" y="40" width="90" height="160" fill="%232d3748" /><rect x="560" y="70" width="60" height="130" fill="%232d3748" /><rect x="650" y="0" width="100" height="200" fill="%232d3748" /></svg>');
+    background-size: 800px 200px;
     animation: slide 15s linear infinite;
 }
 
 #windows {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250"><rect x="35" y="120" width="3" height="4" fill="%23888470"/><rect x="55" y="180" width="3" height="4" fill="%23888470"/><rect x="110" y="90" width="3" height="4" fill="%23888470"/><rect x="130" y="150" width="3" height="4" fill="%23888470"/><rect x="160" y="200" width="3" height="4" fill="%23888470"/><rect x="220" y="140" width="3" height="4" fill="%23888470"/><rect x="290" y="110" width="3" height="4" fill="%23888470"/><rect x="330" y="180" width="3" height="4" fill="%23888470"/><rect x="390" y="150" width="3" height="4" fill="%23888470"/><rect x="470" y="100" width="3" height="4" fill="%23888470"/><rect x="500" y="160" width="3" height="4" fill="%23888470"/><rect x="580" y="130" width="3" height="4" fill="%23888470"/><rect x="670" y="80" width="3" height="4" fill="%23888470"/><rect x="700" y="140" width="3" height="4" fill="%23888470"/><rect x="730" y="200" width="3" height="4" fill="%23888470"/></svg>');
-    background-size: 800px 250px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200"><rect x="35" y="80" width="3" height="4" fill="%23888470"/><rect x="55" y="140" width="3" height="4" fill="%23888470"/><rect x="110" y="50" width="3" height="4" fill="%23888470"/><rect x="130" y="110" width="3" height="4" fill="%23888470"/><rect x="160" y="160" width="3" height="4" fill="%23888470"/><rect x="220" y="100" width="3" height="4" fill="%23888470"/><rect x="290" y="70" width="3" height="4" fill="%23888470"/><rect x="330" y="140" width="3" height="4" fill="%23888470"/><rect x="390" y="110" width="3" height="4" fill="%23888470"/><rect x="470" y="60" width="3" height="4" fill="%23888470"/><rect x="500" y="120" width="3" height="4" fill="%23888470"/><rect x="580" y="90" width="3" height="4" fill="%23888470"/><rect x="670" y="40" width="3" height="4" fill="%23888470"/><rect x="700" y="100" width="3" height="4" fill="%23888470"/><rect x="730" y="160" width="3" height="4" fill="%23888470"/></svg>');
+    background-size: 800px 200px;
     animation: slide 15s linear infinite, blink 3s ease-in-out infinite;
     z-index: 1;
 }
