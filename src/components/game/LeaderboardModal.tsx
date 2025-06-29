@@ -154,22 +154,22 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
         {!hasSubmitted ? (
           <div className="mb-6">
             <p className="text-gray-300 text-sm mb-3">Enter your name to save your score:</p>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-3">
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Your name"
-                className="flex-1 bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
+                className="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
                 maxLength={20}
                 disabled={isSubmitting}
               />
               <Button
                 onClick={submitScore}
                 disabled={!username.trim() || isSubmitting}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2"
               >
-                {isSubmitting ? 'Saving...' : 'Save'}
+                {isSubmitting ? 'Submitting...' : 'Submit Score'}
               </Button>
             </div>
             {error && (
