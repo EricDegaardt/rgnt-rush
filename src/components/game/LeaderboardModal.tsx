@@ -131,8 +131,19 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     }
   };
 
-  const getBikeEmoji = (bike: string) => {
-    return bike === 'purple-rain' ? '🟣' : '⚫';
+  const getBikeImage = (bike: string) => {
+    const bikeImageUrl = bike === 'purple-rain' 
+      ? '/lovable-uploads/purple-rain.png' 
+      : '/lovable-uploads/black-thunder.png';
+    
+    return (
+      <img 
+        src={bikeImageUrl} 
+        alt={bike} 
+        className="w-6 h-auto object-contain"
+        style={{ imageRendering: 'pixelated' }}
+      />
+    );
   };
 
   const shareText = `🏍️ Just scored ${Math.floor(score)}m in RGNT RUSH! Can you beat my score? Play now!`;
@@ -308,14 +319,14 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                       <div className="flex items-center gap-3 md:gap-4">
                         {getRankIcon(index)}
                         <div>
-                          <div className="text-white font-semibold text-base md:text-lg">{entry.username}</div>
-                          <div className="text-gray-400 text-xs md:text-sm flex items-center gap-2">
-                            <span>{getBikeEmoji(entry.selected_bike)}</span>
+                          <div className="text-white font-semibold text-sm md:text-base">{entry.username}</div>
+                          <div className="text-gray-400 text-xs flex items-center gap-2">
+                            {getBikeImage(entry.selected_bike)}
                             <span>{new Date(entry.created_at).toLocaleDateString()}</span>
                           </div>
                         </div>
                       </div>
-                      <div className="text-purple-400 font-bold text-lg md:text-xl">{entry.distance}m</div>
+                      <div className="text-purple-400 font-bold text-base md:text-lg">{entry.distance}m</div>
                     </div>
                   ))}
                   {leaderboard.length === 0 && (
