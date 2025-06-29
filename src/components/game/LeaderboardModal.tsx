@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award, Copy, Check, Mail, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData } from '@/lib/supabase';
 import CelebrationPopup from './CelebrationPopup';
 
@@ -279,23 +278,38 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                     />
                   </div>
 
-                  {/* Marketing Consent Checkbox */}
+                  {/* Marketing Consent Checkbox with Custom Styling */}
                   <div className="flex items-start space-x-3 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
-                    <Checkbox
-                      id="marketing-consent"
-                      checked={marketingConsent}
-                      onCheckedChange={(checked) => setMarketingConsent(checked as boolean)}
-                      className="mt-0.5 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
-                      disabled={isSubmitting}
-                    />
+                    <div className="relative flex-shrink-0 mt-0.5">
+                      <input
+                        type="checkbox"
+                        id="marketing-consent"
+                        checked={marketingConsent}
+                        onChange={(e) => setMarketingConsent(e.target.checked)}
+                        disabled={isSubmitting}
+                        className="sr-only"
+                      />
+                      <label
+                        htmlFor="marketing-consent"
+                        className={`
+                          relative flex items-center justify-center w-5 h-5 min-w-[20px] min-h-[20px] 
+                          border-2 border-gray-600 bg-white rounded cursor-pointer transition-all duration-200
+                          hover:border-purple-400 hover:bg-gray-50
+                          focus-within:ring-2 focus-within:ring-purple-400 focus-within:ring-opacity-50
+                          ${marketingConsent ? 'border-purple-500 bg-purple-500' : ''}
+                          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
+                        `}
+                      >
+                        {marketingConsent && (
+                          <Check className="w-3 h-3 text-white font-bold stroke-[3]" />
+                        )}
+                      </label>
+                    </div>
                     <label 
                       htmlFor="marketing-consent" 
-                      className="text-sm text-gray-300 leading-relaxed cursor-pointer"
+                      className={`text-sm text-gray-300 leading-relaxed ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                     >
-                      I agree to receive emails about RGNT RUSH updates, tournaments, and special offers. 
-                      <span className="text-gray-400 block mt-1 text-xs">
-                        You can unsubscribe at any time. This helps us improve the game and notify you of exciting events!
-                      </span>
+                      I agree to receive emails about RGNT Motorcycles updates, news, and special offers. We respect your privacy and will never share, sell, or misuse your email address. You can unsubscribe at any time.
                     </label>
                   </div>
 
