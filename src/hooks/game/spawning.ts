@@ -14,12 +14,12 @@ const getGameWidth = () => {
     return 600; // Default fallback
 };
 
-// Adjust spawn rates based on device type
+// Adjust spawn rates based on device type and increased game speed
 const getSpawnRate = () => {
     if (typeof window !== 'undefined') {
-        return window.innerWidth >= 768 ? 0.022 : 0.018; // Higher spawn rate on desktop
+        return window.innerWidth >= 768 ? 0.026 : 0.022; // Increased spawn rates to match faster game speed
     }
-    return 0.018;
+    return 0.022;
 };
 
 export const shouldSpawnObstacle = (): boolean => {

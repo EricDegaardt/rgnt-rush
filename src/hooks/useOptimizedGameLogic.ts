@@ -21,12 +21,13 @@ const getGameSpeeds = () => {
     if (typeof window !== 'undefined') {
         const isDesktop = window.innerWidth >= 768;
         return {
-            gameSpeed: isDesktop ? 10 : 7,      // Increased from 7 to 10 for desktop
-            visualSpeed: isDesktop ? 8 : 5,     // Increased from 5 to 8 for desktop
-            distanceMultiplier: isDesktop ? 0.12 : 0.08  // Increased distance gain for desktop
+            gameSpeed: isDesktop ? 12 : 9,      // Increased from 10/7 to 12/9
+            visualSpeed: isDesktop ? 10 : 7,    // Increased from 8/5 to 10/7
+            distanceMultiplier: isDesktop ? 0.16 : 0.12,  // Increased from 0.12/0.08 to 0.16/0.12
+            energyDecline: isDesktop ? 0.10 : 0.08        // Increased from 0.06 to 0.10/0.08
         };
     }
-    return { gameSpeed: 7, visualSpeed: 5, distanceMultiplier: 0.08 };
+    return { gameSpeed: 9, visualSpeed: 7, distanceMultiplier: 0.12, energyDecline: 0.08 };
 };
 
 export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore: number) => void, onSoundEvent?: (eventType: string) => void) => {
@@ -34,6 +35,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     const gameSpeedRef = useRef(speeds.gameSpeed);
     const visualSpeedRef = useRef(speeds.visualSpeed);
     const distanceMultiplierRef = useRef(speeds.distanceMultiplier);
+    const energyDeclineRef = useRef(speeds.energyDecline);
     const playerPhysicsRef = useRef<PlayerPhysics>({
         playerY: ROAD_HEIGHT,
         playerVelocityY: 0,
@@ -67,6 +69,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
             gameSpeedRef.current = newSpeeds.gameSpeed;
             visualSpeedRef.current = newSpeeds.visualSpeed;
             distanceMultiplierRef.current = newSpeeds.distanceMultiplier;
+            energyDeclineRef.current = newSpeeds.energyDecline;
         };
 
         window.addEventListener('resize', handleResize);
@@ -83,7 +86,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         
         // Update distance and energy with device-specific multipliers
         const newDistance = gameStateRef.current.distance + gameSpeedRef.current * distanceMultiplierRef.current;
-        const newEnergy = Math.max(0, Math.min(100, gameStateRef.current.energy - 0.06));
+        const newEnergy = Math.max(0, Math.min(100, gameStateRef.current.energy - energyDeclineRef.current)); // Use dynamic energy decline
 
         // Move obstacles and collectibles
         const newObstacles = moveObstacles(gameStateRef.current.obstacles, visualSpeedRef.current);
@@ -167,6 +170,7 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         gameSpeedRef.current = speeds.gameSpeed;
         visualSpeedRef.current = speeds.visualSpeed;
         distanceMultiplierRef.current = speeds.distanceMultiplier;
+        energyDeclineRef.current = speeds.energyDecline;
         
         playerPhysicsRef.current = {
             playerY: ROAD_HEIGHT,
