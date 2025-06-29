@@ -99,7 +99,15 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         title: 'RGNT RUSH - My Score',
         text: shareText,
         url: gameUrl,
-      }).catch(console.error);
+      }).catch(() => {
+        // Fallback to clipboard when Web Share API fails
+        console.warn('Web Share API failed, falling back to clipboard');
+        navigator.clipboard.writeText(`${shareText}\n${gameUrl}`).then(() => {
+          alert('Score copied to clipboard!');
+        }).catch(() => {
+          alert('Unable to share. Please copy the URL manually.');
+        });
+      });
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(`${shareText}\n${gameUrl}`).then(() => {
