@@ -3,6 +3,7 @@ import { Trophy, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { saveScore } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 interface ScoreSubmissionProps {
   score: number;
@@ -33,19 +34,30 @@ const ScoreSubmission = ({ score, selectedBike, onClose, onSubmitted }: ScoreSub
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
     if (!username.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
     
-    const success = await saveScore(username.trim(), score, selectedBike);
-    
-    if (success) {
-      setSubmitted(true);
-      setTimeout(() => {
-        onSubmitted();
-      }, 1500);
-    } else {
-      alert('Failed to save score. Please try again.');
+    try {
+      console.log('Submitting score:', { username: username.trim(), score, selectedBike });
+      const success = await saveScore(username.trim(), score, selectedBike);
+      
+      if (success) {
+        console.log('Score saved successfully');
+        setSubmitted(true);
+        toast.success('Score saved to leaderboard!');
+        setTimeout(() => {
+          onSubmitted();
+        }, 1500);
+      } else {
+        console.error('Failed to save score');
+        toast.error('Failed to save score. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving score:', error);
+      toast.error('Failed to save score. Please try again.');
     }
     
     setIsSubmitting(false);
@@ -103,6 +115,7 @@ const ScoreSubmission = ({ score, selectedBike, onClose, onSubmitted }: ScoreSub
               maxLength={20}
               className="bg-gray-800 border-gray-600 text-white placeholder-gray-400"
               required
+              autoFocus
             />
           </div>
           
@@ -118,7 +131,7 @@ const ScoreSubmission = ({ score, selectedBike, onClose, onSubmitted }: ScoreSub
             <Button
               type="submit"
               disabled={!username.trim() || isSubmitting}
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>

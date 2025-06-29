@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Trophy, Medal, Award } from 'lucide-react';
+import { X, Trophy, Medal, Award, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getLeaderboard, LeaderboardEntry } from '@/lib/supabase';
 
@@ -10,15 +10,22 @@ interface LeaderboardProps {
 const Leaderboard = ({ onClose }: LeaderboardProps) => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      setLoading(true);
+  const fetchLeaderboard = async () => {
+    setLoading(true);
+    setError(null);
+    try {
       const data = await getLeaderboard();
       setLeaderboard(data);
-      setLoading(false);
-    };
+    } catch (err) {
+      console.error('Error fetching leaderboard:', err);
+      setError('Failed to load leaderboard');
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     fetchLeaderboard();
   }, []);
 
@@ -68,20 +75,41 @@ const Leaderboard = ({ onClose }: LeaderboardProps) => {
             <Trophy className="w-6 h-6 text-yellow-500" />
             Leaderboard
           </h2>
-          <Button
-            onClick={onClose}
-            variant="ghost"
-            size="icon"
-            className="text-gray-400 hover:text-white hover:bg-gray-700 rounded-full"
-          >
-            <X size={24} />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={fetchLeaderboard}
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-white hover:bg-gray-700 rounded-full"
+              disabled={loading}
+            >
+              <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+            </Button>
+            <Button
+              onClick={onClose}
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-white hover:bg-gray-700 rounded-full"
+            >
+              <X size={24} />
+            </Button>
+          </div>
         </div>
         
         <div className="p-4">
           {loading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-400">
+              <p>{error}</p>
+              <Button 
+                onClick={fetchLeaderboard} 
+                className="mt-4 bg-purple-600 hover:bg-purple-700"
+              >
+                Try Again
+              </Button>
             </div>
           ) : leaderboard.length === 0 ? (
             <div className="text-center py-8 text-gray-400">

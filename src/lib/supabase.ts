@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables');
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export interface LeaderboardEntry {
@@ -15,7 +19,9 @@ export interface LeaderboardEntry {
 
 export const saveScore = async (username: string, distance: number, selectedBike: string): Promise<boolean> => {
   try {
-    const { error } = await supabase
+    console.log('Attempting to save score:', { username, distance: Math.floor(distance), selectedBike });
+    
+    const { data, error } = await supabase
       .from('leaderboard')
       .insert([
         {
@@ -24,12 +30,14 @@ export const saveScore = async (username: string, distance: number, selectedBike
           selected_bike: selectedBike
         }
       ])
+      .select()
 
     if (error) {
-      console.error('Error saving score:', error)
+      console.error('Supabase error saving score:', error);
       return false
     }
 
+    console.log('Score saved successfully:', data);
     return true
   } catch (error) {
     console.error('Error saving score:', error)
@@ -39,6 +47,8 @@ export const saveScore = async (username: string, distance: number, selectedBike
 
 export const getLeaderboard = async (): Promise<LeaderboardEntry[]> => {
   try {
+    console.log('Fetching leaderboard...');
+    
     const { data, error } = await supabase
       .from('leaderboard')
       .select('*')
@@ -46,10 +56,11 @@ export const getLeaderboard = async (): Promise<LeaderboardEntry[]> => {
       .limit(15)
 
     if (error) {
-      console.error('Error fetching leaderboard:', error)
+      console.error('Supabase error fetching leaderboard:', error)
       return []
     }
 
+    console.log('Leaderboard fetched:', data);
     return data || []
   } catch (error) {
     console.error('Error fetching leaderboard:', error)
@@ -59,6 +70,8 @@ export const getLeaderboard = async (): Promise<LeaderboardEntry[]> => {
 
 export const checkIfScoreQualifies = async (distance: number): Promise<boolean> => {
   try {
+    console.log('Checking if score qualifies:', Math.floor(distance));
+    
     const { data, error } = await supabase
       .from('leaderboard')
       .select('distance')
@@ -72,12 +85,15 @@ export const checkIfScoreQualifies = async (distance: number): Promise<boolean> 
 
     // If we have less than 15 scores, always qualify
     if (!data || data.length < 15) {
+      console.log('Less than 15 scores, qualifying automatically');
       return true
     }
 
     // Check if the new score is better than the 15th place
     const lowestScore = data[14]?.distance || 0
-    return Math.floor(distance) > lowestScore
+    const qualifies = Math.floor(distance) > lowestScore
+    console.log('Score qualification check:', { newScore: Math.floor(distance), lowestScore, qualifies });
+    return qualifies
   } catch (error) {
     console.error('Error checking score qualification:', error)
     return true // Allow submission if we can't check
