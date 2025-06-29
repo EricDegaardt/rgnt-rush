@@ -11,6 +11,7 @@ import GamePreloader from './GamePreloader';
 import AnimatedStartScreen from './AnimatedStartScreen';
 import VolumeSlider from './VolumeSlider';
 import LeaderboardModal from './LeaderboardModal';
+import SimpleLeaderboardModal from './SimpleLeaderboardModal';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
@@ -29,6 +30,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [isPreloading, setIsPreloading] = useState(false);
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showSimpleLeaderboard, setShowSimpleLeaderboard] = useState(false);
   
   const {
     playSound,
@@ -46,7 +48,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
-    setShowLeaderboard(true); // Show leaderboard immediately after game over
+    setShowLeaderboard(true); // Show full leaderboard after game over
     playSound('gameOver');
   }, [playSound]);
   
@@ -71,6 +73,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setGameOver(false);
     setFinalScore(0);
     setShowLeaderboard(false);
+    setShowSimpleLeaderboard(false);
     gameLogic.resetGame();
     setRunning(true);
   };
@@ -82,8 +85,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
 
   const handleViewLeaderboard = () => {
     setShowStartScreen(false);
-    setShowLeaderboard(true);
-    setFinalScore(0); // Set score to 0 for viewing only
+    setShowSimpleLeaderboard(true); // Show simple leaderboard from start screen
   };
   
   const handleBikeSelect = (bikeId: string) => {
@@ -105,6 +107,16 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     }
   };
 
+  const handleCloseSimpleLeaderboard = () => {
+    setShowSimpleLeaderboard(false);
+    setShowStartScreen(true);
+  };
+
+  const handleStartRacingFromLeaderboard = () => {
+    setShowSimpleLeaderboard(false);
+    setShowBikeSelection(true);
+  };
+
   const handlePlayAgain = () => {
     setGameOver(false);
     setShowLeaderboard(false);
@@ -115,7 +127,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     e.preventDefault();
 
     // Only handle specific game actions
-    if (!running && !gameOver && !showBikeSelection && !showLeaderboard) {
+    if (!running && !gameOver && !showBikeSelection && !showLeaderboard && !showSimpleLeaderboard) {
       // Let button handle start
       return;
     } else if (running && !gameOver) {
@@ -123,7 +135,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
       gameLogic.handleJump();
     }
     // Remove the game over screen interaction since leaderboard shows immediately
-  }, [running, gameOver, showBikeSelection, showLeaderboard, gameLogic]);
+  }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic]);
 
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
@@ -176,6 +188,25 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     );
   }
 
+  // Show simple leaderboard when accessed from start screen
+  if (showSimpleLeaderboard) {
+    return (
+      <div className="w-full h-full flex flex-col">
+        {!isMobile && (
+          <div className="w-full p-2">
+            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+          </div>
+        )}
+        <div className="flex-1 relative">
+          <SimpleLeaderboardModal
+            onClose={handleCloseSimpleLeaderboard}
+            onStartRacing={handleStartRacingFromLeaderboard}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full flex flex-col">
       {!isMobile && (
@@ -207,7 +238,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         
         <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-        {/* Leaderboard Modal - Shows immediately after game over or when viewing from start screen */}
+        {/* Full Leaderboard Modal - Shows after game over with score submission */}
         {showLeaderboard && (
           <LeaderboardModal
             score={finalScore}
