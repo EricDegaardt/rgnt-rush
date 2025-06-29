@@ -133,114 +133,132 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="text-center mb-4">
-          <h3 className="text-xl font-bold text-white">Leaderboard</h3>
-        </div>
-        
-        <div className="text-center mb-6">
-          <div className="text-3xl font-bold text-purple-400 mb-2">{Math.floor(score)}m</div>
-          <p className="text-gray-300 text-sm">Your Distance</p>
-        </div>
-
-        {!hasSubmitted ? (
-          <div className="mb-6">
-            <p className="text-gray-300 text-sm mb-3">Enter your name to save your score:</p>
-            <div className="flex flex-col gap-3">
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Your name"
-                className="w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none"
-                maxLength={20}
-                disabled={isSubmitting}
-              />
-              <Button
-                onClick={submitScore}
-                disabled={!username.trim() || isSubmitting}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Score'}
-              </Button>
-            </div>
-            {error && (
-              <p className="text-red-400 text-sm mt-2">{error}</p>
-            )}
+      <div className="bg-gray-900 rounded-lg w-full max-w-lg mx-auto flex flex-col" style={{ maxHeight: '85vh' }}>
+        {/* Fixed Header */}
+        <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-700">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-white mb-2">Leaderboard</h3>
+            <div className="text-3xl font-bold text-purple-400 mb-1">{Math.floor(score)}m</div>
+            <p className="text-gray-300 text-sm">Your Distance</p>
           </div>
-        ) : showShareOptions ? (
-          <div className="mb-6">
-            <div className="text-center mb-4">
-              <p className="text-green-400 text-sm mb-3">✅ Score saved successfully!</p>
-              <p className="text-gray-300 text-sm">Share your achievement:</p>
-            </div>
+        </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              {shareOptions.map((option) => (
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-6 pt-4">
+          {!hasSubmitted ? (
+            <div className="mb-6">
+              <p className="text-gray-300 text-sm mb-4 text-center">Enter your name to save your score:</p>
+              <div className="flex flex-col gap-3">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Your name"
+                  className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                  maxLength={20}
+                  disabled={isSubmitting}
+                />
                 <Button
-                  key={option.name}
-                  onClick={() => handleShare(option.url)}
-                  className={`${option.color} text-white flex items-center justify-center h-12`}
+                  onClick={submitScore}
+                  disabled={!username.trim() || isSubmitting}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none"
                 >
-                  <span className="text-sm">{option.name}</span>
+                  {isSubmitting ? 'Submitting...' : 'Submit Score'}
                 </Button>
-              ))}
+              </div>
+              {error && (
+                <p className="text-red-400 text-sm mt-3 text-center">{error}</p>
+              )}
+            </div>
+          ) : showShareOptions ? (
+            <div className="mb-6">
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg mb-4">
+                  <Check className="w-5 h-5" />
+                  <span className="font-medium">Score saved successfully!</span>
+                </div>
+                <p className="text-gray-300 text-lg">Share your achievement:</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                {shareOptions.map((option) => (
+                  <Button
+                    key={option.name}
+                    onClick={() => handleShare(option.url)}
+                    className={`${option.color} text-white flex items-center justify-center h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]`}
+                  >
+                    <Share2 className="w-5 h-5 mr-2" />
+                    <span>{option.name}</span>
+                  </Button>
+                ))}
+              </div>
+              
               <Button
                 onClick={handleCopyLink}
-                className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-2 h-12 col-span-2"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-3 h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]"
               >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? <Check size={20} /> : <Copy size={20} />}
                 {copied ? 'Copied!' : 'Copy Link'}
               </Button>
             </div>
-          </div>
-        ) : (
-          <div className="mb-6 text-center">
-            <p className="text-green-400 text-sm">✅ Score saved successfully!</p>
-          </div>
-        )}
-
-        <div className="mb-6">
-          <h4 className="text-lg font-semibold text-white mb-3">Top 10 Riders</h4>
-          {isLoading ? (
-            <div className="text-center text-gray-400">Loading...</div>
-          ) : error && leaderboard.length === 0 ? (
-            <div className="text-center text-red-400">{error}</div>
           ) : (
-            <div className="space-y-2">
-              {leaderboard.map((entry, index) => (
-                <div
-                  key={entry.id}
-                  className={`flex items-center justify-between p-3 rounded-lg ${
-                    index < 3 ? 'bg-gradient-to-r from-purple-900/30 to-purple-800/30' : 'bg-gray-800/50'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    {getRankIcon(index)}
-                    <div>
-                      <div className="text-white font-medium">{entry.username}</div>
-                      <div className="text-gray-400 text-xs flex items-center gap-1">
-                        {getBikeEmoji(entry.selected_bike)}
-                        {new Date(entry.created_at).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-purple-400 font-bold">{entry.distance}m</div>
-                </div>
-              ))}
-              {leaderboard.length === 0 && (
-                <div className="text-center text-gray-400 py-4">
-                  No scores yet. Be the first!
-                </div>
-              )}
+            <div className="mb-6 text-center">
+              <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg">
+                <Check className="w-5 h-5" />
+                <span className="font-medium">Score saved successfully!</span>
+              </div>
             </div>
           )}
+
+          <div className="mb-6">
+            <h4 className="text-xl font-bold text-white mb-4 text-center">Top 10 Riders</h4>
+            {isLoading ? (
+              <div className="text-center text-gray-400 py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto mb-2"></div>
+                Loading...
+              </div>
+            ) : error && leaderboard.length === 0 ? (
+              <div className="text-center text-red-400 py-8">{error}</div>
+            ) : (
+              <div className="space-y-3">
+                {leaderboard.map((entry, index) => (
+                  <div
+                    key={entry.id}
+                    className={`flex items-center justify-between p-4 rounded-lg transition-all hover:scale-[1.02] ${
+                      index < 3 
+                        ? 'bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-700/30' 
+                        : 'bg-gray-800/60 border border-gray-700/30'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      {getRankIcon(index)}
+                      <div>
+                        <div className="text-white font-semibold text-lg">{entry.username}</div>
+                        <div className="text-gray-400 text-sm flex items-center gap-2">
+                          <span>{getBikeEmoji(entry.selected_bike)}</span>
+                          <span>{new Date(entry.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-purple-400 font-bold text-xl">{entry.distance}m</div>
+                  </div>
+                ))}
+                {leaderboard.length === 0 && (
+                  <div className="text-center text-gray-400 py-8">
+                    <Trophy className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p className="text-lg">No scores yet. Be the first!</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="flex justify-center">
+        {/* Fixed Footer */}
+        <div className="flex-shrink-0 p-6 pt-4 border-t border-gray-700">
           <Button
             onClick={onPlayAgain}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02]"
           >
             Play Again
           </Button>
