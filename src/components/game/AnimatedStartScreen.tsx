@@ -6,7 +6,6 @@ interface AnimatedStartScreenProps {
 }
 
 const AnimatedStartScreen = ({ onStartGame }: AnimatedStartScreenProps) => {
-  const [username, setUsername] = useState('');
   const [purpleBikeX, setPurpleBikeX] = useState(-200);
   const [blackBikeX, setBlackBikeX] = useState(-300);
   const [showTitle, setShowTitle] = useState(false);
@@ -32,12 +31,6 @@ const AnimatedStartScreen = ({ onStartGame }: AnimatedStartScreenProps) => {
       clearInterval(bikeAnimation);
     };
   }, []);
-
-  const handleStartGame = () => {
-    if (username.trim()) {
-      onStartGame();
-    }
-  };
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
@@ -162,28 +155,16 @@ const AnimatedStartScreen = ({ onStartGame }: AnimatedStartScreenProps) => {
         </div>
 
         <div className={`transition-all duration-1000 delay-500 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="mb-3 text-xs md:text-sm text-gray-400 max-w-md leading-relaxed">
+          <p className="mb-6 text-xs md:text-sm text-gray-400 max-w-md leading-relaxed">
             Race through neon city streets on your electric bike! Tap the screen or press space to jump, collect batteries, and dodge obstacles to go the distance!
           </p>
           
-          <div className="flex flex-col items-center gap-2">
-            <input
-              type="text"
-              placeholder="Enter Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="bg-gray-800/80 border-2 border-purple-400/50 p-2.5 rounded-lg text-center w-64 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-colors backdrop-blur-sm text-sm"
-              required
-            />
-            
-            <Button
-              onClick={handleStartGame}
-              disabled={!username.trim()}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg text-lg md:text-xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              START RACING
-            </Button>
-          </div>
+          <Button
+            onClick={onStartGame}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg text-lg md:text-xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25"
+          >
+            START RACING
+          </Button>
         </div>
       </div>
     </div>
