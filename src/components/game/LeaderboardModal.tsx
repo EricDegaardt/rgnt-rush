@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, Award, Share2, Copy, Check } from 'lucide-react';
+import { Trophy, Medal, Award, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase, LeaderboardEntry } from '@/lib/supabase';
 
@@ -180,26 +180,34 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                 <p className="text-gray-300 text-lg">Share your achievement:</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                {shareOptions.map((option) => (
-                  <Button
-                    key={option.name}
-                    onClick={() => handleShare(option.url)}
-                    className={`${option.color} text-white flex items-center justify-center h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]`}
-                  >
-                    <Share2 className="w-5 h-5 mr-2" />
-                    <span>{option.name}</span>
-                  </Button>
-                ))}
+              {/* Updated layout: LinkedIn and X on top row, Facebook and Copy Link on bottom row */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <Button
+                  onClick={() => handleShare(shareOptions[0].url)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                >
+                  LinkedIn
+                </Button>
+                <Button
+                  onClick={() => handleShare(shareOptions[1].url)}
+                  className="bg-black hover:bg-gray-800 text-white flex items-center justify-center h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                >
+                  X
+                </Button>
+                <Button
+                  onClick={() => handleShare(shareOptions[2].url)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                >
+                  Facebook
+                </Button>
+                <Button
+                  onClick={handleCopyLink}
+                  className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-2 h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                >
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
+                  {copied ? 'Copied!' : 'Copy Link'}
+                </Button>
               </div>
-              
-              <Button
-                onClick={handleCopyLink}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-3 h-12 text-lg font-medium rounded-lg transition-all transform hover:scale-[1.02]"
-              >
-                {copied ? <Check size={20} /> : <Copy size={20} />}
-                {copied ? 'Copied!' : 'Copy Link'}
-              </Button>
             </div>
           ) : (
             <div className="mb-6 text-center">
