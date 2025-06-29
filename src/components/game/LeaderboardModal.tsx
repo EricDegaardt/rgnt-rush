@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase, LeaderboardEntry } from '@/lib/supabase';
+import CelebrationPopup from './CelebrationPopup';
 
 interface LeaderboardModalProps {
   score: number;
@@ -19,6 +20,9 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [playerRank, setPlayerRank] = useState<number | null>(null);
+  const [totalPlayers, setTotalPlayers] = useState(0);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -35,11 +39,41 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
       if (error) throw error;
       setLeaderboard(data || []);
+
+      // Get total player count
+      const { count } = await supabase
+        .from('leaderboard')
+        .select('*', { count: 'exact', head: true });
+      
+      setTotalPlayers(count || 0);
     } catch (err) {
       console.error('Error fetching leaderboard:', err);
       setError('Failed to load leaderboard');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const checkPlayerRank = async (playerScore: number) => {
+    try {
+      // Count how many players have a higher score
+      const { count } = await supabase
+        .from('leaderboard')
+        .select('*', { count: 'exact', head: true })
+        .gt('distance', Math.floor(playerScore));
+
+      const rank = (count || 0) + 1;
+      setPlayerRank(rank);
+
+      // Show celebration if player made top 10
+      if (rank <= 10) {
+        setShowCelebration(true);
+      }
+
+      return rank;
+    } catch (err) {
+      console.error('Error checking player rank:', err);
+      return null;
     }
   };
 
@@ -61,7 +95,15 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       if (error) throw error;
 
       setHasSubmitted(true);
-      setShowShareOptions(true); // Show share options after successful submission
+      
+      // Check rank and show celebration if applicable
+      const rank = await checkPlayerRank(score);
+      
+      // Only show share options if not showing celebration
+      if (!rank || rank > 10) {
+        setShowShareOptions(true);
+      }
+      
       await fetchLeaderboard(); // Refresh leaderboard after submission
     } catch (err) {
       console.error('Error submitting score:', err);
@@ -69,6 +111,11 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleCelebrationComplete = () => {
+    setShowCelebration(false);
+    setShowShareOptions(true);
   };
 
   const getRankIcon = (index: number) => {
@@ -131,6 +178,18 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     }
   };
 
+  // Show celebration popup if player made top 10
+  if (showCelebration && playerRank && playerRank <= 10) {
+    return (
+      <CelebrationPopup
+        rank={playerRank}
+        totalPlayers={totalPlayers}
+        score={score}
+        onComplete={handleCelebrationComplete}
+      />
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]">
       {/* Added proper padding and margins for all screen sizes with higher z-index */}
@@ -179,6 +238,13 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                     <Check className="w-5 h-5" />
                     <span className="font-medium">Score saved successfully!</span>
                   </div>
+                  {playerRank && (
+                    <div className="mb-3">
+                      <p className="text-purple-400 font-bold text-lg">
+                        You ranked #{playerRank} out of {totalPlayers} players!
+                      </p>
+                    </div>
+                  )}
                   <p className="text-gray-300 text-base md:text-lg">Share your achievement:</p>
                 </div>
 
