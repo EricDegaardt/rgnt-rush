@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, Award, Copy, Check } from 'lucide-react';
+import { Trophy, Medal, Award, Copy, Check, Mail, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { supabase, LeaderboardEntry } from '@/lib/supabase';
+import { Checkbox } from '@/components/ui/checkbox';
+import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData } from '@/lib/supabase';
 import CelebrationPopup from './CelebrationPopup';
 
 interface LeaderboardModalProps {
@@ -13,6 +14,8 @@ interface LeaderboardModalProps {
 
 const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: LeaderboardModalProps) => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -26,7 +29,15 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   useEffect(() => {
     fetchLeaderboard();
+    loadUserData();
   }, []);
+
+  const loadUserData = () => {
+    const userData = getUserDataFromStorage();
+    if (userData.username) setUsername(userData.username);
+    if (userData.email) setEmail(userData.email);
+    if (userData.marketingConsent !== undefined) setMarketingConsent(userData.marketingConsent);
+  };
 
   const fetchLeaderboard = async () => {
     try {
@@ -77,19 +88,39 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     }
   };
 
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const submitScore = async () => {
-    if (!username.trim()) return;
+    if (!username.trim() || !email.trim()) return;
+    
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
 
     try {
       setIsSubmitting(true);
       setError(null);
 
+      // Save user data locally for future use
+      const userData: UserData = {
+        username: username.trim(),
+        email: email.trim(),
+        marketingConsent
+      };
+      saveUserDataLocally(userData);
+
       const { error } = await supabase
         .from('leaderboard')
         .insert({
           username: username.trim(),
+          email: email.trim(),
           distance: Math.floor(score),
-          selected_bike: selectedBike
+          selected_bike: selectedBike,
+          marketing_consent: marketingConsent
         });
 
       if (error) throw error;
@@ -219,21 +250,59 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
           <div className="flex-1 overflow-y-auto p-4 md:p-6 pt-3 md:pt-4">
             {!hasSubmitted ? (
               <div className="mb-4 md:mb-6">
-                <p className="text-gray-300 text-sm mb-3 md:mb-4 text-center">Enter your name to save your score:</p>
-                <div className="flex flex-col gap-3">
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Your name"
-                    className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
-                    maxLength={20}
-                    disabled={isSubmitting}
-                  />
+                <p className="text-gray-300 text-sm mb-4 text-center">Save your score to the leaderboard:</p>
+                <div className="flex flex-col gap-4">
+                  {/* Username Input */}
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Your username"
+                      className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                      maxLength={20}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Email Input */}
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Your email address"
+                      className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Marketing Consent Checkbox */}
+                  <div className="flex items-start space-x-3 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <Checkbox
+                      id="marketing-consent"
+                      checked={marketingConsent}
+                      onCheckedChange={(checked) => setMarketingConsent(checked as boolean)}
+                      className="mt-0.5 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                      disabled={isSubmitting}
+                    />
+                    <label 
+                      htmlFor="marketing-consent" 
+                      className="text-sm text-gray-300 leading-relaxed cursor-pointer"
+                    >
+                      I agree to receive emails about RGNT RUSH updates, tournaments, and special offers. 
+                      <span className="text-gray-400 block mt-1 text-xs">
+                        You can unsubscribe at any time. This helps us improve the game and notify you of exciting events!
+                      </span>
+                    </label>
+                  </div>
+
                   <Button
                     onClick={submitScore}
-                    disabled={!username.trim() || isSubmitting}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none"
+                    disabled={!username.trim() || !email.trim() || isSubmitting}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none disabled:opacity-50"
                   >
                     {isSubmitting ? 'Submitting...' : 'Submit Score'}
                   </Button>
