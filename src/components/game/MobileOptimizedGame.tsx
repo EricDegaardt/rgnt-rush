@@ -10,10 +10,11 @@ import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
 import AnimatedStartScreen from './AnimatedStartScreen';
 import VolumeSlider from './VolumeSlider';
+import LeaderboardModal from './LeaderboardModal';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
-import { Share2 } from 'lucide-react';
+import { Share2, Trophy } from 'lucide-react';
 import Road from './Road';
 
 interface MobileOptimizedGameProps {
@@ -28,6 +29,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
   const [showStartScreen, setShowStartScreen] = useState(true);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   
   const {
     playSound,
@@ -118,9 +120,18 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     }
   };
 
-  const handlePlayAgain = (e: React.MouseEvent) => {
+  const handleShowLeaderboard = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setShowLeaderboard(true);
+  };
+
+  const handleCloseLeaderboard = () => {
+    setShowLeaderboard(false);
+  };
+
+  const handlePlayAgain = () => {
     setGameOver(false);
+    setShowLeaderboard(false);
     setShowBikeSelection(true);
   };
   
@@ -128,17 +139,17 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     e.preventDefault();
 
     // Only handle specific game actions
-    if (!running && !gameOver && !showBikeSelection) {
+    if (!running && !gameOver && !showBikeSelection && !showLeaderboard) {
       // Let button handle start
       return;
     } else if (running && !gameOver) {
       // Only trigger jump action
       gameLogic.handleJump();
-    } else if (gameOver) {
+    } else if (gameOver && !showLeaderboard) {
       // Only trigger play again if not showing any modals
       setShowBikeSelection(true);
     }
-  }, [running, gameOver, showBikeSelection, gameLogic]);
+  }, [running, gameOver, showBikeSelection, showLeaderboard, gameLogic]);
 
   const getGameOverMessage = (distance: number) => {
     if (distance < 500) {
@@ -246,27 +257,46 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
         {/* Game Over Screen */}
-        {gameOver && (
+        {gameOver && !showLeaderboard && (
           <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
             <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
             <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
             
-            <div className="flex gap-4 mt-8">
-              <button 
-                onClick={handleShareScore}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
-              >
-                <Share2 size={16} />
-                Share Score
-              </button>
+            <div className="flex flex-col gap-3 mt-8">
+              <div className="flex gap-3">
+                <button 
+                  onClick={handleShowLeaderboard}
+                  className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
+                >
+                  <Trophy size={16} />
+                  Leaderboard
+                </button>
+                <button 
+                  onClick={handleShareScore}
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
+                >
+                  <Share2 size={16} />
+                  Share
+                </button>
+              </div>
               <button 
                 onClick={handlePlayAgain}
-                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl"
+                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-xl w-full"
               >
                 Play Again
               </button>
             </div>
           </div>
+        )}
+
+        {/* Leaderboard Modal */}
+        {showLeaderboard && (
+          <LeaderboardModal
+            score={finalScore}
+            selectedBike={selectedBike}
+            onClose={handleCloseLeaderboard}
+            onPlayAgain={handlePlayAgain}
+          />
         )}
       </div>
     </div>
