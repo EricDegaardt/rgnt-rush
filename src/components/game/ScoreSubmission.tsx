@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, X, Loader2 } from 'lucide-react';
+import { Trophy, X, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { saveScore } from '@/lib/supabase';
@@ -16,6 +16,7 @@ const ScoreSubmission = ({ score, selectedBike, onClose, onSubmitted }: ScoreSub
   const [username, setUsername] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getBikeDisplayName = (bikeId: string) => {
     switch (bikeId) {
@@ -39,12 +40,13 @@ const ScoreSubmission = ({ score, selectedBike, onClose, onSubmitted }: ScoreSub
     if (!username.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
+    setError(null);
     
     try {
       console.log('Submitting score:', { username: username.trim(), score, selectedBike });
-      const success = await saveScore(username.trim(), score, selectedBike);
+      const result = await saveScore(username.trim(), score, selectedBike);
       
-      if (success) {
+      if (result.success) {
         console.log('Score saved successfully');
         setSubmitted(true);
         toast.success('Score saved to leaderboard!');
@@ -52,12 +54,15 @@ const ScoreSubmission = ({ score, selectedBike, onClose, onSubmitted }: ScoreSub
           onSubmitted();
         }, 1500);
       } else {
-        console.error('Failed to save score');
-        toast.error('Failed to save score. Please try again.');
+        console.error('Failed to save score:', result.error);
+        setError(result.error || 'Failed to save score. Please try again.');
+        toast.error(result.error || 'Failed to save score. Please try again.');
       }
     } catch (error) {
       console.error('Error saving score:', error);
-      toast.error('Failed to save score. Please try again.');
+      const errorMessage = 'An unexpected error occurred. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
     
     setIsSubmitting(false);
@@ -100,6 +105,13 @@ const ScoreSubmission = ({ score, selectedBike, onClose, onSubmitted }: ScoreSub
             Riding: {getBikeDisplayName(selectedBike)}
           </div>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-900/50 border border-red-600/50 rounded-lg flex items-start gap-2">
+            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+            <div className="text-red-300 text-sm">{error}</div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
