@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Trophy, Medal, Award } from 'lucide-react';
+import { X, Trophy, Medal, Award, Share2, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase, LeaderboardEntry } from '@/lib/supabase';
 
@@ -14,9 +14,11 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   const [username, setUsername] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -59,6 +61,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       if (error) throw error;
 
       setHasSubmitted(true);
+      setShowShareOptions(true); // Show share options after successful submission
       await fetchLeaderboard(); // Refresh leaderboard after submission
     } catch (err) {
       console.error('Error submitting score:', err);
@@ -83,6 +86,49 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   const getBikeEmoji = (bike: string) => {
     return bike === 'purple-rain' ? '🟣' : '⚫';
+  };
+
+  const shareText = `🏍️ Just scored ${Math.floor(score)}m in RGNT RUSH! Can you beat my score? Play now!`;
+  const gameUrl = window.location.href;
+  
+  const shareOptions = [
+    {
+      name: 'LinkedIn',
+      url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(gameUrl)}&title=${encodeURIComponent(shareText)}`,
+      color: 'bg-blue-600 hover:bg-blue-700'
+    },
+    {
+      name: 'X',
+      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(gameUrl)}`,
+      color: 'bg-black hover:bg-gray-800'
+    },
+    {
+      name: 'Facebook',
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(gameUrl)}&quote=${encodeURIComponent(shareText)}`,
+      color: 'bg-blue-500 hover:bg-blue-600'
+    }
+  ];
+
+  const handleShare = (url: string) => {
+    window.open(url, '_blank', 'width=600,height=400');
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(`${shareText}\n${gameUrl}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = `${shareText}\n${gameUrl}`;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -129,6 +175,32 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
             {error && (
               <p className="text-red-400 text-sm mt-2">{error}</p>
             )}
+          </div>
+        ) : showShareOptions ? (
+          <div className="mb-6">
+            <div className="text-center mb-4">
+              <p className="text-green-400 text-sm mb-3">✅ Score saved successfully!</p>
+              <p className="text-gray-300 text-sm">Share your achievement:</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {shareOptions.map((option) => (
+                <Button
+                  key={option.name}
+                  onClick={() => handleShare(option.url)}
+                  className={`${option.color} text-white flex items-center justify-center h-12`}
+                >
+                  <span className="text-sm">{option.name}</span>
+                </Button>
+              ))}
+              <Button
+                onClick={handleCopyLink}
+                className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-2 h-12 col-span-2"
+              >
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? 'Copied!' : 'Copy Link'}
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="mb-6 text-center">
@@ -180,13 +252,15 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
           >
             Play Again
           </Button>
-          <Button
-            onClick={onClose}
-            variant="outline"
-            className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
-          >
-            Close
-          </Button>
+          {!showShareOptions && (
+            <Button
+              onClick={onClose}
+              variant="outline"
+              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
+            >
+              Close
+            </Button>
+          )}
         </div>
       </div>
     </div>

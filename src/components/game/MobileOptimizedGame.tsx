@@ -14,7 +14,6 @@ import LeaderboardModal from './LeaderboardModal';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
-import { Share2, Trophy } from 'lucide-react';
 import Road from './Road';
 
 interface MobileOptimizedGameProps {
@@ -47,6 +46,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
+    setShowLeaderboard(true); // Show leaderboard immediately after game over
     playSound('gameOver');
   }, [playSound]);
   
@@ -70,6 +70,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
+    setShowLeaderboard(false);
     gameLogic.resetGame();
     setRunning(true);
   };
@@ -88,41 +89,6 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const handlePreloadComplete = () => {
     setIsPreloading(false);
     startGame();
-  };
-
-  const handleShareScore = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    const shareText = `🏍️ Just scored ${Math.floor(finalScore)}m in RGNT RUSH! Can you beat my score?`;
-    const gameUrl = window.location.href;
-    
-    if (navigator.share) {
-      navigator.share({
-        title: 'RGNT RUSH - My Score',
-        text: shareText,
-        url: gameUrl,
-      }).catch(() => {
-        // Fallback to clipboard when Web Share API fails
-        console.warn('Web Share API failed, falling back to clipboard');
-        navigator.clipboard.writeText(`${shareText}\n${gameUrl}`).then(() => {
-          alert('Score copied to clipboard!');
-        }).catch(() => {
-          alert('Unable to share. Please copy the URL manually.');
-        });
-      });
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(`${shareText}\n${gameUrl}`).then(() => {
-        alert('Score copied to clipboard!');
-      }).catch(() => {
-        alert('Unable to share. Please copy the URL manually.');
-      });
-    }
-  };
-
-  const handleShowLeaderboard = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowLeaderboard(true);
   };
 
   const handleCloseLeaderboard = () => {
@@ -145,35 +111,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     } else if (running && !gameOver) {
       // Only trigger jump action
       gameLogic.handleJump();
-    } else if (gameOver && !showLeaderboard) {
-      // Only trigger play again if not showing any modals
-      setShowBikeSelection(true);
     }
+    // Remove the game over screen interaction since leaderboard shows immediately
   }, [running, gameOver, showBikeSelection, showLeaderboard, gameLogic]);
-
-  const getGameOverMessage = (distance: number) => {
-    if (distance < 500) {
-      return {
-        title: "Try again",
-        color: "text-red-500"
-      };
-    } else if (distance < 1000) {
-      return {
-        title: "You can do better",
-        color: "text-yellow-500"
-      };
-    } else if (distance < 1500) {
-      return {
-        title: "Awesome",
-        color: "text-green-500"
-      };
-    } else {
-      return {
-        title: "Legendary",
-        color: "text-purple-500"
-      };
-    }
-  };
 
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
@@ -223,8 +163,6 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     );
   }
 
-  const gameOverMessage = getGameOverMessage(finalScore);
-
   return (
     <div className="w-full h-full flex flex-col">
       {!isMobile && (
@@ -256,40 +194,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         
         <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-        {/* Game Over Screen */}
-        {gameOver && !showLeaderboard && (
-          <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
-            <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
-            <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
-            
-            <div className="flex flex-col gap-3 mt-8">
-              <div className="flex gap-3">
-                <button 
-                  onClick={handleShowLeaderboard}
-                  className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
-                >
-                  <Trophy size={16} />
-                  Leaderboard
-                </button>
-                <button 
-                  onClick={handleShareScore}
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
-                >
-                  <Share2 size={16} />
-                  Share
-                </button>
-              </div>
-              <button 
-                onClick={handlePlayAgain}
-                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-xl w-full"
-              >
-                Play Again
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Leaderboard Modal */}
+        {/* Leaderboard Modal - Shows immediately after game over */}
         {showLeaderboard && (
           <LeaderboardModal
             score={finalScore}
