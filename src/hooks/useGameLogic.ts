@@ -8,18 +8,18 @@ import { createObstacle, createCollectible, moveObstacles, moveCollectibles } fr
 // Re-export types for backward compatibility
 export type { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './game/types';
 
-// Get device-specific game speeds
+// Get device-specific game speeds - Updated for 33m/s distance calculation
 const getGameSpeeds = () => {
     if (typeof window !== 'undefined') {
         const isDesktop = window.innerWidth >= 768;
         return {
-            gameSpeed: isDesktop ? 12 : 9,      // Increased from 10/7 to 12/9
-            visualSpeed: isDesktop ? 10 : 7,    // Increased from 8/5 to 10/7
-            distanceMultiplier: isDesktop ? 0.16 : 0.12,  // Increased from 0.12/0.08 to 0.16/0.12
-            energyDecline: isDesktop ? 0.10 : 0.08        // Increased from 0.06 to 0.10/0.08
+            gameSpeed: isDesktop ? 12 : 9,      // Visual speed for obstacles/collectibles
+            visualSpeed: isDesktop ? 10 : 7,    // Visual speed for obstacles/collectibles
+            distanceMultiplier: 0.55,           // 33m/s at 60fps (33/60 = 0.55)
+            energyDecline: isDesktop ? 0.10 : 0.08        // Energy decline rate
         };
     }
-    return { gameSpeed: 9, visualSpeed: 7, distanceMultiplier: 0.12, energyDecline: 0.08 };
+    return { gameSpeed: 9, visualSpeed: 7, distanceMultiplier: 0.55, energyDecline: 0.08 };
 };
 
 export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) => void, onSoundEvent?: (eventType: string) => void) => {
@@ -73,8 +73,8 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         // Update physics
         playerPhysicsRef.current = updatePlayerPhysics(playerPhysicsRef.current);
         
-        // Update distance and energy with device-specific multipliers
-        distanceRef.current += gameSpeedRef.current * distanceMultiplierRef.current;
+        // Update distance at 33m/s and energy with device-specific multipliers
+        distanceRef.current += distanceMultiplierRef.current; // 33m/s at 60fps
         energyRef.current -= energyDeclineRef.current; // Use dynamic energy decline rate
 
         // Move obstacles and collectibles
