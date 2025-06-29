@@ -200,6 +200,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         )}
         <div className="flex-1 relative">
           <AnimatedStartScreen onStartGame={handleStartFromMenu} />
+          {/* Leaderboard button only visible on start screen */}
           <Button
             onClick={handleShowLeaderboard}
             className="absolute top-4 right-4 bg-yellow-600 hover:bg-yellow-700 text-white p-2 rounded-lg z-30"
@@ -275,6 +276,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         
         <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
+        {/* Game Over Screen - only show when game is over and no modals are open */}
         {gameOver && !showShareScore && !showLeaderboard && !showScoreSubmission && (
           <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
             <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
@@ -320,6 +322,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           </div>
         )}
         
+        {/* Modals */}
         {showShareScore && (
           <ShareScore 
             score={finalScore} 
