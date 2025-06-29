@@ -132,10 +132,10 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-      {/* Added proper padding and margins for all screen sizes */}
-      <div className="w-full h-full max-w-lg mx-auto flex flex-col p-4 md:p-6 md:py-8">
-        <div className="bg-gray-900 rounded-lg w-full flex flex-col overflow-hidden" style={{ maxHeight: '100%' }}>
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]">
+      {/* Added proper padding and margins for all screen sizes with higher z-index */}
+      <div className="w-full h-full max-w-lg mx-auto flex flex-col p-4 md:p-6 md:py-8 relative z-[10000]">
+        <div className="bg-gray-900 rounded-lg w-full flex flex-col overflow-hidden shadow-2xl border border-gray-700" style={{ maxHeight: '100%' }}>
           {/* Fixed Header */}
           <div className="flex-shrink-0 p-4 md:p-6 pb-3 md:pb-4 border-b border-gray-700">
             <div className="text-center">
@@ -182,29 +182,29 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                   <p className="text-gray-300 text-base md:text-lg">Share your achievement:</p>
                 </div>
 
-                {/* Updated layout with smaller font sizes and no icons on Copy Link */}
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                {/* Share buttons with proper z-index and pointer events */}
+                <div className="grid grid-cols-2 gap-3 mb-4 relative z-[10001]">
                   <Button
                     onClick={() => handleShare(shareOptions[0].url)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
                   >
                     LinkedIn
                   </Button>
                   <Button
                     onClick={() => handleShare(shareOptions[1].url)}
-                    className="bg-black hover:bg-gray-800 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                    className="bg-black hover:bg-gray-800 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
                   >
                     X
                   </Button>
                   <Button
                     onClick={() => handleShare(shareOptions[2].url)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                    className="bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
                   >
                     Facebook
                   </Button>
                   <Button
                     onClick={handleCopyLink}
-                    className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02]"
+                    className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
                   >
                     {copied ? 'Copied!' : 'Copy Link'}
                   </Button>
@@ -267,7 +267,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
           <div className="flex-shrink-0 p-4 md:p-6 pt-3 md:pt-4 border-t border-gray-700">
             <Button
               onClick={onPlayAgain}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 md:py-4 text-lg md:text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02]"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 md:py-4 text-lg md:text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
             >
               Play Again
             </Button>
