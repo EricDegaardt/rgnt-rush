@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 
 interface AnimatedStartScreenProps {
   onStartGame: () => void;
+  onViewLeaderboard?: () => void;
 }
 
-const AnimatedStartScreen = ({ onStartGame }: AnimatedStartScreenProps) => {
+const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartScreenProps) => {
   const [purpleBikeX, setPurpleBikeX] = useState(-200);
   const [blackBikeX, setBlackBikeX] = useState(-300);
   const [showTitle, setShowTitle] = useState(false);
@@ -159,12 +160,24 @@ const AnimatedStartScreen = ({ onStartGame }: AnimatedStartScreenProps) => {
             Race through neon city streets on your electric bike! Tap the screen or press space to jump, collect batteries, and dodge obstacles to go the distance!
           </p>
           
-          <Button
-            onClick={onStartGame}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg text-lg md:text-xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25"
-          >
-            START RACING
-          </Button>
+          <div className="flex flex-col items-center gap-3">
+            <Button
+              onClick={onStartGame}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg text-lg md:text-xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25"
+            >
+              START RACING
+            </Button>
+            
+            {onViewLeaderboard && (
+              <Button
+                onClick={onViewLeaderboard}
+                variant="ghost"
+                className="text-gray-400 hover:text-white text-sm px-4 py-2 rounded-lg border border-gray-600/50 hover:border-gray-500 transition-all duration-200 hover:bg-gray-800/30"
+              >
+                View Leaderboard
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

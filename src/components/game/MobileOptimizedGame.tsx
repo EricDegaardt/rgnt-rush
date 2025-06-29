@@ -79,6 +79,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setShowStartScreen(false);
     setShowBikeSelection(true);
   };
+
+  const handleViewLeaderboard = () => {
+    setShowStartScreen(false);
+    setShowLeaderboard(true);
+    setFinalScore(0); // Set score to 0 for viewing only
+  };
   
   const handleBikeSelect = (bikeId: string) => {
     setSelectedBike(bikeId);
@@ -93,6 +99,10 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
 
   const handleCloseLeaderboard = () => {
     setShowLeaderboard(false);
+    if (!gameOver) {
+      // If viewing leaderboard from start screen, go back to start screen
+      setShowStartScreen(true);
+    }
   };
 
   const handlePlayAgain = () => {
@@ -127,7 +137,10 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           </div>
         )}
         <div className="flex-1">
-          <AnimatedStartScreen onStartGame={handleStartFromMenu} />
+          <AnimatedStartScreen 
+            onStartGame={handleStartFromMenu} 
+            onViewLeaderboard={handleViewLeaderboard}
+          />
         </div>
       </div>
     );
@@ -194,7 +207,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         
         <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-        {/* Leaderboard Modal - Shows immediately after game over */}
+        {/* Leaderboard Modal - Shows immediately after game over or when viewing from start screen */}
         {showLeaderboard && (
           <LeaderboardModal
             score={finalScore}
