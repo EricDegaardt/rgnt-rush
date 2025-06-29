@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Trophy, Medal, Award, Share2, Copy, Check } from 'lucide-react';
+import { Trophy, Medal, Award, Share2, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase, LeaderboardEntry } from '@/lib/supabase';
 
@@ -134,16 +134,8 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
       <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
+        <div className="text-center mb-4">
           <h3 className="text-xl font-bold text-white">Leaderboard</h3>
-          <Button
-            onClick={onClose}
-            variant="ghost"
-            size="icon"
-            className="text-gray-400 hover:text-white hover:bg-gray-700 rounded-full p-2"
-          >
-            <X size={24} />
-          </Button>
         </div>
         
         <div className="text-center mb-6">
@@ -245,22 +237,13 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
           )}
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex justify-center">
           <Button
             onClick={onPlayAgain}
-            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
           >
             Play Again
           </Button>
-          {!showShareOptions && (
-            <Button
-              onClick={onClose}
-              variant="outline"
-              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
-            >
-              Close
-            </Button>
-          )}
         </div>
       </div>
     </div>
