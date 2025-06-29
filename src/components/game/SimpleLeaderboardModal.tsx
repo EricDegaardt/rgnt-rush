@@ -58,7 +58,7 @@ const SimpleLeaderboardModal = ({ onClose, onStartRacing }: SimpleLeaderboardMod
       <img 
         src={bikeImageUrl} 
         alt={bike} 
-        className="w-6 h-auto object-contain"
+        className="w-10 h-auto object-contain"
         style={{ imageRendering: 'pixelated' }}
       />
     );
@@ -106,13 +106,15 @@ const SimpleLeaderboardModal = ({ onClose, onStartRacing }: SimpleLeaderboardMod
                       {getRankIcon(index)}
                       <div>
                         <div className="text-white font-semibold text-base">{entry.username}</div>
-                        <div className="text-gray-400 text-xs flex items-center gap-2">
-                          {getBikeImage(entry.selected_bike)}
-                          <span>{new Date(entry.created_at).toLocaleDateString()}</span>
+                        <div className="text-gray-400 text-[10px] mt-0.5">
+                          {new Date(entry.created_at).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
-                    <div className="text-purple-400 font-bold text-lg">{entry.distance}m</div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="text-purple-400 font-bold text-lg">{entry.distance}m</div>
+                      {getBikeImage(entry.selected_bike)}
+                    </div>
                   </div>
                 ))}
                 {leaderboard.length === 0 && (
