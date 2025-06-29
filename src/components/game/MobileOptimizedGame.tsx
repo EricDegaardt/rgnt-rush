@@ -10,14 +10,10 @@ import BikeSelection from './BikeSelection';
 import GamePreloader from './GamePreloader';
 import AnimatedStartScreen from './AnimatedStartScreen';
 import VolumeSlider from './VolumeSlider';
-import Leaderboard from './Leaderboard';
-import LeaderboardSubmission from './LeaderboardSubmission';
 import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
-import { checkIfScoreQualifies } from '../../lib/supabase';
-import { Trophy, Share2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Share2 } from 'lucide-react';
 import Road from './Road';
 
 interface MobileOptimizedGameProps {
@@ -32,10 +28,6 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [finalScore, setFinalScore] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
   const [showStartScreen, setShowStartScreen] = useState(true);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [showLeaderboardSubmission, setShowLeaderboardSubmission] = useState(false);
-  const [scoreQualifies, setScoreQualifies] = useState(false);
-  const [scoreSubmitted, setScoreSubmitted] = useState(false);
   
   const {
     playSound,
@@ -49,16 +41,10 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     startBackgroundMusic();
   }, [startBackgroundMusic]);
   
-  const handleGameOver = useCallback(async (score: number) => {
+  const handleGameOver = useCallback((score: number) => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
-    setScoreSubmitted(false);
-    
-    // Check if score qualifies for leaderboard
-    const qualifies = await checkIfScoreQualifies(score);
-    setScoreQualifies(qualifies);
-    
     playSound('gameOver');
   }, [playSound]);
   
@@ -82,8 +68,6 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const startGame = () => {
     setGameOver(false);
     setFinalScore(0);
-    setScoreQualifies(false);
-    setScoreSubmitted(false);
     gameLogic.resetGame();
     setRunning(true);
   };
@@ -129,50 +113,24 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const handlePlayAgain = (e: React.MouseEvent) => {
     e.stopPropagation();
     setGameOver(false);
-    setShowLeaderboardSubmission(false);
-    setShowLeaderboard(false);
     setShowBikeSelection(true);
-  };
-
-  const handleShowLeaderboard = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowLeaderboard(true);
-  };
-
-  const handleCloseLeaderboard = () => {
-    setShowLeaderboard(false);
-  };
-
-  const handleSubmitToLeaderboard = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowLeaderboardSubmission(true);
-  };
-
-  const handleLeaderboardSubmissionSuccess = () => {
-    setShowLeaderboardSubmission(false);
-    setScoreSubmitted(true);
-    setShowLeaderboard(true);
-  };
-
-  const handleCloseLeaderboardSubmission = () => {
-    setShowLeaderboardSubmission(false);
   };
   
   const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
 
     // Only handle specific game actions
-    if (!running && !gameOver && !showBikeSelection && !showLeaderboard && !showLeaderboardSubmission) {
+    if (!running && !gameOver && !showBikeSelection) {
       // Let button handle start
       return;
     } else if (running && !gameOver) {
       // Only trigger jump action
       gameLogic.handleJump();
-    } else if (gameOver && !showLeaderboard && !showLeaderboardSubmission) {
+    } else if (gameOver) {
       // Only trigger play again if not showing any modals
       setShowBikeSelection(true);
     }
-  }, [running, gameOver, showBikeSelection, showLeaderboard, showLeaderboardSubmission, gameLogic]);
+  }, [running, gameOver, showBikeSelection, gameLogic]);
 
   const getGameOverMessage = (distance: number) => {
     if (distance < 500) {
@@ -209,16 +167,8 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
             <VolumeSlider volume={volume} onVolumeChange={setVolume} />
           </div>
         )}
-        <div className="flex-1 relative">
+        <div className="flex-1">
           <AnimatedStartScreen onStartGame={handleStartFromMenu} />
-          {/* Leaderboard button only visible on start screen */}
-          <Button
-            onClick={handleShowLeaderboard}
-            className="absolute top-4 right-4 bg-yellow-600 hover:bg-yellow-700 text-white p-2 rounded-lg z-30"
-            size="icon"
-          >
-            <Trophy size={20} />
-          </Button>
         </div>
       </div>
     );
@@ -287,72 +237,28 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         
         <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-        {/* Game Over Screen - only show when game is over and no modals are open */}
-        {gameOver && !showLeaderboard && !showLeaderboardSubmission && (
+        {/* Game Over Screen */}
+        {gameOver && (
           <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
             <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
             <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
             
-            {scoreQualifies && !scoreSubmitted && (
-              <div className="mt-4 p-3 bg-yellow-600/20 border border-yellow-600/50 rounded-lg">
-                <p className="text-yellow-300 text-sm font-medium">🏆 New High Score!</p>
-                <p className="text-yellow-200 text-xs">Your score qualifies for the leaderboard!</p>
-              </div>
-            )}
-
-            {scoreSubmitted && (
-              <div className="mt-4 p-3 bg-green-600/20 border border-green-600/50 rounded-lg">
-                <p className="text-green-300 text-sm font-medium">✅ Score Saved!</p>
-                <p className="text-green-200 text-xs">Your score has been added to the leaderboard!</p>
-              </div>
-            )}
-            
-            <div className="flex flex-wrap gap-3 mt-6 justify-center">
-              {scoreQualifies && !scoreSubmitted && (
-                <button 
-                  onClick={handleSubmitToLeaderboard}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded text-lg flex items-center gap-2"
-                >
-                  <Trophy size={16} />
-                  Save to Leaderboard
-                </button>
-              )}
-              <button 
-                onClick={handleShowLeaderboard}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-lg flex items-center gap-2"
-              >
-                <Trophy size={16} />
-                Leaderboard
-              </button>
+            <div className="flex gap-4 mt-8">
               <button 
                 onClick={handleShareScore}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-lg flex items-center gap-2"
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xl flex items-center gap-2"
               >
                 <Share2 size={16} />
-                Share
+                Share Score
               </button>
               <button 
                 onClick={handlePlayAgain}
-                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-lg"
+                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-xl"
               >
                 Play Again
               </button>
             </div>
           </div>
-        )}
-        
-        {/* Modals */}
-        {showLeaderboard && (
-          <Leaderboard onClose={handleCloseLeaderboard} />
-        )}
-        
-        {showLeaderboardSubmission && (
-          <LeaderboardSubmission
-            score={finalScore}
-            selectedBike={selectedBike}
-            onClose={handleCloseLeaderboardSubmission}
-            onSuccess={handleLeaderboardSubmissionSuccess}
-          />
         )}
       </div>
     </div>
