@@ -275,17 +275,6 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         
         <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
-        {/* Leaderboard button - always visible during gameplay */}
-        {running && (
-          <Button
-            onClick={handleShowLeaderboard}
-            className="absolute top-4 right-4 bg-yellow-600 hover:bg-yellow-700 text-white p-2 rounded-lg z-30"
-            size="icon"
-          >
-            <Trophy size={16} />
-          </Button>
-        )}
-
         {gameOver && !showShareScore && !showLeaderboard && !showScoreSubmission && (
           <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">
             <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
