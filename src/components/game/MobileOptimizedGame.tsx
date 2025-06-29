@@ -38,6 +38,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showScoreSubmission, setShowScoreSubmission] = useState(false);
   const [scoreQualifies, setScoreQualifies] = useState(false);
+  const [scoreSubmitted, setScoreSubmitted] = useState(false);
   
   const {
     playSound,
@@ -56,6 +57,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setFinalScore(score);
     setGameOver(true);
     setRunning(false);
+    setScoreSubmitted(false);
     
     // Check if score qualifies for leaderboard
     const qualifies = await checkIfScoreQualifies(score);
@@ -86,6 +88,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setGameOver(false);
     setFinalScore(0);
     setScoreQualifies(false);
+    setScoreSubmitted(false);
     gameLogic.resetGame();
     setRunning(true);
     // Background music is already playing, no need to start it again
@@ -121,6 +124,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setGameOver(false);
     setShowShareScore(false);
     setShowScoreSubmission(false);
+    setShowLeaderboard(false);
     setShowBikeSelection(true);
   };
 
@@ -140,6 +144,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
 
   const handleScoreSubmitted = () => {
     setShowScoreSubmission(false);
+    setScoreSubmitted(true);
     setShowLeaderboard(true);
   };
 
@@ -282,21 +287,28 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
             <h2 className={`text-4xl ${gameOverMessage.color} font-bold`}>{gameOverMessage.title}</h2>
             <p className="text-xl mt-2">Distance: {Math.floor(finalScore)}m</p>
             
-            {scoreQualifies && (
+            {scoreQualifies && !scoreSubmitted && (
               <div className="mt-4 p-3 bg-yellow-600/20 border border-yellow-600/50 rounded-lg">
                 <p className="text-yellow-300 text-sm font-medium">🏆 New High Score!</p>
                 <p className="text-yellow-200 text-xs">Your score qualifies for the leaderboard!</p>
               </div>
             )}
+
+            {scoreSubmitted && (
+              <div className="mt-4 p-3 bg-green-600/20 border border-green-600/50 rounded-lg">
+                <p className="text-green-300 text-sm font-medium">✅ Score Saved!</p>
+                <p className="text-green-200 text-xs">Your score has been added to the leaderboard!</p>
+              </div>
+            )}
             
             <div className="flex flex-wrap gap-3 mt-6 justify-center">
-              {scoreQualifies && (
+              {scoreQualifies && !scoreSubmitted && (
                 <button 
                   onClick={handleSubmitScore}
                   className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded text-lg flex items-center gap-2"
                 >
                   <Trophy size={16} />
-                  Submit Score
+                  Save Score
                 </button>
               )}
               <button 
