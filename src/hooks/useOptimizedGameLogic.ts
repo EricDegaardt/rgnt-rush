@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ROAD_HEIGHT } from '../components/game/constants';
 import { ObstacleType, CollectibleType, CollectionEffectType, SplashEffectType } from './game/types';
@@ -17,9 +16,24 @@ interface OptimizedGameState {
     isSpinning: boolean;
 }
 
+// Get device-specific game speeds
+const getGameSpeeds = () => {
+    if (typeof window !== 'undefined') {
+        const isDesktop = window.innerWidth >= 768;
+        return {
+            gameSpeed: isDesktop ? 10 : 7,      // Increased from 7 to 10 for desktop
+            visualSpeed: isDesktop ? 8 : 5,     // Increased from 5 to 8 for desktop
+            distanceMultiplier: isDesktop ? 0.12 : 0.08  // Increased distance gain for desktop
+        };
+    }
+    return { gameSpeed: 7, visualSpeed: 5, distanceMultiplier: 0.08 };
+};
+
 export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore: number) => void, onSoundEvent?: (eventType: string) => void) => {
-    const gameSpeedRef = useRef(7);
-    const visualSpeedRef = useRef(5);
+    const speeds = getGameSpeeds();
+    const gameSpeedRef = useRef(speeds.gameSpeed);
+    const visualSpeedRef = useRef(speeds.visualSpeed);
+    const distanceMultiplierRef = useRef(speeds.distanceMultiplier);
     const playerPhysicsRef = useRef<PlayerPhysics>({
         playerY: ROAD_HEIGHT,
         playerVelocityY: 0,
@@ -46,6 +60,19 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     gameStateRef.current = gameState;
     runningRef.current = running;
 
+    // Update speeds when window resizes
+    useEffect(() => {
+        const handleResize = () => {
+            const newSpeeds = getGameSpeeds();
+            gameSpeedRef.current = newSpeeds.gameSpeed;
+            visualSpeedRef.current = newSpeeds.visualSpeed;
+            distanceMultiplierRef.current = newSpeeds.distanceMultiplier;
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
 
@@ -54,19 +81,20 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         // Update physics
         playerPhysicsRef.current = updatePlayerPhysics(playerPhysicsRef.current);
         
-        // Update distance and energy
-        const newDistance = gameStateRef.current.distance + gameSpeedRef.current * 0.08;
+        // Update distance and energy with device-specific multipliers
+        const newDistance = gameStateRef.current.distance + gameSpeedRef.current * distanceMultiplierRef.current;
         const newEnergy = Math.max(0, Math.min(100, gameStateRef.current.energy - 0.06));
 
         // Move obstacles and collectibles
         const newObstacles = moveObstacles(gameStateRef.current.obstacles, visualSpeedRef.current);
         const newCollectibles = moveCollectibles(gameStateRef.current.collectibles, visualSpeedRef.current);
 
-        // Spawn new obstacles and collectibles (less frequently)
+        // Spawn new obstacles and collectibles (less frequently on mobile, more on desktop)
         let finalObstacles = newObstacles;
         let finalCollectibles = newCollectibles;
 
-        if (frameCountRef.current % 3 === 0) { // Reduce spawning frequency
+        const spawnFrequency = typeof window !== 'undefined' && window.innerWidth >= 768 ? 2 : 3; // More frequent spawning on desktop
+        if (frameCountRef.current % spawnFrequency === 0) {
             const newObstacle = createObstacle(newObstacles, newCollectibles);
             if (newObstacle) {
                 finalObstacles = [...newObstacles, newObstacle];
@@ -135,6 +163,11 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     }, [running, gameLoop]);
     
     const resetGame = useCallback(() => {
+        const speeds = getGameSpeeds();
+        gameSpeedRef.current = speeds.gameSpeed;
+        visualSpeedRef.current = speeds.visualSpeed;
+        distanceMultiplierRef.current = speeds.distanceMultiplier;
+        
         playerPhysicsRef.current = {
             playerY: ROAD_HEIGHT,
             playerVelocityY: 0,

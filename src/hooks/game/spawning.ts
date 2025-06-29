@@ -14,12 +14,20 @@ const getGameWidth = () => {
     return 600; // Default fallback
 };
 
+// Adjust spawn rates based on device type
+const getSpawnRate = () => {
+    if (typeof window !== 'undefined') {
+        return window.innerWidth >= 768 ? 0.022 : 0.018; // Higher spawn rate on desktop
+    }
+    return 0.018;
+};
+
 export const shouldSpawnObstacle = (): boolean => {
-    return Math.random() < 0.018; // Doubled from 0.009 to 0.018 to match batteries
+    return Math.random() < getSpawnRate();
 };
 
 export const shouldSpawnCollectible = (): boolean => {
-    return Math.random() < 0.018; // Keep at 0.018 for equal distribution
+    return Math.random() < getSpawnRate();
 };
 
 export const canSpawnAtPosition = (
