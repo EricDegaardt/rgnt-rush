@@ -133,7 +133,9 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
                       {bike.description && (
-                        <div className="text-sm text-gray-300 mb-4">{bike.description}</div>
+                        <div className="text-xs text-gray-300 mb-4 max-h-32 overflow-y-auto pr-2">
+                          {bike.description}
+                        </div>
                       )}
                       
                       {/* Table format for specifications with smaller text, right-aligned values, and more right padding */}
