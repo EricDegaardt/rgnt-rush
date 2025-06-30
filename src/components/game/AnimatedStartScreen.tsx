@@ -33,24 +33,34 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
         if (prev > 800) return -400;
         return prev + 11 + Math.random() * 3;
       });
-      // Move batteries
+      // Move batteries left
       setBatteries(bats => bats.map(b => ({ ...b, x: b.x - b.speed })).filter(b => b.x > -40));
-      // Move barrels
-      setBarrels(obs => obs.map(o => ({ ...o, y: o.y - o.speed })).filter(o => o.y > -40));
-      // Only spawn barrels if less than 2 exist
-      if (barrels.length < 2) {
-        setBarrels([
-          { x: 600, y: 60 + Math.random() * 40, speed: 0 },
-          { x: 800, y: 60 + Math.random() * 40, speed: 0 }
-        ]);
-      }
+      // Randomly spawn batteries (max 3 at a time)
+      setBatteries(bats => {
+        if (bats.length < 3 && Math.random() < 0.03) {
+          return [...bats, { x: 900, y: 60 + Math.random() * 40, speed: 6 + Math.random() * 2 }];
+        }
+        return bats;
+      });
+      // Move barrels left and respawn at fixed x when off-screen
+      setBarrels(obs => {
+        let updated = obs.map(o => ({ ...o, x: o.x - o.speed }));
+        // Remove off-screen
+        updated = updated.filter(o => o.x > -60);
+        // Always keep 2 barrels at fixed x positions
+        while (updated.length < 2) {
+          const fixedX = updated.length === 0 ? 600 : 800;
+          updated.push({ x: 900 + fixedX, y: 60 + Math.random() * 40, speed: 5 + Math.random() * 2 });
+        }
+        return updated;
+      });
     }, 50);
 
     return () => {
       clearTimeout(titleTimer);
       clearInterval(bikeAnimation);
     };
-  }, [barrels.length]);
+  }, []);
 
   const handleStartClick = async (e: React.MouseEvent) => {
     e.preventDefault();
