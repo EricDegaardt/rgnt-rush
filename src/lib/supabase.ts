@@ -47,3 +47,24 @@ export const getUserDataFromStorage = (): Partial<UserData> => {
   }
   return {};
 };
+
+// Check if email already exists in database
+export const checkEmailExists = async (email: string): Promise<boolean> => {
+  try {
+    const { data, error } = await supabase
+      .from('scoreboard')
+      .select('id')
+      .eq('email', email.trim())
+      .limit(1);
+    
+    if (error) {
+      console.warn('Error checking email existence:', error);
+      return false;
+    }
+    
+    return data && data.length > 0;
+  } catch (error) {
+    console.warn('Error checking email existence:', error);
+    return false;
+  }
+};

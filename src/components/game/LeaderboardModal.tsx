@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award, Copy, Check, Mail, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData } from '@/lib/supabase';
+import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData, checkEmailExists } from '@/lib/supabase';
 import CelebrationPopup from './CelebrationPopup';
 import TermsModal from './TermsModal';
 
@@ -160,18 +160,22 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       // Check rank and show celebration if applicable
       const rank = await checkPlayerRank(score);
       
-      // Always show email form after submitting score (unless user already has stored data)
+      // If user already has stored data (subscribed), skip email form and go to share options
       if (hasStoredUserData) {
         // Update the scoreboard entry with existing email and consent
-        await supabase
-          .from('scoreboard')
-          .update({
-            email: email.trim(),
-            marketing_consent: marketingConsent
-          })
-          .eq('username', username.trim())
-          .eq('distance', Math.floor(score))
-          .eq('selected_bike', selectedBike);
+        // Only update if email doesn't already exist in database
+        const emailExists = await checkEmailExists(email.trim());
+        if (!emailExists) {
+          await supabase
+            .from('scoreboard')
+            .update({
+              email: email.trim(),
+              marketing_consent: marketingConsent
+            })
+            .eq('username', username.trim())
+            .eq('distance', Math.floor(score))
+            .eq('selected_bike', selectedBike);
+        }
         
         // If user has stored data and made top 10, show celebration, otherwise go to share
         if (!rank || rank > 10) {
@@ -200,6 +204,15 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       setIsSubmitting(true);
       setError(null);
 
+      // Check if email already exists in database
+      const emailExists = await checkEmailExists(email.trim());
+      
+      if (emailExists) {
+        setError('This email is already registered. Please use a different email address.');
+        setIsSubmitting(false);
+        return;
+      }
+
       // Save user data locally for future use
       const userData: UserData = {
         username: username.trim(),
@@ -225,7 +238,11 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       setShowShareOptions(true);
     } catch (err) {
       console.error('Error submitting email:', err);
-      setError('Failed to save email. Please try again.');
+      if (err.message && err.message.includes('duplicate')) {
+        setError('This email is already registered. Please use a different email address.');
+      } else {
+        setError('Failed to save email. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
