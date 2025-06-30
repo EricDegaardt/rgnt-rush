@@ -51,9 +51,9 @@ const SimpleLeaderboardModal = ({ onClose, onStartRacing }: SimpleLeaderboardMod
 
   const getBikeImage = (bike: string) => {
     const bikeImages = {
-      'purple-rain': '/dist/lovable-uploads/purple-rain.png',
-      'black-thunder': '/dist/lovable-uploads/black-thunder.png',
-      'rgnt-turbo': '/dist/lovable-uploads/rgnt-turbo.png'
+      'purple-rain': '/lovable-uploads/purple-rain.png',
+      'black-thunder': '/lovable-uploads/black-thunder.png',
+      'rgnt-turbo': '/lovable-uploads/rgnt-turbo.png'
     };
     const bikeImageUrl = bikeImages[bike as keyof typeof bikeImages] || bikeImages['purple-rain'];
     return (

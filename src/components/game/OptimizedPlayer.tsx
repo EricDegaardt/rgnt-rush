@@ -3,9 +3,9 @@ import BikeExplosionEffect from './BikeExplosionEffect';
 import { getPlayerXPosition } from './constants';
 
 const bikeImages = {
-  'purple-rain': '/dist/lovable-uploads/purple-rain.png',
-  'black-thunder': '/dist/lovable-uploads/black-thunder.png',
-  'rgnt-turbo': '/dist/lovable-uploads/rgnt-turbo.png'
+  'purple-rain': '/lovable-uploads/purple-rain.png',
+  'black-thunder': '/lovable-uploads/black-thunder.png',
+  'rgnt-turbo': '/lovable-uploads/rgnt-turbo.png'
 };
 
 interface OptimizedPlayerProps {

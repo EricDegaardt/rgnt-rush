@@ -12,7 +12,7 @@ const Index = () => {
           : "min-h-screen w-full flex items-center justify-center"
       }
       style={{
-        backgroundImage: "url('/dist/lovable-uploads/rgnt-start-bg.png')",
+        backgroundImage: "url('/lovable-uploads/rgnt-start-bg.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat"
