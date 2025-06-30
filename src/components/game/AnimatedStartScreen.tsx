@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import Collectible from './Collectible';
 
 interface AnimatedStartScreenProps {
   onStartGame: () => void;
@@ -191,19 +192,13 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       </div>
 
       {/* Render batteries and barrels */}
-      {batteries.map((b, i) => (
-        <img
-          key={i}
-          src="/lovable-uploads/collecting-battery.png"
-          alt="Battery"
-          className="absolute z-20"
-          style={{ left: b.x, bottom: b.y, width: 32, height: 32 }}
-        />
+      {batteries.slice(0, 3).map((b, i) => (
+        <Collectible key={i} x={b.x} y={b.y} />
       ))}
-      {barrels.map((o, i) => (
+      {barrels.slice(0, 3).map((o, i) => (
         <img
           key={i}
-          src="/lovable-uploads/hitting-barell.png"
+          src="/lovable-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png"
           alt="Barrel"
           className="absolute z-20"
           style={{ left: o.x, bottom: o.y, width: 32, height: 32 }}
