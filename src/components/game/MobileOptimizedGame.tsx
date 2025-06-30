@@ -33,10 +33,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showSimpleLeaderboard, setShowSimpleLeaderboard] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
+  const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   
   const {
     playSound,
     startBackgroundMusic,
+    stopBackgroundMusic,
     volume,
     setVolume,
     initializeAudio,
@@ -69,8 +71,11 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setGameOver(true);
     setRunning(false);
     setShowLeaderboard(true); // Show full leaderboard after game over
+    if (isMusicEnabled) {
+      stopBackgroundMusic();
+    }
     playSound('gameOver');
-  }, [playSound]);
+  }, [playSound, stopBackgroundMusic, isMusicEnabled]);
   
   const handleSoundEvent = useCallback((eventType: string) => {
     switch (eventType) {
@@ -96,8 +101,10 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setShowSimpleLeaderboard(false);
     gameLogic.resetGame();
     setRunning(true);
-    // Start background music when game actually starts
-    startBackgroundMusic();
+    // Start background music when game actually starts (if enabled)
+    if (isMusicEnabled) {
+      startBackgroundMusic();
+    }
   };
   
   const handleStartFromMenu = async () => {
@@ -116,6 +123,15 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     }
     setShowStartScreen(false);
     setShowSimpleLeaderboard(true); // Show simple leaderboard from start screen
+  };
+
+  const handleToggleMusic = (enabled: boolean) => {
+    setIsMusicEnabled(enabled);
+    if (!enabled && running) {
+      stopBackgroundMusic();
+    } else if (enabled && running) {
+      startBackgroundMusic();
+    }
   };
   
   const handleBikeSelect = (bikeId: string) => {
@@ -185,6 +201,8 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           <AnimatedStartScreen 
             onStartGame={handleStartFromMenu} 
             onViewLeaderboard={handleViewLeaderboard}
+            isMusicEnabled={isMusicEnabled}
+            onToggleMusic={handleToggleMusic}
           />
         </div>
       </div>
