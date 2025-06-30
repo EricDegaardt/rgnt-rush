@@ -5,7 +5,7 @@ import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
 import CollectionEffect from './CollectionEffect';
-import SoundToggle from './SoundToggle';
+// import SoundToggle from './SoundToggle'; // Removing since module not found
 import SplashEffect from './SplashEffect';
 import BikeSelection from './BikeSelection';
 import { useGameLogic } from '../../hooks/useGameLogic';
