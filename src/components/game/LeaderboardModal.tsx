@@ -160,9 +160,25 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       // Check rank and show celebration if applicable
       const rank = await checkPlayerRank(score);
       
-      // Only show email form if not showing celebration
-      if (!rank || rank > 10) {
-        setShowEmailForm(true);
+      // If user already has stored data (subscribed), skip email form and go to share options
+      if (hasStoredUserData) {
+        // Update the leaderboard entry with existing email and consent
+        await supabase
+          .from('leaderboard')
+          .update({
+            email: email.trim(),
+            marketing_consent: marketingConsent
+          })
+          .eq('username', username.trim())
+          .eq('distance', Math.floor(score))
+          .eq('selected_bike', selectedBike);
+        
+        setShowShareOptions(true);
+      } else {
+        // Only show email form if not showing celebration and user hasn't subscribed
+        if (!rank || rank > 10) {
+          setShowEmailForm(true);
+        }
       }
       
       await fetchLeaderboard(); // Refresh leaderboard after submission
@@ -214,7 +230,12 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   const handleCelebrationComplete = () => {
     setShowCelebration(false);
-    setShowEmailForm(true);
+    // If user already has stored data (subscribed), skip email form
+    if (hasStoredUserData) {
+      setShowShareOptions(true);
+    } else {
+      setShowEmailForm(true);
+    }
   };
 
   const handleSkipEmail = () => {
