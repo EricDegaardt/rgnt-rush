@@ -325,8 +325,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
         rank={playerRank}
         totalPlayers={totalPlayers}
         score={score}
-        onShare={() => setShowShareOptions(true)}
-        onPlayAgain={onPlayAgain}
+        onComplete={handleCelebrationComplete}
       />
     );
   }
