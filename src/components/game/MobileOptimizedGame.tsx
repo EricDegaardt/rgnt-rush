@@ -36,13 +36,31 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     playSound,
     startBackgroundMusic,
     volume,
-    setVolume
+    setVolume,
+    initializeAudio,
+    isAudioEnabled
   } = useGameAudio();
   
-  // Start background music when component mounts (start screen)
+  // Initialize audio on first user interaction (start screen)
   useEffect(() => {
-    startBackgroundMusic();
-  }, [startBackgroundMusic]);
+    const handleFirstInteraction = async () => {
+      if (!isAudioEnabled) {
+        await initializeAudio();
+      }
+    };
+
+    // Add event listeners for first user interaction
+    const events = ['click', 'touchstart', 'keydown'];
+    events.forEach(event => {
+      document.addEventListener(event, handleFirstInteraction, { once: true });
+    });
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, handleFirstInteraction);
+      });
+    };
+  }, [initializeAudio, isAudioEnabled]);
   
   const handleGameOver = useCallback((score: number) => {
     setFinalScore(score);
@@ -76,14 +94,24 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setShowSimpleLeaderboard(false);
     gameLogic.resetGame();
     setRunning(true);
+    // Start background music when game actually starts
+    startBackgroundMusic();
   };
   
-  const handleStartFromMenu = () => {
+  const handleStartFromMenu = async () => {
+    // Initialize audio on first interaction
+    if (!isAudioEnabled) {
+      await initializeAudio();
+    }
     setShowStartScreen(false);
     setShowBikeSelection(true);
   };
 
-  const handleViewLeaderboard = () => {
+  const handleViewLeaderboard = async () => {
+    // Initialize audio on first interaction
+    if (!isAudioEnabled) {
+      await initializeAudio();
+    }
     setShowStartScreen(false);
     setShowSimpleLeaderboard(true); // Show simple leaderboard from start screen
   };
@@ -123,8 +151,13 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setShowBikeSelection(true);
   };
   
-  const handleScreenInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+  const handleScreenInteraction = useCallback(async (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
+
+    // Initialize audio on any interaction
+    if (!isAudioEnabled) {
+      await initializeAudio();
+    }
 
     // Only handle specific game actions
     if (!running && !gameOver && !showBikeSelection && !showLeaderboard && !showSimpleLeaderboard) {
@@ -135,7 +168,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
       gameLogic.handleJump();
     }
     // Remove the game over screen interaction since leaderboard shows immediately
-  }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic]);
+  }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic, initializeAudio, isAudioEnabled]);
 
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
