@@ -160,7 +160,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       // Check rank and show celebration if applicable
       const rank = await checkPlayerRank(score);
       
-      // If user already has stored data (subscribed), skip email form and go to share options
+      // Always show email form after submitting score (unless user already has stored data)
       if (hasStoredUserData) {
         // Update the scoreboard entry with existing email and consent
         await supabase
@@ -173,9 +173,12 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
           .eq('distance', Math.floor(score))
           .eq('selected_bike', selectedBike);
         
-        setShowShareOptions(true);
+        // If user has stored data and made top 10, show celebration, otherwise go to share
+        if (!rank || rank > 10) {
+          setShowShareOptions(true);
+        }
       } else {
-        // Only show email form if not showing celebration and user hasn't subscribed
+        // Always show email form for new users (unless showing celebration)
         if (!rank || rank > 10) {
           setShowEmailForm(true);
         }
@@ -230,7 +233,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   const handleCelebrationComplete = () => {
     setShowCelebration(false);
-    // If user already has stored data (subscribed), skip email form
+    // Always show email form after celebration (unless user already has stored data)
     if (hasStoredUserData) {
       setShowShareOptions(true);
     } else {
@@ -451,7 +454,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                           className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                           onClick={handleCheckboxClick}
                         >
-                          I agree to the{' '}
+                          I agree to receive news and special offers from RGNT Motorcycles and accept the{' '}
                           <button
                             type="button"
                             onClick={(e) => {
@@ -492,7 +495,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                       <div className="text-center text-sm text-gray-400">
                         {!email.trim() && <p>Please enter your email address</p>}
                         {email.trim() && !isValidEmail(email) && <p>Please enter a valid email address</p>}
-                        {email.trim() && isValidEmail(email) && !marketingConsent && <p>Please agree to the Terms & Conditions</p>}
+                        {email.trim() && isValidEmail(email) && !marketingConsent && <p>Please agree to receive news and special offers</p>}
                       </div>
                     )}
                   </div>
