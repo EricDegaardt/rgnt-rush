@@ -201,7 +201,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           src="/lovable-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png"
           alt="Barrel"
           className="absolute z-20"
-          style={{ left: o.x, bottom: o.y, width: 32, height: 32 }}
+          style={{ left: o.x, bottom: o.y - 20, width: 48, height: 64 }}
         />
       ))}
 
