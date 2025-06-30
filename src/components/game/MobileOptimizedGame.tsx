@@ -178,9 +178,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showStartScreen) {
     return (
       <div className="w-full h-full flex flex-col">
-        <div className="w-full p-2">
-          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-        </div>
+        {/* Only show volume slider on desktop */}
+        {!isMobile && (
+          <div className="w-full p-2">
+            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+          </div>
+        )}
         <div className="flex-1">
           <AnimatedStartScreen 
             onStartGame={handleStartFromMenu} 
@@ -194,9 +197,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (isPreloading) {
     return (
       <div className="w-full h-full flex flex-col">
-        <div className="w-full p-2">
-          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-        </div>
+        {/* Only show volume slider on desktop */}
+        {!isMobile && (
+          <div className="w-full p-2">
+            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+          </div>
+        )}
         <div className="flex-1">
           <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
         </div>
@@ -207,9 +213,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showBikeSelection) {
     return (
       <div className="w-full h-full flex flex-col">
-        <div className="w-full p-2">
-          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-        </div>
+        {/* Only show volume slider on desktop */}
+        {!isMobile && (
+          <div className="w-full p-2">
+            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+          </div>
+        )}
         <div className="flex-1">
           <BikeSelection onBikeSelect={handleBikeSelect} />
         </div>
@@ -221,9 +230,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showSimpleLeaderboard) {
     return (
       <div className="w-full h-full flex flex-col">
-        <div className="w-full p-2">
-          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-        </div>
+        {/* Only show volume slider on desktop */}
+        {!isMobile && (
+          <div className="w-full p-2">
+            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+          </div>
+        )}
         <div className="flex-1 relative">
           <SimpleLeaderboardModal
             onClose={handleCloseSimpleLeaderboard}
@@ -245,9 +257,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
 
   return (
     <div className="w-full h-full flex flex-col bg-black">
-      <div className="w-full p-2">
-        <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-      </div>
+      {/* Only show volume slider on desktop */}
+      {!isMobile && (
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
+      )}
       <div 
         className="flex-1 relative bg-black overflow-hidden touch-none select-none shadow-2xl border border-gray-800 text-xs md:text-sm"
         style={{
