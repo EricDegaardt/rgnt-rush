@@ -50,6 +50,21 @@ const bikes: Bike[] = [
       chargeTime: '2.1 h (upgradable to 1h)',
       license: 'A1'
     }
+  },
+  {
+    id: 'rgnt-turbo',
+    name: 'RGNT Turbo',
+    image: '/lovable-uploads/rgnt-turbo.png',
+    specs: {
+      topSpeed: '185 km/h',
+      mixedRange: '150 km',
+      turboPower: '60 kW',
+      acceleration: '3.2 sec',
+      brakingSystem: 'Combined',
+      batterySystem: '7.5 kWh',
+      chargeTime: '1 h',
+      license: 'A1/A'
+    }
   }
 ];
 

@@ -26,6 +26,17 @@ const GameUI = ({
   // Clamp energy between 0 and 100 to ensure valid percentage
   const clampedEnergy = Math.max(0, Math.min(100, energy));
 
+  const getSpeed = (bike: string) => {
+    switch (bike) {
+      case 'rgnt-turbo':
+        return '185 km/h';
+      case 'black-thunder':
+      case 'purple-rain':
+      default:
+        return '120 km/h';
+    }
+  };
+
   return (
     <div className="absolute top-8 left-4 right-4 text-white bg-black bg-opacity-60 rounded-lg p-4 backdrop-blur-sm pointer-events-none">
       {/* First Row: Speed and Distance */}
@@ -34,7 +45,7 @@ const GameUI = ({
           <Gauge size={20} className="text-purple-400" />
           <div className="flex flex-col">
             <span className="text-[10px] text-gray-300 uppercase tracking-wide">Speed</span>
-            <span className="text-sm font-bold">120 km/h</span>
+            <span className="text-sm font-bold">{getSpeed('rgnt-turbo')}</span>
           </div>
         </div>
         
