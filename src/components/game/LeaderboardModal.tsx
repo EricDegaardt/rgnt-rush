@@ -278,9 +278,9 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   const getBikeImage = (bike: string) => {
     const bikeImages = {
-      'purple-rain': '/lovable-uploads/purple-rain.png',
-      'black-thunder': '/lovable-uploads/black-thunder.png',
-      'rgnt-turbo': '/lovable-uploads/rgnt-turbo.png'
+      'purple-rain': '/dist/public-uploads/purple-rain.png',
+      'black-thunder': '/dist/public-uploads/black-thunder.png',
+      'rgnt-turbo': '/dist/public-uploads/rgnt-turbo.png'
     };
     
     const bikeImageUrl = bikeImages[bike as keyof typeof bikeImages] || bikeImages['purple-rain'];
