@@ -17,6 +17,7 @@ import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import Road from './Road';
 import Countdown from './Countdown';
+import SoundToggle from '../ui/SoundToggle';
 
 interface MobileOptimizedGameProps {
   isMobile?: boolean;
@@ -40,7 +41,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     volume,
     setVolume,
     initializeAudio,
-    isAudioEnabled
+    isAudioEnabled,
+    isMuted,
+    toggleMute
   } = useGameAudio();
   
   // Initialize audio on first user interaction (start screen)
@@ -290,6 +293,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
             onClose={handleCloseLeaderboard}
             onPlayAgain={handlePlayAgain}
           />
+        )}
+
+        {isMobile && !showStartScreen && !isPreloading && !showCountdown && (
+          <div className="fixed top-2 right-2 z-50">
+            <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
+          </div>
         )}
       </div>
     </div>

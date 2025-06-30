@@ -30,7 +30,7 @@ const Countdown: React.FC<CountdownProps> = ({ onComplete }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
       <div className="flex flex-col items-center">
         <div
-          className={`rounded-full w-40 h-40 flex items-center justify-center text-7xl font-extrabold text-white shadow-2xl mb-6 transition-all duration-300 ${color}`}
+          className={`rounded-full w-32 h-32 md:w-40 md:h-40 flex items-center justify-center text-5xl md:text-7xl font-extrabold text-white shadow-2xl mb-6 transition-all duration-300 ${color}`}
         >
           {label}
         </div>
