@@ -557,50 +557,53 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                 </div>
               )}
 
-              <div className="mb-4 md:mb-6">
-                <h4 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 text-center">Top 10 Riders</h4>
-                {isLoading ? (
-                  <div className="text-center text-gray-400 py-6 md:py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto mb-2"></div>
-                    Loading...
-                  </div>
-                ) : error && leaderboard.length === 0 ? (
-                  <div className="text-center text-red-400 py-6 md:py-8">{error}</div>
-                ) : (
-                  <div className="space-y-2 md:space-y-3">
-                    {leaderboard.map((entry, index) => (
-                      <div
-                        key={entry.id}
-                        className={`flex items-center justify-between p-3 md:p-4 rounded-lg transition-all hover:scale-[1.02] ${
-                          index < 3 
-                            ? 'bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-700/30' 
-                            : 'bg-gray-800/60 border border-gray-700/30'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 md:gap-4">
-                          {getRankIcon(index)}
-                          <div>
-                            <div className="text-white font-semibold text-sm md:text-base">{entry.username}</div>
-                            <div className="text-gray-400 text-[10px] mt-0.5">
-                              {new Date(entry.created_at).toLocaleDateString()}
+              {/* Only show leaderboard when NOT in share options step */}
+              {!showShareOptions && (
+                <div className="mb-4 md:mb-6">
+                  <h4 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 text-center">Top 10 Riders</h4>
+                  {isLoading ? (
+                    <div className="text-center text-gray-400 py-6 md:py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto mb-2"></div>
+                      Loading...
+                    </div>
+                  ) : error && leaderboard.length === 0 ? (
+                    <div className="text-center text-red-400 py-6 md:py-8">{error}</div>
+                  ) : (
+                    <div className="space-y-2 md:space-y-3">
+                      {leaderboard.map((entry, index) => (
+                        <div
+                          key={entry.id}
+                          className={`flex items-center justify-between p-3 md:p-4 rounded-lg transition-all hover:scale-[1.02] ${
+                            index < 3 
+                              ? 'bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-700/30' 
+                              : 'bg-gray-800/60 border border-gray-700/30'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3 md:gap-4">
+                            {getRankIcon(index)}
+                            <div>
+                              <div className="text-white font-semibold text-sm md:text-base">{entry.username}</div>
+                              <div className="text-gray-400 text-[10px] mt-0.5">
+                                {new Date(entry.created_at).toLocaleDateString()}
+                              </div>
                             </div>
                           </div>
+                          <div className="flex flex-col items-center gap-1">
+                            <div className="text-purple-400 font-bold text-base md:text-lg">{entry.distance}m</div>
+                            {getBikeImage(entry.selected_bike)}
+                          </div>
                         </div>
-                        <div className="flex flex-col items-center gap-1">
-                          <div className="text-purple-400 font-bold text-base md:text-lg">{entry.distance}m</div>
-                          {getBikeImage(entry.selected_bike)}
+                      ))}
+                      {leaderboard.length === 0 && (
+                        <div className="text-center text-gray-400 py-6 md:py-8">
+                          <Trophy className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                          <p className="text-lg">No scores yet. Be the first!</p>
                         </div>
-                      </div>
-                    ))}
-                    {leaderboard.length === 0 && (
-                      <div className="text-center text-gray-400 py-6 md:py-8">
-                        <Trophy className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p className="text-lg">No scores yet. Be the first!</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Fixed Footer - Only show Play Again button when NOT in email form step */}
