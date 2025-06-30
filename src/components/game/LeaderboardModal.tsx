@@ -370,7 +370,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                       <Check className="w-5 h-5" />
                       <span className="font-medium">Score saved successfully!</span>
                     </div>
-                    <p className="text-gray-300 text-base md:text-lg">Get updates from RGNT Motorcycles:</p>
+                    <p className="text-gray-300 text-base md:text-lg">Get updates and special offers from RGNT Motorcycles:</p>
                   </div>
 
                   <div className="flex flex-col gap-4">
