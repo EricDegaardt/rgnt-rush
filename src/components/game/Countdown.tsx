@@ -7,7 +7,7 @@ interface CountdownProps {
 const lights = [
   { color: 'red', label: '3' },
   { color: 'yellow', label: '2' },
-  { color: 'yellow', label: '1' },
+  { color: 'green', label: '1' },
   { color: 'green', label: 'GO!' },
 ];
 
