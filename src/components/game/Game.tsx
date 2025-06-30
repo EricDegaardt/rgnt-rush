@@ -5,7 +5,6 @@ import Obstacle from './Obstacle';
 import Collectible from './Collectible';
 import Skyline from './Skyline';
 import CollectionEffect from './CollectionEffect';
-// import SoundToggle from './SoundToggle'; // Removing since module not found
 import SplashEffect from './SplashEffect';
 import BikeSelection from './BikeSelection';
 import { useGameLogic } from '../../hooks/useGameLogic';
@@ -104,7 +103,6 @@ const Game = () => {
   if (!running && !gameOver) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-black text-white p-4 text-center">
-        <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
         <h1 className="text-3xl md:text-5xl mb-4 text-purple-400">RGNT RUSH</h1>
         <p className="mb-8 text-sm md:text-base">Collect batteries and jump over oil barells by tapping the screen. Good Luck!</p>
         <input
@@ -133,7 +131,6 @@ const Game = () => {
       }}
       onClick={handleScreenInteraction}
     >
-      <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
       <Skyline />
       <Road />
       
