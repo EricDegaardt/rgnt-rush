@@ -33,6 +33,20 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
     };
   }, []);
 
+  const handleStartClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onStartGame();
+  };
+
+  const handleLeaderboardClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onViewLeaderboard) {
+      onViewLeaderboard();
+    }
+  };
+
   return (
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
       {/* CSS Animations */}
@@ -162,7 +176,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           
           <div className="flex flex-col items-center gap-3">
             <Button
-              onClick={onStartGame}
+              onClick={handleStartClick}
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg text-lg md:text-xl transform hover:scale-105 transition-all duration-200 shadow-lg shadow-purple-500/25"
             >
               START RACING
@@ -170,7 +184,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
             
             {onViewLeaderboard && (
               <Button
-                onClick={onViewLeaderboard}
+                onClick={handleLeaderboardClick}
                 variant="ghost"
                 className="text-gray-400 hover:text-white text-sm px-4 py-2 rounded-lg border border-gray-600/50 hover:border-gray-500 transition-all duration-200 hover:bg-gray-800/30"
               >
