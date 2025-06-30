@@ -159,7 +159,7 @@ const Game = () => {
         />
       ))}
       
-      <GameUI distance={distance} energy={energy} />
+      <GameUI distance={distance} energy={energy} selectedBike={selectedBike} />
 
       {gameOver && (
         <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white text-center p-4">

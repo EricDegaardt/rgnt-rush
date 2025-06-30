@@ -249,7 +249,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         <VolumeSlider volume={volume} onVolumeChange={setVolume} />
       </div>
       <div 
-        className="flex-1 relative bg-black overflow-hidden touch-none select-none rounded-2xl mt-4 mb-4 md:mt-8 md:mb-8 shadow-2xl border border-gray-800"
+        className="flex-1 relative bg-black overflow-hidden touch-none select-none rounded-2xl rounded-b-2xl mt-4 mb-4 md:mt-8 md:mb-8 shadow-2xl border border-gray-800"
         style={{
           WebkitTouchCallout: 'none',
           WebkitUserSelect: 'none',
@@ -271,7 +271,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         {gameLogic.collectionEffects.map(effect => <CollectionEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleEffectComplete(effect.id)} />)}
         {gameLogic.splashEffects.map(effect => <SplashEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleSplashComplete(effect.id)} />)}
         
-        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
+        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} selectedBike={selectedBike} />
 
         {/* Full Leaderboard Modal - Shows after game over with score submission */}
         {showLeaderboard && (
