@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <title>RGNT RUSH - Electric Racing Adventure</title>
     <meta name="description" content="Race through neon city streets on your electric bike! Collect batteries and dodge obstacles in this thrilling endless runner game featuring RGNT Motorcycles." />
     <meta name="author" content="RGNT Motorcycles" />
@@ -43,9 +43,40 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://whimsical-gaufre-6597af.netlify.app" />
 
+    <!-- iOS specific meta tags for better mobile experience -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="RGNT RUSH" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+      /* Prevent iOS Safari from bouncing */
+      body {
+        position: fixed;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Ensure full height on mobile devices */
+      html, body, #root {
+        height: 100%;
+        height: 100vh;
+        height: 100dvh; /* Dynamic viewport height for mobile */
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      
+      /* Prevent zoom on input focus */
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    </style>
   </head>
 
   <body>
