@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, Award, Copy, Check, Mail, User } from 'lucide-react';
+import { Trophy, Medal, Award, Copy, Check, Mail, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData } from '@/lib/supabase';
 import CelebrationPopup from './CelebrationPopup';
@@ -15,6 +15,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [marketingConsent, setMarketingConsent] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -92,8 +93,12 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     return emailRegex.test(email);
   };
 
+  const canSubmitScore = () => {
+    return username.trim() && email.trim() && marketingConsent && !isSubmitting;
+  };
+
   const submitScore = async () => {
-    if (!username.trim() || !email.trim()) return;
+    if (!canSubmitScore()) return;
     
     if (!isValidEmail(email)) {
       setError('Please enter a valid email address');
@@ -278,50 +283,95 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                     />
                   </div>
 
-                  {/* Marketing Consent Checkbox with Improved Styling */}
-                  <div className="flex items-start space-x-3 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
-                    <div className="relative flex-shrink-0 mt-0.5">
-                      <input
-                        type="checkbox"
-                        id="marketing-consent"
-                        checked={marketingConsent}
-                        onChange={(e) => setMarketingConsent(e.target.checked)}
-                        disabled={isSubmitting}
-                        className="sr-only"
-                      />
-                      <label
-                        htmlFor="marketing-consent"
-                        className={`
-                          relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
-                          border-2 rounded cursor-pointer transition-all duration-200
-                          ${marketingConsent 
-                            ? 'border-purple-500 bg-purple-500 shadow-lg shadow-purple-500/25' 
-                            : 'border-gray-500 bg-white hover:border-purple-400 hover:bg-gray-50'
-                          }
-                          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95'}
-                          focus-within:ring-2 focus-within:ring-purple-400 focus-within:ring-opacity-50
-                        `}
+                  {/* Terms & Conditions Section */}
+                  <div className="bg-gray-800/50 rounded-lg border border-gray-700 overflow-hidden">
+                    {/* Terms & Conditions Header - Clickable */}
+                    <button
+                      onClick={() => setShowTerms(!showTerms)}
+                      className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-700/30 transition-colors"
+                      type="button"
+                    >
+                      <span className="text-sm font-medium text-gray-300">Terms & Conditions</span>
+                      {showTerms ? (
+                        <ChevronUp className="w-4 h-4 text-gray-400" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                      )}
+                    </button>
+
+                    {/* Collapsible Terms Content */}
+                    {showTerms && (
+                      <div className="px-3 pb-3 border-t border-gray-700/50">
+                        <div className="text-xs text-gray-400 leading-relaxed mt-2">
+                          I agree to receive emails about RGNT Motorcycles updates, news, and special offers. We respect your privacy and will never share, sell, or misuse your email address. You can unsubscribe at any time.
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Checkbox Section - Always Visible */}
+                    <div className="flex items-start space-x-3 p-3 border-t border-gray-700/50">
+                      <div className="relative flex-shrink-0 mt-0.5">
+                        <input
+                          type="checkbox"
+                          id="marketing-consent"
+                          checked={marketingConsent}
+                          onChange={(e) => setMarketingConsent(e.target.checked)}
+                          disabled={isSubmitting}
+                          className="sr-only"
+                        />
+                        <label
+                          htmlFor="marketing-consent"
+                          className={`
+                            relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
+                            border-2 rounded cursor-pointer transition-all duration-200
+                            ${marketingConsent 
+                              ? 'border-purple-500 bg-purple-500 shadow-lg shadow-purple-500/25' 
+                              : 'border-gray-500 bg-white hover:border-purple-400 hover:bg-gray-50'
+                            }
+                            ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95'}
+                            focus-within:ring-2 focus-within:ring-purple-400 focus-within:ring-opacity-50
+                          `}
+                        >
+                          {marketingConsent && (
+                            <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
+                          )}
+                        </label>
+                      </div>
+                      <label 
+                        htmlFor="marketing-consent" 
+                        className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                       >
-                        {marketingConsent && (
-                          <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
-                        )}
+                        I agree to the Terms & Conditions above
                       </label>
                     </div>
-                    <label 
-                      htmlFor="marketing-consent" 
-                      className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                    >
-                      I agree to receive emails about RGNT Motorcycles updates, news, and special offers. We respect your privacy and will never share, sell, or misuse your email address. You can unsubscribe at any time.
-                    </label>
                   </div>
 
                   <Button
                     onClick={submitScore}
-                    disabled={!username.trim() || !email.trim() || isSubmitting}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none disabled:opacity-50"
+                    disabled={!canSubmitScore()}
+                    className={`w-full py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none ${
+                      canSubmitScore() 
+                        ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                        : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+                    }`}
                   >
                     {isSubmitting ? 'Submitting...' : 'Submit Score'}
                   </Button>
+
+                  {/* Validation message */}
+                  {(!username.trim() || !email.trim() || !marketingConsent) && (
+                    <div className="text-center text-sm text-gray-400">
+                      {!username.trim() && !email.trim() && !marketingConsent && (
+                        <p>Please fill in all fields and agree to the terms</p>
+                      )}
+                      {(username.trim() && email.trim() && !marketingConsent) && (
+                        <p>Please agree to the Terms & Conditions to submit your score</p>
+                      )}
+                      {(!username.trim() || !email.trim()) && marketingConsent && (
+                        <p>Please fill in your username and email</p>
+                      )}
+                    </div>
+                  )}
                 </div>
                 {error && (
                   <p className="text-red-400 text-sm mt-3 text-center">{error}</p>
