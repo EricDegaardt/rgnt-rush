@@ -74,6 +74,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
     });
     const isSpinningRef = useRef(false);
     const splashEffectsRef = useRef<SplashEffectType[]>([]);
+    const [hasAccelerated, setHasAccelerated] = useState(false);
     
     const [distance, setDistance] = useState(0);
     const [energy, setEnergy] = useState(100);
@@ -104,53 +105,22 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
 
     const gameLoop = useCallback(() => {
         if (!runningRef.current) return;
-
         frameCountRef.current++;
-
-        // Update physics
         playerPhysicsRef.current = updatePlayerPhysics(playerPhysicsRef.current);
-        
-        // Speed management
+
         let newSpeed = currentSpeedRef.current;
-        
-        // Handle obstacle hit speed drop
-        if (obstacleHitRef.current) {
-            const framesSinceHit = frameCountRef.current - obstacleHitFrameRef.current;
-            if (framesSinceHit < 60) { // 1 second at 60fps
-                // Apply obstacle speed drop
-                newSpeed = Math.max(0, newSpeed - obstacleSpeedDropRef.current);
-            } else {
-                // Start recovery after 1 second
-                newSpeed = Math.min(maxSpeedRef.current, newSpeed + obstacleRecoveryRateRef.current);
-                if (newSpeed >= maxSpeedRef.current) {
-                    obstacleHitRef.current = false;
-                }
+        if (!hasAccelerated) {
+            // Accelerate from 0 to max speed at the start
+            newSpeed = Math.min(maxSpeedRef.current, newSpeed + accelerationRef.current);
+            if (newSpeed >= maxSpeedRef.current) {
+                newSpeed = maxSpeedRef.current;
+                setHasAccelerated(true);
             }
         } else {
-            // Check if player just landed (was in air, now on ground)
-            if (!wasOnGroundRef.current && playerPhysicsRef.current.isOnGround) {
-                // Player just landed, start speed recovery
-                newSpeed = Math.max(0, newSpeed - jumpSpeedReductionRef.current);
-            }
-            
-            // Update speed based on ground state
-            if (playerPhysicsRef.current.isOnGround) {
-                // Accelerate when on ground
-                newSpeed = Math.min(maxSpeedRef.current, newSpeed + accelerationRef.current);
-                
-                // Add random speed variation during normal driving
-                if (Math.random() < variationFrequencyRef.current && newSpeed > 0.3) {
-                    const variation = (Math.random() - 0.5) * speedVariationRef.current;
-                    newSpeed = Math.max(0.1, Math.min(maxSpeedRef.current, newSpeed + variation));
-                }
-            } else {
-                // Recover speed when in air (but slower than ground acceleration)
-                newSpeed = Math.min(maxSpeedRef.current, newSpeed + jumpRecoveryRateRef.current);
-            }
+            // Keep max speed after initial acceleration
+            newSpeed = maxSpeedRef.current;
         }
-        
         currentSpeedRef.current = newSpeed;
-        wasOnGroundRef.current = playerPhysicsRef.current.isOnGround;
         
         // Update distance at 33m/s and energy with device-specific multipliers
         distanceRef.current += (distanceMultiplierRef.current * newSpeed); // Apply speed multiplier
@@ -276,6 +246,7 @@ export const useGameLogic = (running: boolean, onGameOver: (finalScore: number) 
         setCollectionEffects([]);
         setSplashEffects([]);
         setIsSpinning(false);
+        setHasAccelerated(false);
     }, []);
     
     const handleJump = useCallback(() => {
