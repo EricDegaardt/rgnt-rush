@@ -5,10 +5,11 @@ interface CelebrationPopupProps {
   rank: number;
   totalPlayers: number;
   score: number;
-  onComplete: () => void;
+  onShare: () => void;
+  onPlayAgain: () => void;
 }
 
-const CelebrationPopup = ({ rank, totalPlayers, score, onComplete }: CelebrationPopupProps) => {
+const CelebrationPopup = ({ rank, totalPlayers, score, onShare, onPlayAgain }: CelebrationPopupProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
 
@@ -251,17 +252,21 @@ const CelebrationPopup = ({ rank, totalPlayers, score, onComplete }: Celebration
           </div>
         )}
 
-        {/* Continue button - now the only way to close the popup */}
-        <button
-          onClick={onComplete}
-          className={`w-full py-3 px-6 rounded-lg font-bold text-white transition-all transform hover:scale-105 ${
-            rank <= 3 
-              ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25' 
-              : 'bg-purple-600 hover:bg-purple-700'
-          }`}
-        >
-          Continue to Leaderboard
-        </button>
+        {/* Action buttons: Share Score and Play Again */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 mt-4">
+          <button
+            onClick={onShare}
+            className={`flex-1 py-3 px-6 rounded-lg font-bold text-white transition-all transform hover:scale-105 bg-gradient-to-r from-yellow-400 to-pink-500 hover:from-yellow-500 hover:to-pink-600 shadow-lg shadow-yellow-400/25`}
+          >
+            Share Score
+          </button>
+          <button
+            onClick={onPlayAgain}
+            className={`flex-1 py-3 px-6 rounded-lg font-bold text-white transition-all transform hover:scale-105 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25`}
+          >
+            Play Again
+          </button>
+        </div>
       </div>
 
       {/* Additional sparkle effects for #1 */}
