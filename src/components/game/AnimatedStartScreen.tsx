@@ -36,13 +36,13 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       // Move batteries
       setBatteries(bats => bats.map(b => ({ ...b, x: b.x - b.speed })).filter(b => b.x > -40));
       // Move barrels
-      setBarrels(obs => obs.map(o => ({ ...o, x: o.x - o.speed })).filter(o => o.x > -40));
-      // Occasionally spawn a battery or barrel
-      if (Math.random() < 0.02) {
-        setBatteries(bats => [...bats, { x: 900, y: 60 + Math.random() * 40, speed: 6 + Math.random() * 2 }]);
-      }
-      if (Math.random() < 0.015) {
-        setBarrels(obs => [...obs, { x: 900, y: 60 + Math.random() * 40, speed: 5 + Math.random() * 2 }]);
+      setBarrels(obs => obs.map(o => ({ ...o, y: o.y - o.speed })).filter(o => o.y > -40));
+      // Only spawn barrels if less than 2 exist
+      if (barrels.length < 2) {
+        setBarrels([
+          { x: 600, y: 60 + Math.random() * 40, speed: 0 },
+          { x: 800, y: 60 + Math.random() * 40, speed: 0 }
+        ]);
       }
     }, 50);
 
@@ -50,7 +50,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       clearTimeout(titleTimer);
       clearInterval(bikeAnimation);
     };
-  }, []);
+  }, [barrels.length]);
 
   const handleStartClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -195,7 +195,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       {batteries.slice(0, 3).map((b, i) => (
         <Collectible key={i} x={b.x} y={b.y} />
       ))}
-      {barrels.slice(0, 3).map((o, i) => (
+      {barrels.slice(0, 2).map((o, i) => (
         <img
           key={i}
           src="/lovable-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png"
