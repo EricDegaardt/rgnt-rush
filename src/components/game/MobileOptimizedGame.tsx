@@ -269,7 +269,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         {gameLogic.collectionEffects.map(effect => <CollectionEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleEffectComplete(effect.id)} />)}
         {gameLogic.splashEffects.map(effect => <SplashEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleSplashComplete(effect.id)} />)}
         
-        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} selectedBike={selectedBike} currentSpeed={gameLogic.currentSpeed} />
+        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
 
         {/* Full Leaderboard Modal - Shows after game over with score submission */}
         {showLeaderboard && (
