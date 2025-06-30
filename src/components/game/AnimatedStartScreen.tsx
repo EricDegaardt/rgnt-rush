@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Volume2, VolumeX } from 'lucide-react';
 
 interface AnimatedStartScreenProps {
   onStartGame: () => void;
   onViewLeaderboard?: () => void;
-  isMusicEnabled?: boolean;
-  onToggleMusic?: (enabled: boolean) => void;
 }
 
-const AnimatedStartScreen = ({ 
-  onStartGame, 
-  onViewLeaderboard, 
-  isMusicEnabled = true, 
-  onToggleMusic 
-}: AnimatedStartScreenProps) => {
+const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartScreenProps) => {
   const [purpleBikeX, setPurpleBikeX] = useState(-200);
   const [blackBikeX, setBlackBikeX] = useState(-300);
   const [turboBikeX, setTurboBikeX] = useState(-400);
@@ -60,14 +52,6 @@ const AnimatedStartScreen = ({
     }
   };
 
-  const handleMusicToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (onToggleMusic) {
-      onToggleMusic(!isMusicEnabled);
-    }
-  };
-
   return (
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
       {/* CSS Animations */}
@@ -103,23 +87,6 @@ const AnimatedStartScreen = ({
           animation: cityMove 20s linear infinite;
         }
       `}</style>
-
-      {/* Music Toggle Button - Top Right */}
-      <div className="absolute top-4 right-4 z-30">
-        <Button
-          onClick={handleMusicToggle}
-          variant="ghost"
-          size="icon"
-          className="bg-black/30 hover:bg-black/50 text-white border border-gray-600/50 hover:border-gray-500 transition-all duration-200 backdrop-blur-sm"
-          title={isMusicEnabled ? "Turn music off" : "Turn music on"}
-        >
-          {isMusicEnabled ? (
-            <Volume2 className="w-5 h-5" />
-          ) : (
-            <VolumeX className="w-5 h-5" />
-          )}
-        </Button>
-      </div>
       
       {/* Animated City Background */}
       <div className="absolute inset-0 overflow-hidden">
