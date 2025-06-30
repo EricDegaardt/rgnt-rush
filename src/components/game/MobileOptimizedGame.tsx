@@ -152,6 +152,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           <AnimatedStartScreen 
             onStartGame={handleStartFromMenu} 
             onViewLeaderboard={handleViewLeaderboard}
+            isMobile={isMobile}
           />
         </div>
       </div>
@@ -201,6 +202,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           <SimpleLeaderboardModal
             onClose={handleCloseSimpleLeaderboard}
             onStartRacing={handleStartRacingFromLeaderboard}
+            isMobile={isMobile}
           />
         </div>
       </div>
@@ -226,7 +228,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         onClick={handleScreenInteraction}
         onTouchStart={handleScreenInteraction}
       >
-        <Skyline />
+        <Skyline isMobile={isMobile} />
         <Road />
         
         <OptimizedPlayer y={gameLogic.playerY} isSpinning={gameLogic.isSpinning} gameOver={gameOver} selectedBike={selectedBike} isVisible={true} />
@@ -245,6 +247,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
             selectedBike={selectedBike}
             onClose={handleCloseLeaderboard}
             onPlayAgain={handlePlayAgain}
+            isMobile={isMobile}
           />
         )}
       </div>

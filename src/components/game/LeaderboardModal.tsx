@@ -9,9 +9,10 @@ interface LeaderboardModalProps {
   selectedBike: string;
   onClose: () => void;
   onPlayAgain: () => void;
+  isMobile?: boolean;
 }
 
-const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: LeaderboardModalProps) => {
+const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain, isMobile = false }: LeaderboardModalProps) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [marketingConsent, setMarketingConsent] = useState(false);
@@ -246,35 +247,69 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     );
   }
 
+  // Desktop positioning: top-right corner with smaller size
+  const containerClasses = isMobile 
+    ? "fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]"
+    : "absolute top-4 right-4 w-80 max-h-[calc(100vh-32px)] bg-black bg-opacity-90 rounded-lg shadow-2xl border border-gray-700 z-[9999] backdrop-blur-sm";
+
+  const contentClasses = isMobile
+    ? "w-full h-full max-w-lg mx-auto flex flex-col p-4 md:p-6 md:py-8 relative z-[10000]"
+    : "w-full h-full flex flex-col relative z-[10000]";
+
+  const cardClasses = isMobile
+    ? "bg-gray-900 rounded-lg w-full flex flex-col overflow-hidden shadow-2xl border border-gray-700"
+    : "w-full h-full flex flex-col overflow-hidden";
+
+  const headerPadding = isMobile ? "p-4 md:p-6 pb-3 md:pb-4" : "p-3 pb-2";
+  const contentPadding = isMobile ? "p-4 md:p-6 pt-3 md:pt-4" : "p-3 pt-2";
+  const footerPadding = isMobile ? "p-4 md:p-6 pt-3 md:pt-4" : "p-3 pt-2";
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]">
-      {/* Added proper padding and margins for all screen sizes with higher z-index */}
-      <div className="w-full h-full max-w-lg mx-auto flex flex-col p-4 md:p-6 md:py-8 relative z-[10000]">
-        <div className="bg-gray-900 rounded-lg w-full flex flex-col overflow-hidden shadow-2xl border border-gray-700" style={{ maxHeight: '100%' }}>
+    <div className={containerClasses}>
+      <div className={contentClasses}>
+        <div className={cardClasses} style={{ maxHeight: '100%' }}>
           {/* Fixed Header */}
-          <div className="flex-shrink-0 p-4 md:p-6 pb-3 md:pb-4 border-b border-gray-700">
+          <div className={`flex-shrink-0 ${headerPadding} border-b border-gray-700`}>
             <div className="text-center">
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Leaderboard</h3>
-              <div className="text-2xl md:text-3xl font-bold text-purple-400 mb-1">{Math.floor(score)}m</div>
-              <p className="text-gray-300 text-sm">Your Distance</p>
+              <h3 className={`font-bold text-white mb-2 ${isMobile ? 'text-xl md:text-2xl' : 'text-lg'}`}>
+                {isMobile ? 'Leaderboard' : 'Achievement'}
+              </h3>
+              <div className={`font-bold text-purple-400 mb-1 ${isMobile ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
+                {Math.floor(score)}m
+              </div>
+              <p className={`text-gray-300 ${isMobile ? 'text-sm' : 'text-xs'}`}>
+                {isMobile ? 'Your Distance' : 'Distance'}
+              </p>
+              {/* Desktop: Add celebratory elements */}
+              {!isMobile && (
+                <div className="flex items-center justify-center gap-1 mt-2">
+                  <Trophy className="w-4 h-4 text-yellow-500" />
+                  <span className="text-xs text-yellow-400 font-medium">New Score!</span>
+                  <Trophy className="w-4 h-4 text-yellow-500" />
+                </div>
+              )}
             </div>
           </div>
 
           {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 pt-3 md:pt-4">
+          <div className={`flex-1 overflow-y-auto ${contentPadding}`}>
             {!hasSubmitted ? (
-              <div className="mb-4 md:mb-6">
-                <p className="text-gray-300 text-sm mb-4 text-center">Save your score to the leaderboard:</p>
-                <div className="flex flex-col gap-4">
+              <div className={isMobile ? "mb-4 md:mb-6" : "mb-3"}>
+                <p className={`text-gray-300 mb-4 text-center ${isMobile ? 'text-sm' : 'text-xs'}`}>
+                  Save your score to the leaderboard:
+                </p>
+                <div className={`flex flex-col ${isMobile ? 'gap-4' : 'gap-3'}`}>
                   {/* Username Input */}
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
                     <input
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder="Your username"
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                      className={`w-full bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all ${
+                        isMobile ? 'pl-10 pr-4 py-3' : 'pl-8 pr-3 py-2 text-sm'
+                      }`}
                       maxLength={20}
                       disabled={isSubmitting}
                     />
@@ -282,13 +317,15 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
                   {/* Email Input */}
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${isMobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Your email address"
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                      className={`w-full bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all ${
+                        isMobile ? 'pl-10 pr-4 py-3' : 'pl-8 pr-3 py-2 text-sm'
+                      }`}
                       disabled={isSubmitting}
                     />
                   </div>
@@ -298,28 +335,32 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                     {/* Terms & Conditions Header - Clickable */}
                     <button
                       onClick={() => setShowTerms(!showTerms)}
-                      className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-700/30 transition-colors"
+                      className={`w-full flex items-center justify-between text-left hover:bg-gray-700/30 transition-colors ${
+                        isMobile ? 'p-3' : 'p-2'
+                      }`}
                       type="button"
                     >
-                      <span className="text-sm font-medium text-gray-300">Terms & Conditions</span>
+                      <span className={`font-medium text-gray-300 ${isMobile ? 'text-sm' : 'text-xs'}`}>
+                        Terms & Conditions
+                      </span>
                       {showTerms ? (
-                        <ChevronUp className="w-4 h-4 text-gray-400" />
+                        <ChevronUp className={isMobile ? 'w-4 h-4 text-gray-400' : 'w-3 h-3 text-gray-400'} />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                        <ChevronDown className={isMobile ? 'w-4 h-4 text-gray-400' : 'w-3 h-3 text-gray-400'} />
                       )}
                     </button>
 
                     {/* Collapsible Terms Content */}
                     {showTerms && (
-                      <div className="px-3 pb-3 border-t border-gray-700/50">
-                        <div className="text-xs text-gray-400 leading-relaxed mt-2">
+                      <div className={`border-t border-gray-700/50 ${isMobile ? 'px-3 pb-3' : 'px-2 pb-2'}`}>
+                        <div className={`text-gray-400 leading-relaxed mt-2 ${isMobile ? 'text-xs' : 'text-[10px]'}`}>
                           I agree to receive emails about RGNT Motorcycles updates, news, and special offers. We respect your privacy and will never share, sell, or misuse your email address. You can unsubscribe at any time.
                         </div>
                       </div>
                     )}
 
                     {/* Checkbox Section - Always Visible */}
-                    <div className="flex items-start space-x-3 p-3 border-t border-gray-700/50">
+                    <div className={`flex items-start space-x-3 border-t border-gray-700/50 ${isMobile ? 'p-3' : 'p-2'}`}>
                       <div className="relative flex-shrink-0 mt-0.5">
                         {/* Hidden native checkbox for accessibility */}
                         <input
@@ -328,15 +369,15 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                           checked={marketingConsent}
                           onChange={handleCheckboxChange}
                           disabled={isSubmitting}
-                          className="absolute opacity-0 w-6 h-6 cursor-pointer"
+                          className={`absolute opacity-0 cursor-pointer ${isMobile ? 'w-6 h-6' : 'w-5 h-5'}`}
                           style={{ zIndex: 1 }}
                         />
                         {/* Custom checkbox visual */}
                         <div
                           onClick={handleCheckboxClick}
                           className={`
-                            relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
-                            border-2 rounded cursor-pointer transition-all duration-200
+                            relative flex items-center justify-center border-2 rounded cursor-pointer transition-all duration-200
+                            ${isMobile ? 'w-6 h-6 min-w-[24px] min-h-[24px]' : 'w-5 h-5 min-w-[20px] min-h-[20px]'}
                             ${marketingConsent 
                               ? 'border-purple-500 bg-purple-500 shadow-lg shadow-purple-500/25' 
                               : 'border-gray-500 bg-white hover:border-purple-400 hover:bg-gray-50'
@@ -346,13 +387,15 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                           `}
                         >
                           {marketingConsent && (
-                            <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
+                            <Check className={`text-white font-bold stroke-[3] drop-shadow-sm ${isMobile ? 'w-4 h-4' : 'w-3 h-3'}`} />
                           )}
                         </div>
                       </div>
                       <label 
                         htmlFor="marketing-consent" 
-                        className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                        className={`text-gray-300 leading-relaxed select-none ${
+                          isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'
+                        } ${isMobile ? 'text-sm' : 'text-xs'}`}
                         onClick={handleCheckboxClick}
                       >
                         I agree to the Terms & Conditions above
@@ -363,7 +406,9 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                   <Button
                     onClick={submitScore}
                     disabled={!canSubmitScore()}
-                    className={`w-full py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none ${
+                    className={`w-full font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none ${
+                      isMobile ? 'py-3 text-lg' : 'py-2 text-sm'
+                    } ${
                       canSubmitScore() 
                         ? 'bg-purple-600 hover:bg-purple-700 text-white' 
                         : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
@@ -374,7 +419,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
                   {/* Validation message */}
                   {(!username.trim() || !email.trim() || !marketingConsent) && (
-                    <div className="text-center text-sm text-gray-400">
+                    <div className={`text-center text-gray-400 ${isMobile ? 'text-sm' : 'text-xs'}`}>
                       {!username.trim() && !email.trim() && !marketingConsent && (
                         <p>Please fill in all fields and agree to the terms</p>
                       )}
@@ -388,114 +433,141 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                   )}
                 </div>
                 {error && (
-                  <p className="text-red-400 text-sm mt-3 text-center">{error}</p>
+                  <p className={`text-red-400 mt-3 text-center ${isMobile ? 'text-sm' : 'text-xs'}`}>{error}</p>
                 )}
               </div>
             ) : showShareOptions ? (
-              <div className="mb-4 md:mb-6">
-                <div className="text-center mb-4 md:mb-6">
-                  <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg mb-3 md:mb-4">
-                    <Check className="w-5 h-5" />
-                    <span className="font-medium">Score saved successfully!</span>
+              <div className={isMobile ? "mb-4 md:mb-6" : "mb-3"}>
+                <div className={`text-center ${isMobile ? 'mb-4 md:mb-6' : 'mb-3'}`}>
+                  <div className={`inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg ${isMobile ? 'mb-3 md:mb-4' : 'mb-2'}`}>
+                    <Check className={isMobile ? 'w-5 h-5' : 'w-4 h-4'} />
+                    <span className={`font-medium ${isMobile ? 'text-sm' : 'text-xs'}`}>Score saved successfully!</span>
                   </div>
                   {playerRank && (
                     <div className="mb-3">
-                      <p className="text-purple-400 font-bold text-lg">
+                      <p className={`text-purple-400 font-bold ${isMobile ? 'text-lg' : 'text-sm'}`}>
                         You ranked #{playerRank} out of {totalPlayers} players!
                       </p>
                     </div>
                   )}
-                  <p className="text-gray-300 text-base md:text-lg">Share your achievement:</p>
+                  <p className={`text-gray-300 ${isMobile ? 'text-base md:text-lg' : 'text-xs'}`}>
+                    Share your achievement:
+                  </p>
                 </div>
 
                 {/* Share buttons with proper z-index and pointer events */}
-                <div className="grid grid-cols-2 gap-3 mb-4 relative z-[10001]">
+                <div className={`grid grid-cols-2 gap-3 mb-4 relative z-[10001] ${isMobile ? '' : 'gap-2'}`}>
                   <Button
                     onClick={() => handleShare(shareOptions[0].url)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    className={`bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto ${
+                      isMobile ? 'h-12 text-sm' : 'h-8 text-xs'
+                    }`}
                   >
                     LinkedIn
                   </Button>
                   <Button
                     onClick={() => handleShare(shareOptions[1].url)}
-                    className="bg-black hover:bg-gray-800 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    className={`bg-black hover:bg-gray-800 text-white flex items-center justify-center font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto ${
+                      isMobile ? 'h-12 text-sm' : 'h-8 text-xs'
+                    }`}
                   >
                     X
                   </Button>
                   <Button
                     onClick={() => handleShare(shareOptions[2].url)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    className={`bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto ${
+                      isMobile ? 'h-12 text-sm' : 'h-8 text-xs'
+                    }`}
                   >
                     Facebook
                   </Button>
                   <Button
                     onClick={handleCopyLink}
-                    className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    className={`bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto ${
+                      isMobile ? 'h-12 text-sm' : 'h-8 text-xs'
+                    }`}
                   >
                     {copied ? 'Copied!' : 'Copy Link'}
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="mb-4 md:mb-6 text-center">
-                <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg">
-                  <Check className="w-5 h-5" />
+              <div className={`text-center ${isMobile ? 'mb-4 md:mb-6' : 'mb-3'}`}>
+                <div className={`inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg ${isMobile ? '' : 'text-xs'}`}>
+                  <Check className={isMobile ? 'w-5 h-5' : 'w-4 h-4'} />
                   <span className="font-medium">Score saved successfully!</span>
                 </div>
               </div>
             )}
 
-            <div className="mb-4 md:mb-6">
-              <h4 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 text-center">Top 10 Riders</h4>
-              {isLoading ? (
-                <div className="text-center text-gray-400 py-6 md:py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto mb-2"></div>
-                  Loading...
-                </div>
-              ) : error && leaderboard.length === 0 ? (
-                <div className="text-center text-red-400 py-6 md:py-8">{error}</div>
-              ) : (
-                <div className="space-y-2 md:space-y-3">
-                  {leaderboard.map((entry, index) => (
-                    <div
-                      key={entry.id}
-                      className={`flex items-center justify-between p-3 md:p-4 rounded-lg transition-all hover:scale-[1.02] ${
-                        index < 3 
-                          ? 'bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-700/30' 
-                          : 'bg-gray-800/60 border border-gray-700/30'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 md:gap-4">
-                        {getRankIcon(index)}
-                        <div>
-                          <div className="text-white font-semibold text-sm md:text-base">{entry.username}</div>
-                          <div className="text-gray-400 text-[10px] mt-0.5">
-                            {new Date(entry.created_at).toLocaleDateString()}
+            {/* Leaderboard - Only show on mobile or if there's space on desktop */}
+            {(isMobile || hasSubmitted) && (
+              <div className={isMobile ? "mb-4 md:mb-6" : "mb-3"}>
+                <h4 className={`font-bold text-white text-center ${isMobile ? 'text-lg md:text-xl mb-3 md:mb-4' : 'text-sm mb-2'}`}>
+                  Top 10 Riders
+                </h4>
+                {isLoading ? (
+                  <div className={`text-center text-gray-400 ${isMobile ? 'py-6 md:py-8' : 'py-4'}`}>
+                    <div className={`animate-spin rounded-full border-b-2 border-purple-400 mx-auto mb-2 ${isMobile ? 'h-8 w-8' : 'h-6 w-6'}`}></div>
+                    <span className={isMobile ? 'text-sm' : 'text-xs'}>Loading...</span>
+                  </div>
+                ) : error && leaderboard.length === 0 ? (
+                  <div className={`text-center text-red-400 ${isMobile ? 'py-6 md:py-8 text-sm' : 'py-4 text-xs'}`}>{error}</div>
+                ) : (
+                  <div className={isMobile ? "space-y-2 md:space-y-3" : "space-y-1"}>
+                    {leaderboard.slice(0, isMobile ? 10 : 5).map((entry, index) => (
+                      <div
+                        key={entry.id}
+                        className={`flex items-center justify-between rounded-lg transition-all hover:scale-[1.02] ${
+                          isMobile ? 'p-3 md:p-4' : 'p-2'
+                        } ${
+                          index < 3 
+                            ? 'bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-700/30' 
+                            : 'bg-gray-800/60 border border-gray-700/30'
+                        }`}
+                      >
+                        <div className={`flex items-center ${isMobile ? 'gap-3 md:gap-4' : 'gap-2'}`}>
+                          {getRankIcon(index)}
+                          <div>
+                            <div className={`text-white font-semibold ${isMobile ? 'text-sm md:text-base' : 'text-xs'}`}>
+                              {entry.username}
+                            </div>
+                            <div className={`text-gray-400 mt-0.5 ${isMobile ? 'text-[10px]' : 'text-[8px]'}`}>
+                              {new Date(entry.created_at).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-center gap-1">
+                          <div className={`text-purple-400 font-bold ${isMobile ? 'text-base md:text-lg' : 'text-xs'}`}>
+                            {entry.distance}m
+                          </div>
+                          <div className={isMobile ? 'w-10' : 'w-6'}>
+                            {getBikeImage(entry.selected_bike)}
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-center gap-1">
-                        <div className="text-purple-400 font-bold text-base md:text-lg">{entry.distance}m</div>
-                        {getBikeImage(entry.selected_bike)}
+                    ))}
+                    {leaderboard.length === 0 && (
+                      <div className={`text-center text-gray-400 ${isMobile ? 'py-6 md:py-8' : 'py-4'}`}>
+                        <Trophy className={`mx-auto mb-3 opacity-50 ${isMobile ? 'w-12 h-12' : 'w-8 h-8'}`} />
+                        <p className={isMobile ? 'text-lg' : 'text-xs'}>No scores yet. Be the first!</p>
                       </div>
-                    </div>
-                  ))}
-                  {leaderboard.length === 0 && (
-                    <div className="text-center text-gray-400 py-6 md:py-8">
-                      <Trophy className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                      <p className="text-lg">No scores yet. Be the first!</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Fixed Footer */}
-          <div className="flex-shrink-0 p-4 md:p-6 pt-3 md:pt-4 border-t border-gray-700">
+          <div className={`flex-shrink-0 ${footerPadding} border-t border-gray-700`}>
             <Button
               onClick={onPlayAgain}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 md:py-4 text-lg md:text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+              className={`w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto ${
+                isMobile 
+                  ? 'py-3 md:py-4 text-lg md:text-xl' 
+                  : 'py-2 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 from-gray-700 to-gray-700 hover:from-gray-600 hover:to-gray-600'
+              }`}
             >
               Play Again
             </Button>
