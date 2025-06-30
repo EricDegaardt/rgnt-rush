@@ -16,6 +16,7 @@ import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import Road from './Road';
+import Countdown from './Countdown';
 
 interface MobileOptimizedGameProps {
   isMobile?: boolean;
@@ -31,6 +32,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showSimpleLeaderboard, setShowSimpleLeaderboard] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(false);
   
   const {
     playSound,
@@ -124,7 +126,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   
   const handlePreloadComplete = () => {
     setIsPreloading(false);
-    startGame();
+    setShowCountdown(true);
   };
 
   const handleCloseLeaderboard = () => {
@@ -171,16 +173,14 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic, initializeAudio, isAudioEnabled]);
 
   // Bike images for preloading
-  const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
+  const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png', '/lovable-uploads/rgnt-turbo.png'];
   
   if (showStartScreen) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1">
           <AnimatedStartScreen 
             onStartGame={handleStartFromMenu} 
@@ -194,11 +194,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (isPreloading) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1">
           <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
         </div>
@@ -209,11 +207,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showBikeSelection) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1">
           <BikeSelection onBikeSelect={handleBikeSelect} />
         </div>
@@ -225,11 +221,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showSimpleLeaderboard) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1 relative">
           <SimpleLeaderboardModal
             onClose={handleCloseSimpleLeaderboard}
@@ -240,14 +234,20 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     );
   }
 
+  if (showCountdown) {
+    return (
+      <Countdown onComplete={() => {
+        setShowCountdown(false);
+        startGame();
+      }} />
+    );
+  }
+
   return (
     <div className="w-full h-full flex flex-col">
-      {!isMobile && (
-        <div className="w-full p-2">
-          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-        </div>
-      )}
-      
+      <div className="w-full p-2">
+        <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+      </div>
       <div 
         className="flex-1 relative bg-black overflow-hidden touch-none select-none"
         style={{
@@ -255,6 +255,8 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           WebkitUserSelect: 'none',
           userSelect: 'none',
           willChange: 'transform',
+          maxHeight: '100dvh', // Responsive height for mobile
+          aspectRatio: '3/4', // Maintain game aspect ratio
         }}
         onClick={handleScreenInteraction}
         onTouchStart={handleScreenInteraction}
@@ -269,7 +271,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         {gameLogic.collectionEffects.map(effect => <CollectionEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleEffectComplete(effect.id)} />)}
         {gameLogic.splashEffects.map(effect => <SplashEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleSplashComplete(effect.id)} />)}
         
-        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} />
+        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} selectedBike={selectedBike} />
 
         {/* Full Leaderboard Modal - Shows after game over with score submission */}
         {showLeaderboard && (
