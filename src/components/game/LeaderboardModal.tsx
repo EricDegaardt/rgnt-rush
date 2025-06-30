@@ -166,7 +166,8 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
         await supabase
           .from('scoreboard')
           .update({
-            email: email.trim()
+            email: email.trim(),
+            marketing_consent: marketingConsent
           })
           .eq('username', username.trim())
           .eq('distance', Math.floor(score))
@@ -204,11 +205,12 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       };
       saveUserDataLocally(userData);
 
-      // Update the scoreboard entry with email
+      // Update the scoreboard entry with email and consent
       const { error } = await supabase
         .from('scoreboard')
         .update({
-          email: email.trim()
+          email: email.trim(),
+          marketing_consent: marketingConsent
         })
         .eq('username', username.trim())
         .eq('distance', Math.floor(score))
@@ -323,7 +325,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
         rank={playerRank}
         totalPlayers={totalPlayers}
         score={score}
-        onShare={() => setShowShareOptions(true)}
+        onShare={handleCelebrationComplete}
         onPlayAgain={onPlayAgain}
       />
     );

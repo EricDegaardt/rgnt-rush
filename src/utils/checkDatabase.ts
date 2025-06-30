@@ -28,7 +28,7 @@ export async function checkDatabaseSchema() {
     if (scoreboardError) {
       console.error('❌ Error fetching scoreboard:', scoreboardError);
     } else {
-      console.log('Columns: id, username, distance, selected_bike, email');
+      console.log('Columns: id, username, distance, selected_bike, created_at, email, marketing_consent');
       console.log('Sample data:', scoreboardData);
     }
 
@@ -47,7 +47,7 @@ export async function checkDatabaseSchema() {
     console.log('\n🏆 Top 5 Scores:');
     const { data: topScores, error: topScoresError } = await supabase
       .from('scoreboard')
-      .select('username, distance, selected_bike')
+      .select('username, distance, selected_bike, created_at')
       .order('distance', { ascending: false })
       .limit(5);
 
