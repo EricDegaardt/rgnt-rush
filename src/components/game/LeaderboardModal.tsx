@@ -97,6 +97,16 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     return username.trim() && email.trim() && marketingConsent && !isSubmitting;
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setMarketingConsent(e.target.checked);
+  };
+
+  const handleCheckboxClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setMarketingConsent(!marketingConsent);
+  };
+
   const submitScore = async () => {
     if (!canSubmitScore()) return;
     
@@ -311,16 +321,19 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                     {/* Checkbox Section - Always Visible */}
                     <div className="flex items-start space-x-3 p-3 border-t border-gray-700/50">
                       <div className="relative flex-shrink-0 mt-0.5">
+                        {/* Hidden native checkbox for accessibility */}
                         <input
                           type="checkbox"
                           id="marketing-consent"
                           checked={marketingConsent}
-                          onChange={(e) => setMarketingConsent(e.target.checked)}
+                          onChange={handleCheckboxChange}
                           disabled={isSubmitting}
-                          className="sr-only"
+                          className="absolute opacity-0 w-6 h-6 cursor-pointer"
+                          style={{ zIndex: 1 }}
                         />
-                        <label
-                          htmlFor="marketing-consent"
+                        {/* Custom checkbox visual */}
+                        <div
+                          onClick={handleCheckboxClick}
                           className={`
                             relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
                             border-2 rounded cursor-pointer transition-all duration-200
@@ -335,11 +348,12 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                           {marketingConsent && (
                             <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
                           )}
-                        </label>
+                        </div>
                       </div>
                       <label 
                         htmlFor="marketing-consent" 
                         className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                        onClick={handleCheckboxClick}
                       >
                         I agree to the Terms & Conditions above
                       </label>
