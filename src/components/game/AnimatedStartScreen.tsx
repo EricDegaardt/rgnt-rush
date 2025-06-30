@@ -11,6 +11,8 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
   const [blackBikeX, setBlackBikeX] = useState(-300);
   const [turboBikeX, setTurboBikeX] = useState(-400);
   const [showTitle, setShowTitle] = useState(false);
+  const [batteries, setBatteries] = useState([]);
+  const [barrels, setBarrels] = useState([]);
 
   useEffect(() => {
     // Animate title appearance
@@ -20,16 +22,27 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
     const bikeAnimation = setInterval(() => {
       setPurpleBikeX(prev => {
         if (prev > 800) return -200;
-        return prev + 8;
+        return prev + 7 + Math.random() * 2;
       });
       setBlackBikeX(prev => {
         if (prev > 800) return -300;
-        return prev + 8;
+        return prev + 7 + Math.random() * 2;
       });
       setTurboBikeX(prev => {
         if (prev > 800) return -400;
-        return prev + 12;
+        return prev + 11 + Math.random() * 3;
       });
+      // Move batteries
+      setBatteries(bats => bats.map(b => ({ ...b, x: b.x - b.speed })).filter(b => b.x > -40));
+      // Move barrels
+      setBarrels(obs => obs.map(o => ({ ...o, x: o.x - o.speed })).filter(o => o.x > -40));
+      // Occasionally spawn a battery or barrel
+      if (Math.random() < 0.02) {
+        setBatteries(bats => [...bats, { x: 900, y: 60 + Math.random() * 40, speed: 6 + Math.random() * 2 }]);
+      }
+      if (Math.random() < 0.015) {
+        setBarrels(obs => [...obs, { x: 900, y: 60 + Math.random() * 40, speed: 5 + Math.random() * 2 }]);
+      }
     }, 50);
 
     return () => {
@@ -176,6 +189,26 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           />
         ))}
       </div>
+
+      {/* Render batteries and barrels */}
+      {batteries.map((b, i) => (
+        <img
+          key={i}
+          src="/lovable-uploads/collecting-battery.png"
+          alt="Battery"
+          className="absolute z-20"
+          style={{ left: b.x, bottom: b.y, width: 32, height: 32 }}
+        />
+      ))}
+      {barrels.map((o, i) => (
+        <img
+          key={i}
+          src="/lovable-uploads/hitting-barell.png"
+          alt="Barrel"
+          className="absolute z-20"
+          style={{ left: o.x, bottom: o.y, width: 32, height: 32 }}
+        />
+      ))}
 
       {/* Main Content - moved much closer to the top */}
       <div className="absolute top-16 left-0 right-0 flex flex-col items-center text-white p-4 text-center z-20">
