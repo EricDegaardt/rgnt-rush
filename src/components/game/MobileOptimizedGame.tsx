@@ -16,6 +16,7 @@ import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import Road from './Road';
+import Countdown from './Countdown';
 
 interface MobileOptimizedGameProps {
   isMobile?: boolean;
@@ -31,6 +32,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showSimpleLeaderboard, setShowSimpleLeaderboard] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(false);
   
   const {
     playSound,
@@ -124,7 +126,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   
   const handlePreloadComplete = () => {
     setIsPreloading(false);
-    startGame();
+    setShowCountdown(true);
   };
 
   const handleCloseLeaderboard = () => {
@@ -237,6 +239,15 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           />
         </div>
       </div>
+    );
+  }
+
+  if (showCountdown) {
+    return (
+      <Countdown onComplete={() => {
+        setShowCountdown(false);
+        startGame();
+      }} />
     );
   }
 
