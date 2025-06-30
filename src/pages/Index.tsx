@@ -1,4 +1,5 @@
 import MobileOptimizedGame from "../components/game/MobileOptimizedGame";
+import BoltBadge from "../components/ui/BoltBadge";
 import { useIsMobile } from "../hooks/use-mobile";
 
 const Index = () => {
@@ -17,6 +18,9 @@ const Index = () => {
         backgroundRepeat: "no-repeat"
       }}
     >
+      {/* Bolt.new Badge */}
+      <BoltBadge />
+      
       <div
         className={
           isMobile
