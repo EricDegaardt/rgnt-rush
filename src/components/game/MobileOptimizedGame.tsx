@@ -17,7 +17,6 @@ import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import Road from './Road';
 import Countdown from './Countdown';
-import SoundToggle from '../ui/SoundToggle';
 
 interface MobileOptimizedGameProps {
   isMobile?: boolean;
@@ -41,9 +40,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     volume,
     setVolume,
     initializeAudio,
-    isAudioEnabled,
-    isMuted,
-    toggleMute
+    isAudioEnabled
   } = useGameAudio();
   
   // Initialize audio on first user interaction (start screen)
@@ -181,11 +178,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showStartScreen) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1">
           <AnimatedStartScreen 
             onStartGame={handleStartFromMenu} 
@@ -199,11 +194,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (isPreloading) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1">
           <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
         </div>
@@ -214,11 +207,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showBikeSelection) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1">
           <BikeSelection onBikeSelect={handleBikeSelect} />
         </div>
@@ -230,11 +221,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   if (showSimpleLeaderboard) {
     return (
       <div className="w-full h-full flex flex-col">
-        {!isMobile && (
-          <div className="w-full p-2">
-            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-          </div>
-        )}
+        <div className="w-full p-2">
+          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+        </div>
         <div className="flex-1 relative">
           <SimpleLeaderboardModal
             onClose={handleCloseSimpleLeaderboard}
@@ -256,12 +245,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      {!isMobile && (
-        <div className="w-full p-2">
-          <VolumeSlider volume={volume} onVolumeChange={setVolume} />
-        </div>
-      )}
-      
+      <div className="w-full p-2">
+        <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+      </div>
       <div 
         className="flex-1 relative bg-black overflow-hidden touch-none select-none"
         style={{
@@ -269,6 +255,8 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
           WebkitUserSelect: 'none',
           userSelect: 'none',
           willChange: 'transform',
+          maxHeight: '100dvh', // Responsive height for mobile
+          aspectRatio: '3/4', // Maintain game aspect ratio
         }}
         onClick={handleScreenInteraction}
         onTouchStart={handleScreenInteraction}
@@ -293,12 +281,6 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
             onClose={handleCloseLeaderboard}
             onPlayAgain={handlePlayAgain}
           />
-        )}
-
-        {isMobile && !showStartScreen && !isPreloading && !showCountdown && (
-          <div className="fixed top-2 right-2 z-50">
-            <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
-          </div>
         )}
       </div>
     </div>

@@ -11,7 +11,7 @@ const BoltBadge = () => {
     >
       <div className="relative">
         {/* Badge container with responsive sizing */}
-        <div className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-full bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div className="w-8 h-8 sm:w-8 sm:h-8 md:w-12 md:h-12 lg:w-16 lg:h-16 rounded-full bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
           <img
             src="/lovable-uploads/white_circle_360x360.PNG"
             alt="Powered by Bolt.new"
