@@ -28,7 +28,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       });
       setTurboBikeX(prev => {
         if (prev > 800) return -400;
-        return prev + 4;
+        return prev + 12;
       });
     }, 50);
 
