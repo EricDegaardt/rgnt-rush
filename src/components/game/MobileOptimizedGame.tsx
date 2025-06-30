@@ -16,7 +16,6 @@ import { useOptimizedGameLogic } from '../../hooks/useOptimizedGameLogic';
 import { usePlayerInput } from '../../hooks/usePlayerInput';
 import { useGameAudio } from '../../hooks/useGameAudio';
 import Road from './Road';
-import Countdown from './Countdown';
 
 interface MobileOptimizedGameProps {
   isMobile?: boolean;
@@ -32,8 +31,6 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showSimpleLeaderboard, setShowSimpleLeaderboard] = useState(false);
-  const [assetsLoaded, setAssetsLoaded] = useState(false);
-  const [showCountdown, setShowCountdown] = useState(false);
   
   const {
     playSound,
@@ -125,54 +122,8 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     setIsPreloading(true);
   };
   
-  // Bike images for preloading
-  const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png', '/lovable-uploads/rgnt-turbo.png'];
-  
-  // Preload assets in the background
-  useEffect(() => {
-    if (isPreloading) {
-      const gameAssets = [
-        ...bikeImages,
-        '/lovable-uploads/sounds/background-music.mp3',
-        '/lovable-uploads/sounds/bike-jump.mp3',
-        '/lovable-uploads/sounds/hitting-barell.mp3',
-        '/lovable-uploads/sounds/collecting-battery.mp3',
-        '/lovable-uploads/sounds/game-over.mp3',
-      ];
-      let loadedCount = 0;
-      const totalAssets = gameAssets.length;
-      const loadAsset = (src: string) => {
-        return new Promise<void>((resolve) => {
-          if (src.includes('.mp3')) {
-            const audio = new Audio(src);
-            audio.preload = 'auto';
-            audio.addEventListener('canplaythrough', () => resolve());
-            audio.addEventListener('error', () => resolve());
-          } else {
-            const img = new Image();
-            img.onload = () => resolve();
-            img.onerror = () => resolve();
-            img.src = src;
-          }
-        });
-      };
-      Promise.all(gameAssets.map(loadAsset)).then(() => {
-        setAssetsLoaded(true);
-      });
-    }
-  }, [isPreloading, bikeImages]);
-
-  // Show countdown when assets are loaded
-  useEffect(() => {
-    if (assetsLoaded) {
-      setShowCountdown(true);
-    }
-  }, [assetsLoaded]);
-
-  // When countdown finishes, start the game
-  const handleCountdownComplete = () => {
+  const handlePreloadComplete = () => {
     setIsPreloading(false);
-    setShowCountdown(false);
     startGame();
   };
 
@@ -219,6 +170,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     // Remove the game over screen interaction since leaderboard shows immediately
   }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic, initializeAudio, isAudioEnabled]);
 
+  // Bike images for preloading
+  const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png', '/lovable-uploads/rgnt-turbo.png'];
+  
   if (showStartScreen) {
     return (
       <div className="w-full h-full flex flex-col">
@@ -238,13 +192,18 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   }
   
   if (isPreloading) {
-    if (!assetsLoaded) {
-      // Show nothing or a subtle background while preloading
-      return <div className="w-full h-full bg-black" />;
-    }
-    if (showCountdown) {
-      return <Countdown onComplete={handleCountdownComplete} />;
-    }
+    return (
+      <div className="w-full h-full flex flex-col">
+        {!isMobile && (
+          <div className="w-full p-2">
+            <VolumeSlider volume={volume} onVolumeChange={setVolume} />
+          </div>
+        )}
+        <div className="flex-1">
+          <GamePreloader onComplete={handlePreloadComplete} bikeImages={bikeImages} />
+        </div>
+      </div>
+    );
   }
   
   if (showBikeSelection) {
@@ -310,7 +269,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         {gameLogic.collectionEffects.map(effect => <CollectionEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleEffectComplete(effect.id)} />)}
         {gameLogic.splashEffects.map(effect => <SplashEffect key={effect.id} x={effect.x} y={effect.y} onComplete={() => gameLogic.handleSplashComplete(effect.id)} />)}
         
-        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} selectedBike={selectedBike} currentSpeed={gameLogic.currentSpeed} />
+        <GameUI distance={gameLogic.distance} energy={gameLogic.energy} selectedBike={selectedBike} />
 
         {/* Full Leaderboard Modal - Shows after game over with score submission */}
         {showLeaderboard && (

@@ -4,33 +4,24 @@ import { Zap, Gauge, Milestone } from 'lucide-react';
 const GameUI = ({
   distance,
   energy,
-  selectedBike = 'purple-rain',
-  currentSpeed = 1.0
+  selectedBike = 'purple-rain'
 }: {
   distance: number;
   energy: number;
   selectedBike?: string;
-  currentSpeed?: number;
 }) => {
   const formattedDistance = distance < 1000 ? `${Math.floor(distance)}m` : `${(distance / 1000).toFixed(1)}km`;
   
-  // Get base speed based on selected bike
-  const getBikeBaseSpeed = (bikeId: string) => {
-    switch (bikeId) {
+  // Get speed based on selected bike
+  const getSpeed = (bike: string) => {
+    switch (bike) {
       case 'rgnt-turbo':
-        return 185;
+        return '185 km/h';
       case 'black-thunder':
       case 'purple-rain':
       default:
-        return 120;
+        return '120 km/h';
     }
-  };
-  
-  // Calculate actual speed based on bike and current speed multiplier
-  const getActualSpeed = () => {
-    const baseSpeed = getBikeBaseSpeed(selectedBike);
-    const actualSpeed = Math.round(baseSpeed * currentSpeed);
-    return `${actualSpeed} km/h`;
   };
   
   // Determine energy bar color based on energy level
@@ -57,7 +48,7 @@ const GameUI = ({
           <Gauge size={20} className="text-purple-400" />
           <div className="flex flex-col">
             <span className="text-[10px] text-gray-300 uppercase tracking-wide">Speed</span>
-            <span className="text-sm font-bold">{getActualSpeed()}</span>
+            <span className="text-sm font-bold">{getSpeed(selectedBike)}</span>
           </div>
         </div>
         
