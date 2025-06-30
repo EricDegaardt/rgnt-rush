@@ -269,7 +269,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       <img 
         src={bikeImageUrl} 
         alt={bike} 
-        className="w-10 h-auto object-contain"
+        className="w-8 h-4 object-contain"
         style={{ imageRendering: 'pixelated' }}
       />
     );
