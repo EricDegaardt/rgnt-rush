@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button';
 interface AnimatedStartScreenProps {
   onStartGame: () => void;
   onViewLeaderboard?: () => void;
-  isMobile?: boolean;
 }
 
-const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard, isMobile = false }: AnimatedStartScreenProps) => {
+const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartScreenProps) => {
   const [purpleBikeX, setPurpleBikeX] = useState(-200);
   const [blackBikeX, setBlackBikeX] = useState(-300);
   const [showTitle, setShowTitle] = useState(false);
@@ -16,16 +15,15 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard, isMobile = false 
     // Animate title appearance
     const titleTimer = setTimeout(() => setShowTitle(true), 500);
 
-    // Animate bikes racing across screen - slower on mobile
-    const bikeSpeed = isMobile ? 4 : 8; // Reduced speed on mobile
+    // Animate bikes racing across screen
     const bikeAnimation = setInterval(() => {
       setPurpleBikeX(prev => {
         if (prev > 800) return -200;
-        return prev + bikeSpeed;
+        return prev + 8;
       });
       setBlackBikeX(prev => {
         if (prev > 800) return -300;
-        return prev + (bikeSpeed * 0.75); // Slightly slower for second bike
+        return prev + 6;
       });
     }, 50);
 
@@ -33,7 +31,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard, isMobile = false 
       clearTimeout(titleTimer);
       clearInterval(bikeAnimation);
     };
-  }, [isMobile]);
+  }, []);
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-b from-gray-900 via-black to-gray-900">
@@ -71,26 +69,24 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard, isMobile = false 
         }
       `}</style>
       
-      {/* Animated City Background - Hidden on mobile for performance */}
-      {!isMobile && (
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="city-bg absolute bottom-0 left-0 w-[200%] h-64 opacity-30">
-            {/* City silhouette */}
-            <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-purple-900/20 to-transparent"></div>
-            {[...Array(20)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute bottom-0 bg-gray-800"
-                style={{
-                  left: `${i * 10}%`,
-                  width: `${3 + Math.random() * 4}%`,
-                  height: `${30 + Math.random() * 60}%`,
-                }}
-              />
-            ))}
-          </div>
+      {/* Animated City Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="city-bg absolute bottom-0 left-0 w-[200%] h-64 opacity-30">
+          {/* City silhouette */}
+          <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-purple-900/20 to-transparent"></div>
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute bottom-0 bg-gray-800"
+              style={{
+                left: `${i * 10}%`,
+                width: `${3 + Math.random() * 4}%`,
+                height: `${30 + Math.random() * 60}%`,
+              }}
+            />
+          ))}
         </div>
-      )}
+      </div>
       
       {/* Road */}
       <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 border-t-4 border-gray-500">
@@ -130,23 +126,21 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard, isMobile = false 
         }}
       />
 
-      {/* Speed lines effect - Hidden on mobile for performance */}
-      {!isMobile && (
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute h-0.5 bg-white opacity-20 speed-line"
-              style={{
-                top: `${20 + i * 25}%`,
-                left: '0%',
-                width: '100%',
-                animationDelay: `${i * 0.1}s`,
-              }}
-            />
-          ))}
-        </div>
-      )}
+      {/* Speed lines effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute h-0.5 bg-white opacity-20 speed-line"
+            style={{
+              top: `${20 + i * 25}%`,
+              left: '0%',
+              width: '100%',
+              animationDelay: `${i * 0.1}s`,
+            }}
+          />
+        ))}
+      </div>
 
       {/* Main Content - moved much closer to the top */}
       <div className="absolute top-16 left-0 right-0 flex flex-col items-center text-white p-4 text-center z-20">
