@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award, Copy, Check, Mail, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData, checkEmailExists } from '@/lib/supabase';
+import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData, checkEmailExists, saveSessionUsername } from '@/lib/supabase';
 import CelebrationPopup from './CelebrationPopup';
 import TermsModal from './TermsModal';
 
@@ -37,19 +37,24 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   const loadUserData = () => {
     const userData = getUserDataFromStorage();
-    const hasCompleteData = userData.username && userData.email && userData.marketingConsent !== undefined;
     
-    if (hasCompleteData) {
-      setUsername(userData.username);
+    // Check if we have persistent email subscription data
+    const hasCompleteEmailData = userData.email && userData.marketingConsent !== undefined;
+    
+    if (hasCompleteEmailData) {
       setEmail(userData.email);
       setMarketingConsent(userData.marketingConsent);
       setHasStoredUserData(true);
     } else {
       setHasStoredUserData(false);
-      // Only set partial data if we don't have complete data
-      if (userData.username) setUsername(userData.username);
+      // Load any existing email data but not username
       if (userData.email) setEmail(userData.email);
       if (userData.marketingConsent !== undefined) setMarketingConsent(userData.marketingConsent);
+    }
+    
+    // Username is always fresh for each session - load from session storage
+    if (userData.username) {
+      setUsername(userData.username);
     }
   };
 
@@ -145,6 +150,9 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       setIsSubmitting(true);
       setError(null);
 
+      // Save username to session storage for this session only
+      saveSessionUsername(username.trim());
+
       const { error } = await supabase
         .from('scoreboard')
         .insert({
@@ -213,9 +221,9 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
         return;
       }
 
-      // Save user data locally for future use
+      // Save user data locally for future use (email and consent only, not username)
       const userData: UserData = {
-        username: username.trim(),
+        username: username.trim(), // This won't be persisted
         email: email.trim(),
         marketingConsent: marketingConsent
       };
@@ -372,14 +380,14 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                 <div className="mb-4 md:mb-6">
                   <p className="text-gray-300 text-sm mb-4 text-center">Save your score to the leaderboard:</p>
                   <div className="flex flex-col gap-4">
-                    {/* Username Input - Always show */}
+                    {/* Username Input - Always show and always empty for new users */}
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                       <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Your username"
+                        placeholder="Enter your username"
                         className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
                         maxLength={20}
                         disabled={isSubmitting}

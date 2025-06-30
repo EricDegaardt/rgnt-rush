@@ -19,7 +19,8 @@ export interface LeaderboardEntry {
   created_at: string;
 }
 
-// Local storage utilities for user data
+// Session storage utilities for temporary user data (clears when browser/tab closes)
+export const SESSION_USERNAME_KEY = 'rgnt_rush_session_username';
 export const USER_DATA_KEY = 'rgnt_rush_user_data';
 
 export interface UserData {
@@ -28,9 +29,43 @@ export interface UserData {
   marketingConsent: boolean;
 }
 
+// Save username only for current session (clears when browser closes)
+export const saveSessionUsername = (username: string) => {
+  try {
+    sessionStorage.setItem(SESSION_USERNAME_KEY, username);
+  } catch (error) {
+    console.warn('Failed to save session username:', error);
+  }
+};
+
+// Get username from current session only
+export const getSessionUsername = (): string => {
+  try {
+    return sessionStorage.getItem(SESSION_USERNAME_KEY) || '';
+  } catch (error) {
+    console.warn('Failed to load session username:', error);
+    return '';
+  }
+};
+
+// Clear session username (called when user wants to start fresh)
+export const clearSessionUsername = () => {
+  try {
+    sessionStorage.removeItem(SESSION_USERNAME_KEY);
+  } catch (error) {
+    console.warn('Failed to clear session username:', error);
+  }
+};
+
+// Save user data locally for email subscription persistence only
 export const saveUserDataLocally = (userData: UserData) => {
   try {
-    localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+    // Only save email and marketing consent, not username
+    const persistentData = {
+      email: userData.email,
+      marketingConsent: userData.marketingConsent
+    };
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify(persistentData));
   } catch (error) {
     console.warn('Failed to save user data to localStorage:', error);
   }
@@ -40,12 +75,20 @@ export const getUserDataFromStorage = (): Partial<UserData> => {
   try {
     const stored = localStorage.getItem(USER_DATA_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const data = JSON.parse(stored);
+      // Always get username from session, not persistent storage
+      return {
+        username: getSessionUsername(),
+        email: data.email || '',
+        marketingConsent: data.marketingConsent || false
+      };
     }
   } catch (error) {
     console.warn('Failed to load user data from localStorage:', error);
   }
-  return {};
+  return {
+    username: getSessionUsername()
+  };
 };
 
 // Check if email already exists in database
