@@ -56,14 +56,14 @@ const bikes: Bike[] = [
     name: 'RGNT Turbo',
     image: '/lovable-uploads/rgnt-turbo.png',
     specs: {
-      topSpeed: '120 km/h',
-      mixedRange: '150 km',
-      turboPower: '46 kW',
-      acceleration: '4 sec',
-      brakingSystem: 'Combined',
-      batterySystem: '7.5 kWh',
-      chargeTime: '2.1 h (upgradable to 1h)',
-      license: 'A1'
+      topSpeed: '180–190 km/h',
+      mixedRange: '8–10 laps',
+      turboPower: '52 kW',
+      acceleration: '3.2 sec',
+      brakingSystem: 'Push-to-Pass',
+      batterySystem: 'Competition',
+      chargeTime: '1 hour',
+      license: 'A2'
     }
   }
 ];
@@ -139,7 +139,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.topSpeed}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Mixed Range</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Race Capacity</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.mixedRange}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
@@ -151,7 +151,7 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.acceleration}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
-                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Braking System</td>
+                              <td className="py-0.5 pr-2 text-gray-300 font-medium whitespace-nowrap">Power Mode</td>
                               <td className="py-0.5 text-gray-300 text-right whitespace-nowrap">{bike.specs.brakingSystem}</td>
                             </tr>
                             <tr className="border-b border-gray-700">
