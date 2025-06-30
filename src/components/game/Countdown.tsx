@@ -42,13 +42,13 @@ const Countdown: React.FC<CountdownProps> = ({ onComplete }) => {
               }`}
               style={{ filter: idx === step ? 'brightness(1.2)' : 'none' }}
             >
-              {idx === step ? light.label : ''}
+              {idx === step && light.label !== 'GO!' ? light.label : ''}
             </div>
           ))}
         </div>
-        <div className="text-5xl font-mono tracking-widest animate-pulse">
-          {lights[step].label}
-        </div>
+        {lights[step].label === 'GO!' && (
+          <div className="text-6xl font-extrabold text-white drop-shadow-lg animate-pulse">GO!</div>
+        )}
       </div>
     </div>
   );
