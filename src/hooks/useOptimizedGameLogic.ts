@@ -29,7 +29,11 @@ const getGameSpeeds = () => {
             maxSpeed: 1.0,                      // Maximum speed multiplier
             acceleration: 0.02,                 // Speed acceleration rate
             jumpSpeedReduction: 0.3,            // Speed reduction when jumping
-            jumpRecoveryRate: 0.015             // Speed recovery rate after landing
+            jumpRecoveryRate: 0.015,            // Speed recovery rate after landing
+            speedVariation: 0.08,               // Random speed variation (12km/h equivalent)
+            variationFrequency: 0.1,            // How often speed varies (10% chance per frame)
+            obstacleSpeedDrop: 0.4,             // Speed drop when hitting obstacle
+            obstacleRecoveryRate: 0.02          // Speed recovery rate after obstacle hit
         };
     }
     return { 
@@ -40,7 +44,11 @@ const getGameSpeeds = () => {
         maxSpeed: 1.0,
         acceleration: 0.02,
         jumpSpeedReduction: 0.3,
-        jumpRecoveryRate: 0.015
+        jumpRecoveryRate: 0.015,
+        speedVariation: 0.08,
+        variationFrequency: 0.1,
+        obstacleSpeedDrop: 0.4,
+        obstacleRecoveryRate: 0.02
     };
 };
 
@@ -54,6 +62,10 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     const accelerationRef = useRef(speeds.acceleration);
     const jumpSpeedReductionRef = useRef(speeds.jumpSpeedReduction);
     const jumpRecoveryRateRef = useRef(speeds.jumpRecoveryRate);
+    const speedVariationRef = useRef(speeds.speedVariation);
+    const variationFrequencyRef = useRef(speeds.variationFrequency);
+    const obstacleSpeedDropRef = useRef(speeds.obstacleSpeedDrop);
+    const obstacleRecoveryRateRef = useRef(speeds.obstacleRecoveryRate);
     const playerPhysicsRef = useRef<PlayerPhysics>({
         playerY: ROAD_HEIGHT,
         playerVelocityY: 0,
@@ -64,6 +76,8 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
     const frameCountRef = useRef(0);
     const currentSpeedRef = useRef(0);
     const wasOnGroundRef = useRef(true);
+    const obstacleHitRef = useRef(false);
+    const obstacleHitFrameRef = useRef(0);
     
     // Single state object to reduce re-renders
     const [gameState, setGameState] = useState<OptimizedGameState>({
@@ -112,19 +126,40 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         // Speed management
         let newSpeed = currentSpeedRef.current;
         
-        // Check if player just landed (was in air, now on ground)
-        if (!wasOnGroundRef.current && playerPhysicsRef.current.isOnGround) {
-            // Player just landed, start speed recovery
-            newSpeed = Math.max(0, newSpeed - jumpSpeedReductionRef.current);
-        }
-        
-        // Update speed based on ground state
-        if (playerPhysicsRef.current.isOnGround) {
-            // Accelerate when on ground
-            newSpeed = Math.min(maxSpeedRef.current, newSpeed + accelerationRef.current);
+        // Handle obstacle hit speed drop
+        if (obstacleHitRef.current) {
+            const framesSinceHit = frameCountRef.current - obstacleHitFrameRef.current;
+            if (framesSinceHit < 60) { // 1 second at 60fps
+                // Apply obstacle speed drop
+                newSpeed = Math.max(0, newSpeed - obstacleSpeedDropRef.current);
+            } else {
+                // Start recovery after 1 second
+                newSpeed = Math.min(maxSpeedRef.current, newSpeed + obstacleRecoveryRateRef.current);
+                if (newSpeed >= maxSpeedRef.current) {
+                    obstacleHitRef.current = false;
+                }
+            }
         } else {
-            // Recover speed when in air (but slower than ground acceleration)
-            newSpeed = Math.min(maxSpeedRef.current, newSpeed + jumpRecoveryRateRef.current);
+            // Check if player just landed (was in air, now on ground)
+            if (!wasOnGroundRef.current && playerPhysicsRef.current.isOnGround) {
+                // Player just landed, start speed recovery
+                newSpeed = Math.max(0, newSpeed - jumpSpeedReductionRef.current);
+            }
+            
+            // Update speed based on ground state
+            if (playerPhysicsRef.current.isOnGround) {
+                // Accelerate when on ground
+                newSpeed = Math.min(maxSpeedRef.current, newSpeed + accelerationRef.current);
+                
+                // Add random speed variation during normal driving
+                if (Math.random() < variationFrequencyRef.current && newSpeed > 0.3) {
+                    const variation = (Math.random() - 0.5) * speedVariationRef.current;
+                    newSpeed = Math.max(0.1, Math.min(maxSpeedRef.current, newSpeed + variation));
+                }
+            } else {
+                // Recover speed when in air (but slower than ground acceleration)
+                newSpeed = Math.min(maxSpeedRef.current, newSpeed + jumpRecoveryRateRef.current);
+            }
         }
         
         currentSpeedRef.current = newSpeed;
@@ -179,6 +214,8 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
 
         if (collisionResult.hitObstacle) {
             isSpinningRef.current = true;
+            obstacleHitRef.current = true;
+            obstacleHitFrameRef.current = frameCountRef.current;
             setTimeout(() => {
                 isSpinningRef.current = false;
                 setGameState(prev => ({ ...prev, isSpinning: false }));
@@ -222,6 +259,10 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         accelerationRef.current = speeds.acceleration;
         jumpSpeedReductionRef.current = speeds.jumpSpeedReduction;
         jumpRecoveryRateRef.current = speeds.jumpRecoveryRate;
+        speedVariationRef.current = speeds.speedVariation;
+        variationFrequencyRef.current = speeds.variationFrequency;
+        obstacleSpeedDropRef.current = speeds.obstacleSpeedDrop;
+        obstacleRecoveryRateRef.current = speeds.obstacleRecoveryRate;
         
         playerPhysicsRef.current = {
             playerY: ROAD_HEIGHT,
@@ -232,6 +273,8 @@ export const useOptimizedGameLogic = (running: boolean, onGameOver: (finalScore:
         frameCountRef.current = 0;
         currentSpeedRef.current = 0;
         wasOnGroundRef.current = true;
+        obstacleHitRef.current = false;
+        obstacleHitFrameRef.current = 0;
         
         setGameState({
             distance: 0,
