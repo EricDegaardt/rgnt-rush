@@ -8,7 +8,6 @@ const lights = [
   { color: 'red', label: '3' },
   { color: 'yellow', label: '2' },
   { color: 'green', label: '1' },
-  { color: 'green', label: 'GO!' },
 ];
 
 const lightColors: Record<string, string> = {
@@ -42,11 +41,11 @@ const Countdown: React.FC<CountdownProps> = ({ onComplete }) => {
               }`}
               style={{ filter: idx === step ? 'brightness(1.2)' : 'none' }}
             >
-              {idx === step && light.label !== 'GO!' ? light.label : ''}
+              {idx === step ? light.label : ''}
             </div>
           ))}
         </div>
-        {lights[step].label === 'GO!' && (
+        {step === lights.length && (
           <div className="text-6xl font-extrabold text-white drop-shadow-lg animate-pulse">GO!</div>
         )}
       </div>
