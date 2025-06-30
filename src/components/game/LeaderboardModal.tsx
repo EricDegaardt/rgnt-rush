@@ -3,6 +3,7 @@ import { Trophy, Medal, Award, Copy, Check, Mail, User, ChevronDown, ChevronUp }
 import { Button } from '@/components/ui/button';
 import { supabase, LeaderboardEntry, saveUserDataLocally, getUserDataFromStorage, UserData } from '@/lib/supabase';
 import CelebrationPopup from './CelebrationPopup';
+import TermsModal from './TermsModal';
 
 interface LeaderboardModalProps {
   score: number;
@@ -15,7 +16,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [marketingConsent, setMarketingConsent] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -97,13 +98,26 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     return username.trim() && email.trim() && marketingConsent && !isSubmitting;
   };
 
+  const handleTermsClick = () => {
+    setShowTermsModal(true);
+  };
+
+  const handleTermsAccept = () => {
+    setMarketingConsent(true);
+    setShowTermsModal(false);
+  };
+
+  const handleTermsClose = () => {
+    setShowTermsModal(false);
+  };
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation(); // Prevent event bubbling
+    e.stopPropagation();
     setMarketingConsent(e.target.checked);
   };
 
   const handleCheckboxClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event bubbling
+    e.stopPropagation();
     setMarketingConsent(!marketingConsent);
   };
 
@@ -247,262 +261,258 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]">
-      {/* Added proper padding and margins for all screen sizes with higher z-index */}
-      <div className="w-full h-full max-w-lg mx-auto flex flex-col p-4 md:p-6 md:py-8 relative z-[10000]">
-        <div className="bg-gray-900 rounded-lg w-full flex flex-col overflow-hidden shadow-2xl border border-gray-700" style={{ maxHeight: '100%' }}>
-          {/* Fixed Header */}
-          <div className="flex-shrink-0 p-4 md:p-6 pb-3 md:pb-4 border-b border-gray-700">
-            <div className="text-center">
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Leaderboard</h3>
-              <div className="text-2xl md:text-3xl font-bold text-purple-400 mb-1">{Math.floor(score)}m</div>
-              <p className="text-gray-300 text-sm">Your Distance</p>
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999]">
+        {/* Added proper padding and margins for all screen sizes with higher z-index */}
+        <div className="w-full h-full max-w-lg mx-auto flex flex-col p-4 md:p-6 md:py-8 relative z-[10000]">
+          <div className="bg-gray-900 rounded-lg w-full flex flex-col overflow-hidden shadow-2xl border border-gray-700" style={{ maxHeight: '100%' }}>
+            {/* Fixed Header */}
+            <div className="flex-shrink-0 p-4 md:p-6 pb-3 md:pb-4 border-b border-gray-700">
+              <div className="text-center">
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Leaderboard</h3>
+                <div className="text-2xl md:text-3xl font-bold text-purple-400 mb-1">{Math.floor(score)}m</div>
+                <p className="text-gray-300 text-sm">Your Distance</p>
+              </div>
             </div>
-          </div>
 
-          {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 pt-3 md:pt-4">
-            {!hasSubmitted ? (
-              <div className="mb-4 md:mb-6">
-                <p className="text-gray-300 text-sm mb-4 text-center">Save your score to the leaderboard:</p>
-                <div className="flex flex-col gap-4">
-                  {/* Username Input */}
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Your username"
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
-                      maxLength={20}
-                      disabled={isSubmitting}
-                    />
-                  </div>
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 pt-3 md:pt-4">
+              {!hasSubmitted ? (
+                <div className="mb-4 md:mb-6">
+                  <p className="text-gray-300 text-sm mb-4 text-center">Save your score to the leaderboard:</p>
+                  <div className="flex flex-col gap-4">
+                    {/* Username Input */}
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Your username"
+                        className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                        maxLength={20}
+                        disabled={isSubmitting}
+                      />
+                    </div>
 
-                  {/* Email Input */}
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Your email address"
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
-                      disabled={isSubmitting}
-                    />
-                  </div>
+                    {/* Email Input */}
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Your email address"
+                        className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                        disabled={isSubmitting}
+                      />
+                    </div>
 
-                  {/* Terms & Conditions Section */}
-                  <div className="bg-gray-800/50 rounded-lg border border-gray-700 overflow-hidden">
-                    {/* Terms & Conditions Header - Clickable */}
-                    <button
-                      onClick={() => setShowTerms(!showTerms)}
-                      className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-700/30 transition-colors"
-                      type="button"
-                    >
-                      <span className="text-sm font-medium text-gray-300">Terms & Conditions</span>
-                      {showTerms ? (
-                        <ChevronUp className="w-4 h-4 text-gray-400" />
-                      ) : (
+                    {/* Terms & Conditions Section */}
+                    <div className="bg-gray-800/50 rounded-lg border border-gray-700 overflow-hidden">
+                      {/* Terms & Conditions Header - Clickable */}
+                      <button
+                        onClick={handleTermsClick}
+                        className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-700/30 transition-colors"
+                        type="button"
+                      >
+                        <span className="text-sm font-medium text-gray-300">Terms & Conditions</span>
                         <ChevronDown className="w-4 h-4 text-gray-400" />
-                      )}
-                    </button>
+                      </button>
 
-                    {/* Collapsible Terms Content */}
-                    {showTerms && (
-                      <div className="px-3 pb-3 border-t border-gray-700/50">
-                        <div className="text-xs text-gray-400 leading-relaxed mt-2">
-                          I agree to receive emails about RGNT Motorcycles updates, news, and special offers. We respect your privacy and will never share, sell, or misuse your email address. You can unsubscribe at any time.
+                      {/* Checkbox Section - Always Visible */}
+                      <div className="flex items-start space-x-3 p-3 border-t border-gray-700/50">
+                        <div className="relative flex-shrink-0 mt-0.5">
+                          {/* Hidden native checkbox for accessibility */}
+                          <input
+                            type="checkbox"
+                            id="marketing-consent"
+                            checked={marketingConsent}
+                            onChange={handleCheckboxChange}
+                            disabled={isSubmitting}
+                            className="absolute opacity-0 w-6 h-6 cursor-pointer"
+                            style={{ zIndex: 1 }}
+                          />
+                          {/* Custom checkbox visual */}
+                          <div
+                            onClick={handleCheckboxClick}
+                            className={`
+                              relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
+                              border-2 rounded cursor-pointer transition-all duration-200
+                              ${marketingConsent 
+                                ? 'border-purple-500 bg-purple-500 shadow-lg shadow-purple-500/25' 
+                                : 'border-gray-500 bg-white hover:border-purple-400 hover:bg-gray-50'
+                              }
+                              ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95'}
+                              focus-within:ring-2 focus-within:ring-purple-400 focus-within:ring-opacity-50
+                            `}
+                          >
+                            {marketingConsent && (
+                              <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
+                            )}
+                          </div>
                         </div>
+                        <label 
+                          htmlFor="marketing-consent" 
+                          className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                          onClick={handleCheckboxClick}
+                        >
+                          I agree to the Terms & Conditions above
+                        </label>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={submitScore}
+                      disabled={!canSubmitScore()}
+                      className={`w-full py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none ${
+                        canSubmitScore() 
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                          : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+                      }`}
+                    >
+                      {isSubmitting ? 'Submitting...' : 'Submit Score'}
+                    </Button>
+
+                    {/* Validation message */}
+                    {(!username.trim() || !email.trim() || !marketingConsent) && (
+                      <div className="text-center text-sm text-gray-400">
+                        {!username.trim() && !email.trim() && !marketingConsent && (
+                          <p>Please fill in all fields and agree to the terms</p>
+                        )}
+                        {(username.trim() && email.trim() && !marketingConsent) && (
+                          <p>Please agree to the Terms & Conditions to submit your score</p>
+                        )}
+                        {(!username.trim() || !email.trim()) && marketingConsent && (
+                          <p>Please fill in your username and email</p>
+                        )}
                       </div>
                     )}
-
-                    {/* Checkbox Section - Always Visible */}
-                    <div className="flex items-start space-x-3 p-3 border-t border-gray-700/50">
-                      <div className="relative flex-shrink-0 mt-0.5">
-                        {/* Hidden native checkbox for accessibility */}
-                        <input
-                          type="checkbox"
-                          id="marketing-consent"
-                          checked={marketingConsent}
-                          onChange={handleCheckboxChange}
-                          disabled={isSubmitting}
-                          className="absolute opacity-0 w-6 h-6 cursor-pointer"
-                          style={{ zIndex: 1 }}
-                        />
-                        {/* Custom checkbox visual */}
-                        <div
-                          onClick={handleCheckboxClick}
-                          className={`
-                            relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
-                            border-2 rounded cursor-pointer transition-all duration-200
-                            ${marketingConsent 
-                              ? 'border-purple-500 bg-purple-500 shadow-lg shadow-purple-500/25' 
-                              : 'border-gray-500 bg-white hover:border-purple-400 hover:bg-gray-50'
-                            }
-                            ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95'}
-                            focus-within:ring-2 focus-within:ring-purple-400 focus-within:ring-opacity-50
-                          `}
-                        >
-                          {marketingConsent && (
-                            <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
-                          )}
-                        </div>
-                      </div>
-                      <label 
-                        htmlFor="marketing-consent" 
-                        className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                        onClick={handleCheckboxClick}
-                      >
-                        I agree to the Terms & Conditions above
-                      </label>
-                    </div>
                   </div>
-
-                  <Button
-                    onClick={submitScore}
-                    disabled={!canSubmitScore()}
-                    className={`w-full py-3 text-lg font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:transform-none ${
-                      canSubmitScore() 
-                        ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                        : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
-                    }`}
-                  >
-                    {isSubmitting ? 'Submitting...' : 'Submit Score'}
-                  </Button>
-
-                  {/* Validation message */}
-                  {(!username.trim() || !email.trim() || !marketingConsent) && (
-                    <div className="text-center text-sm text-gray-400">
-                      {!username.trim() && !email.trim() && !marketingConsent && (
-                        <p>Please fill in all fields and agree to the terms</p>
-                      )}
-                      {(username.trim() && email.trim() && !marketingConsent) && (
-                        <p>Please agree to the Terms & Conditions to submit your score</p>
-                      )}
-                      {(!username.trim() || !email.trim()) && marketingConsent && (
-                        <p>Please fill in your username and email</p>
-                      )}
-                    </div>
+                  {error && (
+                    <p className="text-red-400 text-sm mt-3 text-center">{error}</p>
                   )}
                 </div>
-                {error && (
-                  <p className="text-red-400 text-sm mt-3 text-center">{error}</p>
-                )}
-              </div>
-            ) : showShareOptions ? (
-              <div className="mb-4 md:mb-6">
-                <div className="text-center mb-4 md:mb-6">
-                  <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg mb-3 md:mb-4">
+              ) : showShareOptions ? (
+                <div className="mb-4 md:mb-6">
+                  <div className="text-center mb-4 md:mb-6">
+                    <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg mb-3 md:mb-4">
+                      <Check className="w-5 h-5" />
+                      <span className="font-medium">Score saved successfully!</span>
+                    </div>
+                    {playerRank && (
+                      <div className="mb-3">
+                        <p className="text-purple-400 font-bold text-lg">
+                          You ranked #{playerRank} out of {totalPlayers} players!
+                        </p>
+                      </div>
+                    )}
+                    <p className="text-gray-300 text-base md:text-lg">Share your achievement:</p>
+                  </div>
+
+                  {/* Share buttons with proper z-index and pointer events */}
+                  <div className="grid grid-cols-2 gap-3 mb-4 relative z-[10001]">
+                    <Button
+                      onClick={() => handleShare(shareOptions[0].url)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    >
+                      LinkedIn
+                    </Button>
+                    <Button
+                      onClick={() => handleShare(shareOptions[1].url)}
+                      className="bg-black hover:bg-gray-800 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    >
+                      X
+                    </Button>
+                    <Button
+                      onClick={() => handleShare(shareOptions[2].url)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    >
+                      Facebook
+                    </Button>
+                    <Button
+                      onClick={handleCopyLink}
+                      className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                    >
+                      {copied ? 'Copied!' : 'Copy Link'}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-4 md:mb-6 text-center">
+                  <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg">
                     <Check className="w-5 h-5" />
                     <span className="font-medium">Score saved successfully!</span>
                   </div>
-                  {playerRank && (
-                    <div className="mb-3">
-                      <p className="text-purple-400 font-bold text-lg">
-                        You ranked #{playerRank} out of {totalPlayers} players!
-                      </p>
-                    </div>
-                  )}
-                  <p className="text-gray-300 text-base md:text-lg">Share your achievement:</p>
-                </div>
-
-                {/* Share buttons with proper z-index and pointer events */}
-                <div className="grid grid-cols-2 gap-3 mb-4 relative z-[10001]">
-                  <Button
-                    onClick={() => handleShare(shareOptions[0].url)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
-                  >
-                    LinkedIn
-                  </Button>
-                  <Button
-                    onClick={() => handleShare(shareOptions[1].url)}
-                    className="bg-black hover:bg-gray-800 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
-                  >
-                    X
-                  </Button>
-                  <Button
-                    onClick={() => handleShare(shareOptions[2].url)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
-                  >
-                    Facebook
-                  </Button>
-                  <Button
-                    onClick={handleCopyLink}
-                    className="bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center h-12 text-sm font-medium rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
-                  >
-                    {copied ? 'Copied!' : 'Copy Link'}
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="mb-4 md:mb-6 text-center">
-                <div className="inline-flex items-center gap-2 bg-green-900/30 text-green-400 px-4 py-2 rounded-lg">
-                  <Check className="w-5 h-5" />
-                  <span className="font-medium">Score saved successfully!</span>
-                </div>
-              </div>
-            )}
-
-            <div className="mb-4 md:mb-6">
-              <h4 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 text-center">Top 10 Riders</h4>
-              {isLoading ? (
-                <div className="text-center text-gray-400 py-6 md:py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto mb-2"></div>
-                  Loading...
-                </div>
-              ) : error && leaderboard.length === 0 ? (
-                <div className="text-center text-red-400 py-6 md:py-8">{error}</div>
-              ) : (
-                <div className="space-y-2 md:space-y-3">
-                  {leaderboard.map((entry, index) => (
-                    <div
-                      key={entry.id}
-                      className={`flex items-center justify-between p-3 md:p-4 rounded-lg transition-all hover:scale-[1.02] ${
-                        index < 3 
-                          ? 'bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-700/30' 
-                          : 'bg-gray-800/60 border border-gray-700/30'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 md:gap-4">
-                        {getRankIcon(index)}
-                        <div>
-                          <div className="text-white font-semibold text-sm md:text-base">{entry.username}</div>
-                          <div className="text-gray-400 text-[10px] mt-0.5">
-                            {new Date(entry.created_at).toLocaleDateString()}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center gap-1">
-                        <div className="text-purple-400 font-bold text-base md:text-lg">{entry.distance}m</div>
-                        {getBikeImage(entry.selected_bike)}
-                      </div>
-                    </div>
-                  ))}
-                  {leaderboard.length === 0 && (
-                    <div className="text-center text-gray-400 py-6 md:py-8">
-                      <Trophy className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                      <p className="text-lg">No scores yet. Be the first!</p>
-                    </div>
-                  )}
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Fixed Footer */}
-          <div className="flex-shrink-0 p-4 md:p-6 pt-3 md:pt-4 border-t border-gray-700">
-            <Button
-              onClick={onPlayAgain}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 md:py-4 text-lg md:text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
-            >
-              Play Again
-            </Button>
+              <div className="mb-4 md:mb-6">
+                <h4 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 text-center">Top 10 Riders</h4>
+                {isLoading ? (
+                  <div className="text-center text-gray-400 py-6 md:py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto mb-2"></div>
+                    Loading...
+                  </div>
+                ) : error && leaderboard.length === 0 ? (
+                  <div className="text-center text-red-400 py-6 md:py-8">{error}</div>
+                ) : (
+                  <div className="space-y-2 md:space-y-3">
+                    {leaderboard.map((entry, index) => (
+                      <div
+                        key={entry.id}
+                        className={`flex items-center justify-between p-3 md:p-4 rounded-lg transition-all hover:scale-[1.02] ${
+                          index < 3 
+                            ? 'bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-700/30' 
+                            : 'bg-gray-800/60 border border-gray-700/30'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 md:gap-4">
+                          {getRankIcon(index)}
+                          <div>
+                            <div className="text-white font-semibold text-sm md:text-base">{entry.username}</div>
+                            <div className="text-gray-400 text-[10px] mt-0.5">
+                              {new Date(entry.created_at).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-center gap-1">
+                          <div className="text-purple-400 font-bold text-base md:text-lg">{entry.distance}m</div>
+                          {getBikeImage(entry.selected_bike)}
+                        </div>
+                      </div>
+                    ))}
+                    {leaderboard.length === 0 && (
+                      <div className="text-center text-gray-400 py-6 md:py-8">
+                        <Trophy className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                        <p className="text-lg">No scores yet. Be the first!</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Fixed Footer */}
+            <div className="flex-shrink-0 p-4 md:p-6 pt-3 md:pt-4 border-t border-gray-700">
+              <Button
+                onClick={onPlayAgain}
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 md:py-4 text-lg md:text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+              >
+                Play Again
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Terms Modal */}
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={handleTermsClose}
+        onAccept={handleTermsAccept}
+      />
+    </>
   );
 };
 
