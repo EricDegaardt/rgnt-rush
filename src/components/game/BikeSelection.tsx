@@ -25,7 +25,7 @@ const bikes: Bike[] = [
   {
     id: 'purple-rain',
     name: 'Purple Rain',
-    image: '/dist/public-uploads/purple-rain.png',
+    image: '/dist/lovable-uploads/purple-rain.png',
     specs: {
       topSpeed: '120 km/h',
       mixedRange: '150 km',
@@ -40,7 +40,7 @@ const bikes: Bike[] = [
   {
     id: 'black-thunder',
     name: 'Black Thunder',
-    image: '/dist/public-uploads/black-thunder.png',
+    image: '/dist/lovable-uploads/black-thunder.png',
     specs: {
       topSpeed: '120 km/h',
       mixedRange: '150 km',
@@ -55,7 +55,7 @@ const bikes: Bike[] = [
   {
     id: 'rgnt-turbo',
     name: 'RGNT Turbo',
-    image: '/dist/public-uploads/rgnt-turbo.png',
+    image: '/dist/lovable-uploads/rgnt-turbo.png',
     specs: {
       topSpeed: '180–190 km/h',
       mixedRange: '8–10 laps',

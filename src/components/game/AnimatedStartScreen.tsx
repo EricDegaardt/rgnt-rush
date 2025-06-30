@@ -120,7 +120,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           bottom: '20px', // Positioned on the gray street
           width: '126px',
           height: '63px',
-          backgroundImage: "url('/dist/public-uploads/purple-rain.png')",
+          backgroundImage: "url('/dist/lovable-uploads/purple-rain.png')",
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
@@ -136,7 +136,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           bottom: '25px', // Positioned on the gray street, slightly offset
           width: '126px',
           height: '63px',
-          backgroundImage: "url('/dist/public-uploads/black-thunder.png')",
+          backgroundImage: "url('/dist/lovable-uploads/black-thunder.png')",
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
@@ -152,7 +152,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           bottom: '30px', // Positioned on the gray street, slightly offset
           width: '126px',
           height: '63px',
-          backgroundImage: "url('/dist/public-uploads/rgnt-turbo.png')",
+          backgroundImage: "url('/dist/lovable-uploads/rgnt-turbo.png')",
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',

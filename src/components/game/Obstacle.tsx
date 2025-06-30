@@ -10,7 +10,7 @@ const Obstacle = React.memo(({ x, width, height }: { x: number; width: number; h
                 bottom: `${ROAD_HEIGHT}px`,
                 width: `${width}px`,
                 height: `${height}px`,
-                backgroundImage: `url('/dist/public-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png')`,
+                backgroundImage: `url('/dist/lovable-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png')`,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',

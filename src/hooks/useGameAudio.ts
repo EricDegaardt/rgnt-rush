@@ -25,11 +25,11 @@ export const useGameAudio = () => {
         if (isInitializedRef.current) return;
         
         try {
-            audioRefs.current.backgroundMusic = new Audio('/dist/public-uploads/sounds/background-music.mp3');
-            audioRefs.current.bikeJump = new Audio('/dist/public-uploads/sounds/bike-jump.mp3');
-            audioRefs.current.hittingBarrel = new Audio('/dist/public-uploads/sounds/hitting-barell.mp3');
-            audioRefs.current.collectingBattery = new Audio('/dist/public-uploads/sounds/collecting-battery.mp3');
-            audioRefs.current.gameOver = new Audio('/dist/public-uploads/sounds/game-over.mp3');
+            audioRefs.current.backgroundMusic = new Audio('/dist/lovable-uploads/sounds/background-music.mp3');
+            audioRefs.current.bikeJump = new Audio('/dist/lovable-uploads/sounds/bike-jump.mp3');
+            audioRefs.current.hittingBarrel = new Audio('/dist/lovable-uploads/sounds/hitting-barell.mp3');
+            audioRefs.current.collectingBattery = new Audio('/dist/lovable-uploads/sounds/collecting-battery.mp3');
+            audioRefs.current.gameOver = new Audio('/dist/lovable-uploads/sounds/game-over.mp3');
 
             // Configure background music
             if (audioRefs.current.backgroundMusic) {

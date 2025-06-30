@@ -13,11 +13,11 @@ const GamePreloader = ({ onComplete, bikeImages }: GamePreloaderProps) => {
   // Assets to preload
   const gameAssets = [
     ...bikeImages,
-    '/dist/public-uploads/sounds/background-music.mp3',
-    '/dist/public-uploads/sounds/bike-jump.mp3',
-    '/dist/public-uploads/sounds/hitting-barell.mp3',
-    '/dist/public-uploads/sounds/collecting-battery.mp3',
-    '/dist/public-uploads/sounds/game-over.mp3',
+    '/dist/lovable-uploads/sounds/background-music.mp3',
+    '/dist/lovable-uploads/sounds/bike-jump.mp3',
+    '/dist/lovable-uploads/sounds/hitting-barell.mp3',
+    '/dist/lovable-uploads/sounds/collecting-battery.mp3',
+    '/dist/lovable-uploads/sounds/game-over.mp3',
   ];
 
   const totalAssets = gameAssets.length;
