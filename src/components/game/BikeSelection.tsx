@@ -133,13 +133,13 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
                       
                       {bike.description && (
-                        <div className="text-xs text-gray-300 mb-4 max-h-32 overflow-y-auto pr-2">
+                        <div className="text-[6px] text-gray-300 mb-4 max-h-32 overflow-y-auto pr-2 leading-tight">
                           {bike.description}
                         </div>
                       )}
                       
-                      {/* Table format for specifications with smaller text, right-aligned values, and more right padding */}
-                      <div className="w-full text-[7px] leading-tight pr-8">
+                      {/* Table format for specifications with different font sizes based on bike type */}
+                      <div className={`w-full leading-tight pr-8 ${bike.id === 'rgnt-turbo' ? 'text-[7px]' : 'text-[8px]'}`}>
                         <table className="w-full border-collapse">
                           <tbody>
                             <tr className="border-b border-gray-700">
