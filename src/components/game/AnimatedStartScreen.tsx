@@ -9,6 +9,7 @@ interface AnimatedStartScreenProps {
 const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartScreenProps) => {
   const [purpleBikeX, setPurpleBikeX] = useState(-200);
   const [blackBikeX, setBlackBikeX] = useState(-300);
+  const [turboBikeX, setTurboBikeX] = useState(-400);
   const [showTitle, setShowTitle] = useState(false);
 
   useEffect(() => {
@@ -24,6 +25,10 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       setBlackBikeX(prev => {
         if (prev > 800) return -300;
         return prev + 6;
+      });
+      setTurboBikeX(prev => {
+        if (prev > 800) return -400;
+        return prev + 7;
       });
     }, 50);
 
@@ -137,6 +142,22 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           backgroundPosition: 'center',
           imageRendering: 'pixelated',
           filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7))',
+        }}
+      />
+
+      <div 
+        className="absolute z-10 transition-transform duration-75 ease-linear"
+        style={{
+          left: `${turboBikeX}px`,
+          bottom: '30px', // Positioned on the gray street, slightly offset
+          width: '126px',
+          height: '63px',
+          backgroundImage: "url('/lovable-uploads/rgnt-turbo.png')",
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          imageRendering: 'pixelated',
+          filter: 'drop-shadow(0 4px 8px rgba(255, 165, 0, 0.5))',
         }}
       />
 
