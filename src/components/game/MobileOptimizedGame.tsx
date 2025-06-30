@@ -249,7 +249,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         <VolumeSlider volume={volume} onVolumeChange={setVolume} />
       </div>
       <div 
-        className="flex-1 relative bg-black overflow-hidden touch-none select-none mt-4 mb-4 md:mt-8 md:mb-8 shadow-2xl border border-gray-800"
+        className="flex-1 relative bg-black overflow-hidden touch-none select-none mt-2 mb-2 md:mt-4 md:mb-4 shadow-2xl border border-gray-800 text-xs md:text-sm"
         style={{
           WebkitTouchCallout: 'none',
           WebkitUserSelect: 'none',
