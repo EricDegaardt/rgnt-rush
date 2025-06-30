@@ -171,7 +171,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic, initializeAudio, isAudioEnabled]);
 
   // Bike images for preloading
-  const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png', '/lovable-uploads/rgnt-turbo.png'];
+  const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png'];
   
   if (showStartScreen) {
     return (

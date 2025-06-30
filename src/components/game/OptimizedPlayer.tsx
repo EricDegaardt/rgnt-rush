@@ -4,8 +4,7 @@ import { getPlayerXPosition } from './constants';
 
 const bikeImages = {
   'purple-rain': '/lovable-uploads/purple-rain.png',
-  'black-thunder': '/lovable-uploads/black-thunder.png',
-  'rgnt-turbo': '/lovable-uploads/rgnt-turbo.png'
+  'black-thunder': '/lovable-uploads/black-thunder.png'
 };
 
 interface OptimizedPlayerProps {
