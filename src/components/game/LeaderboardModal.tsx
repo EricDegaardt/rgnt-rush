@@ -598,14 +598,16 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                         >
                           <div className="flex items-center gap-3 md:gap-4">
                             {getRankIcon(index)}
-                            <div>
-                              <div className="text-white font-semibold text-sm md:text-base">{entry.username}</div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-white font-semibold text-sm md:text-base truncate max-w-[120px] md:max-w-[150px]" title={entry.username}>
+                                {entry.username}
+                              </div>
                               <div className="text-gray-400 text-[10px] mt-0.5">
                                 {new Date(entry.created_at).toLocaleDateString()}
                               </div>
                             </div>
                           </div>
-                          <div className="flex flex-col items-center gap-1">
+                          <div className="flex flex-col items-center gap-1 flex-shrink-0">
                             <div className="text-purple-400 font-bold text-base md:text-lg">{entry.distance}m</div>
                             {getBikeImage(entry.selected_bike)}
                           </div>
