@@ -595,15 +595,17 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
               </div>
             </div>
 
-            {/* Fixed Footer */}
-            <div className="flex-shrink-0 p-4 md:p-6 pt-3 md:pt-4 border-t border-gray-700">
-              <Button
-                onClick={onPlayAgain}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 md:py-4 text-lg md:text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
-              >
-                Play Again
-              </Button>
-            </div>
+            {/* Fixed Footer - Only show Play Again button when NOT in email form step */}
+            {!showEmailForm && (
+              <div className="flex-shrink-0 p-4 md:p-6 pt-3 md:pt-4 border-t border-gray-700">
+                <Button
+                  onClick={onPlayAgain}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 md:py-4 text-lg md:text-xl font-bold rounded-lg transition-all transform hover:scale-[1.02] relative z-[10002] pointer-events-auto"
+                >
+                  Play Again
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
