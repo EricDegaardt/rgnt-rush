@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Collectible from './Collectible';
+import SplashEffect from './SplashEffect';
 
 interface AnimatedStartScreenProps {
   onStartGame: () => void;
@@ -14,6 +15,7 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
   const [showTitle, setShowTitle] = useState(false);
   const [batteries, setBatteries] = useState([]);
   const [barrels, setBarrels] = useState([]);
+  const [splash, setSplash] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     // Animate title appearance
@@ -35,32 +37,47 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       });
       // Move batteries left
       setBatteries(bats => bats.map(b => ({ ...b, x: b.x - b.speed })).filter(b => b.x > -40));
-      // Randomly spawn batteries (max 3 at a time)
+      // Randomly spawn batteries (max 2 at a time)
       setBatteries(bats => {
-        if (bats.length < 3 && Math.random() < 0.03) {
+        if (bats.length < 2 && Math.random() < 0.03) {
           return [...bats, { x: 900, y: 60 + Math.random() * 40, speed: 6 + Math.random() * 2 }];
         }
         return bats;
       });
-      // Move barrels left and respawn at fixed x when off-screen
+      // Move single barrel left and respawn if off-screen
       setBarrels(obs => {
         let updated = obs.map(o => ({ ...o, x: o.x - o.speed }));
-        // Remove off-screen
         updated = updated.filter(o => o.x > -60);
-        // Always keep 2 barrels at fixed x positions
-        while (updated.length < 2) {
-          const fixedX = updated.length === 0 ? 600 : 800;
-          updated.push({ x: 900 + fixedX, y: 60 + Math.random() * 40, speed: 5 + Math.random() * 2 });
+        if (updated.length === 0) {
+          updated.push({ x: 900, y: 60 + Math.random() * 40, speed: 5 + Math.random() * 2 });
         }
         return updated;
       });
+      // Check for collision between bikes and barrel
+      const barrel = barrels[0];
+      if (barrel) {
+        const bikes = [
+          { x: purpleBikeX, y: 20 },
+          { x: blackBikeX, y: 25 },
+          { x: turboBikeX, y: 30 }
+        ];
+        bikes.forEach(bike => {
+          if (
+            barrel.x < bike.x + 100 &&
+            barrel.x + 48 > bike.x &&
+            Math.abs(barrel.y - bike.y) < 40
+          ) {
+            setSplash({ x: barrel.x + 24, y: barrel.y });
+          }
+        });
+      }
     }, 50);
 
     return () => {
       clearTimeout(titleTimer);
       clearInterval(bikeAnimation);
     };
-  }, []);
+  }, [purpleBikeX, blackBikeX, turboBikeX, barrels]);
 
   const handleStartClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -202,10 +219,10 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
       </div>
 
       {/* Render batteries and barrels */}
-      {batteries.slice(0, 3).map((b, i) => (
+      {batteries.slice(0, 2).map((b, i) => (
         <Collectible key={i} x={b.x} y={b.y} />
       ))}
-      {barrels.slice(0, 2).map((o, i) => (
+      {barrels.slice(0, 1).map((o, i) => (
         <img
           key={i}
           src="/lovable-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png"
@@ -214,6 +231,9 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
           style={{ left: o.x, bottom: o.y - 20, width: 48, height: 64 }}
         />
       ))}
+      {splash && (
+        <SplashEffect x={splash.x} y={splash.y} onComplete={() => setSplash(null)} />
+      )}
 
       {/* Main Content - moved much closer to the top */}
       <div className="absolute top-16 left-0 right-0 flex flex-col items-center text-white p-4 text-center z-20">
