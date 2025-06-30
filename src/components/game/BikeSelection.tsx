@@ -18,6 +18,7 @@ interface Bike {
     chargeTime: string;
     license: string;
   };
+  description?: string;
 }
 
 const bikes: Bike[] = [
@@ -56,15 +57,16 @@ const bikes: Bike[] = [
     name: 'RGNT Turbo',
     image: '/lovable-uploads/rgnt-turbo.png',
     specs: {
-      topSpeed: '185 km/h',
-      mixedRange: '150 km',
-      turboPower: '60 kW',
-      acceleration: '3.2 sec',
+      topSpeed: '180–190 km/h',
+      mixedRange: '8–10 laps',
+      turboPower: '52 kW (push-to-pass)',
+      acceleration: 'Multiple power modes',
       brakingSystem: 'Combined',
-      batterySystem: '7.5 kWh',
-      chargeTime: '1 h',
+      batterySystem: 'Quick recharge: 1h',
+      chargeTime: '',
       license: 'A1/A'
-    }
+    },
+    description: `RGNT Motorcycles, in collaboration with SVEMO, BIKE, and Dunlop, presents the RGNT TURBO Championship: Sweden's first official EV motorcycle racing series. Race on the RGNT Turbo—an electric powerhouse with multiple power modes and push-to-pass, delivering up to 52 kW peak power. 8–10 lap race capacity. Fully recharged in just 1 hour.`
   }
 ];
 
@@ -129,6 +131,10 @@ const BikeSelection = ({ onBikeSelect, onBack }: BikeSelectionProps) => {
                         className="w-48 h-24 object-contain mb-4"
                       />
                       <h3 className="text-xl text-purple-300 mb-4">{bike.name}</h3>
+                      
+                      {bike.description && (
+                        <div className="text-sm text-gray-300 mb-4">{bike.description}</div>
+                      )}
                       
                       {/* Table format for specifications with smaller text, right-aligned values, and more right padding */}
                       <div className="w-full text-[7px] leading-tight pr-8">
