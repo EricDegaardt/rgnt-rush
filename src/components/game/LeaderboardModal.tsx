@@ -27,6 +27,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   const [showCelebration, setShowCelebration] = useState(false);
   const [playerRank, setPlayerRank] = useState<number | null>(null);
   const [totalPlayers, setTotalPlayers] = useState(0);
+  const [hasStoredUserData, setHasStoredUserData] = useState(false);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -35,9 +36,20 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
   const loadUserData = () => {
     const userData = getUserDataFromStorage();
-    if (userData.username) setUsername(userData.username);
-    if (userData.email) setEmail(userData.email);
-    if (userData.marketingConsent !== undefined) setMarketingConsent(userData.marketingConsent);
+    const hasCompleteData = userData.username && userData.email && userData.marketingConsent !== undefined;
+    
+    if (hasCompleteData) {
+      setUsername(userData.username);
+      setEmail(userData.email);
+      setMarketingConsent(userData.marketingConsent);
+      setHasStoredUserData(true);
+    } else {
+      setHasStoredUserData(false);
+      // Only set partial data if we don't have complete data
+      if (userData.username) setUsername(userData.username);
+      if (userData.email) setEmail(userData.email);
+      if (userData.marketingConsent !== undefined) setMarketingConsent(userData.marketingConsent);
+    }
   };
 
   const fetchLeaderboard = async () => {
@@ -95,7 +107,13 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   };
 
   const canSubmitScore = () => {
-    return username.trim() && email.trim() && marketingConsent && !isSubmitting;
+    if (hasStoredUserData) {
+      // If we have stored data, only need username (which should already be filled)
+      return username.trim() && !isSubmitting;
+    } else {
+      // If no stored data, need all fields
+      return username.trim() && email.trim() && marketingConsent && !isSubmitting;
+    }
   };
 
   const handleTermsClick = () => {
@@ -124,7 +142,8 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
   const submitScore = async () => {
     if (!canSubmitScore()) return;
     
-    if (!isValidEmail(email)) {
+    // Only validate email if we don't have stored data
+    if (!hasStoredUserData && !isValidEmail(email)) {
       setError('Please enter a valid email address');
       return;
     }
@@ -133,22 +152,28 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       setIsSubmitting(true);
       setError(null);
 
-      // Save user data locally for future use
-      const userData: UserData = {
-        username: username.trim(),
-        email: email.trim(),
-        marketingConsent
-      };
-      saveUserDataLocally(userData);
+      // Use stored data if available, otherwise use form data
+      const finalEmail = hasStoredUserData ? email : email.trim();
+      const finalMarketingConsent = hasStoredUserData ? marketingConsent : marketingConsent;
+
+      // Save user data locally for future use (only if not already stored)
+      if (!hasStoredUserData) {
+        const userData: UserData = {
+          username: username.trim(),
+          email: finalEmail,
+          marketingConsent: finalMarketingConsent
+        };
+        saveUserDataLocally(userData);
+      }
 
       const { error } = await supabase
         .from('leaderboard')
         .insert({
           username: username.trim(),
-          email: email.trim(),
+          email: finalEmail,
           distance: Math.floor(score),
           selected_bike: selectedBike,
-          marketing_consent: marketingConsent
+          marketing_consent: finalMarketingConsent
         });
 
       if (error) throw error;
@@ -281,7 +306,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                 <div className="mb-4 md:mb-6">
                   <p className="text-gray-300 text-sm mb-4 text-center">Save your score to the leaderboard:</p>
                   <div className="flex flex-col gap-4">
-                    {/* Username Input */}
+                    {/* Username Input - Always show */}
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                       <input
@@ -295,71 +320,76 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                       />
                     </div>
 
-                    {/* Email Input */}
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Your email address"
-                        className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
-                        disabled={isSubmitting}
-                      />
-                    </div>
-
-                    {/* Terms & Conditions Section - Simplified */}
-                    <div className="flex items-start space-x-3 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
-                      <div className="relative flex-shrink-0 mt-0.5">
-                        {/* Hidden native checkbox for accessibility */}
-                        <input
-                          type="checkbox"
-                          id="marketing-consent"
-                          checked={marketingConsent}
-                          onChange={handleCheckboxChange}
-                          disabled={isSubmitting}
-                          className="absolute opacity-0 w-6 h-6 cursor-pointer"
-                          style={{ zIndex: 1 }}
-                        />
-                        {/* Custom checkbox visual */}
-                        <div
-                          onClick={handleCheckboxClick}
-                          className={`
-                            relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
-                            border-2 rounded cursor-pointer transition-all duration-200
-                            ${marketingConsent 
-                              ? 'border-purple-500 bg-purple-500 shadow-lg shadow-purple-500/25' 
-                              : 'border-gray-500 bg-white hover:border-purple-400 hover:bg-gray-50'
-                            }
-                            ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95'}
-                            focus-within:ring-2 focus-within:ring-purple-400 focus-within:ring-opacity-50
-                          `}
-                        >
-                          {marketingConsent && (
-                            <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
-                          )}
+                    {/* Email and Terms - Only show if not stored locally */}
+                    {!hasStoredUserData && (
+                      <>
+                        {/* Email Input */}
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Your email address"
+                            className="w-full bg-gray-800 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                            disabled={isSubmitting}
+                          />
                         </div>
-                      </div>
-                      <div className="flex-1">
-                        <label 
-                          htmlFor="marketing-consent" 
-                          className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                          onClick={handleCheckboxClick}
-                        >
-                          I agree to the{' '}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleTermsClick();
-                            }}
-                            className="text-purple-400 hover:text-purple-300 underline transition-colors"
-                          >
-                            Terms & Conditions
-                          </button>
-                        </label>
-                      </div>
-                    </div>
+
+                        {/* Terms & Conditions Section */}
+                        <div className="flex items-start space-x-3 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+                          <div className="relative flex-shrink-0 mt-0.5">
+                            {/* Hidden native checkbox for accessibility */}
+                            <input
+                              type="checkbox"
+                              id="marketing-consent"
+                              checked={marketingConsent}
+                              onChange={handleCheckboxChange}
+                              disabled={isSubmitting}
+                              className="absolute opacity-0 w-6 h-6 cursor-pointer"
+                              style={{ zIndex: 1 }}
+                            />
+                            {/* Custom checkbox visual */}
+                            <div
+                              onClick={handleCheckboxClick}
+                              className={`
+                                relative flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] 
+                                border-2 rounded cursor-pointer transition-all duration-200
+                                ${marketingConsent 
+                                  ? 'border-purple-500 bg-purple-500 shadow-lg shadow-purple-500/25' 
+                                  : 'border-gray-500 bg-white hover:border-purple-400 hover:bg-gray-50'
+                                }
+                                ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95'}
+                                focus-within:ring-2 focus-within:ring-purple-400 focus-within:ring-opacity-50
+                              `}
+                            >
+                              {marketingConsent && (
+                                <Check className="w-4 h-4 text-white font-bold stroke-[3] drop-shadow-sm" />
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <label 
+                              htmlFor="marketing-consent" 
+                              className={`text-sm text-gray-300 leading-relaxed select-none ${isSubmitting ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                              onClick={handleCheckboxClick}
+                            >
+                              I agree to the{' '}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTermsClick();
+                                }}
+                                className="text-purple-400 hover:text-purple-300 underline transition-colors"
+                              >
+                                Terms & Conditions
+                              </button>
+                            </label>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     <Button
                       onClick={submitScore}
@@ -374,7 +404,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                     </Button>
 
                     {/* Validation message */}
-                    {(!username.trim() || !email.trim() || !marketingConsent) && (
+                    {!hasStoredUserData && (!username.trim() || !email.trim() || !marketingConsent) && (
                       <div className="text-center text-sm text-gray-400">
                         {!username.trim() && !email.trim() && !marketingConsent && (
                           <p>Please fill in all fields and agree to the terms</p>
@@ -385,6 +415,11 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
                         {(!username.trim() || !email.trim()) && marketingConsent && (
                           <p>Please fill in your username and email</p>
                         )}
+                      </div>
+                    )}
+                    {hasStoredUserData && !username.trim() && (
+                      <div className="text-center text-sm text-gray-400">
+                        <p>Please enter your username</p>
                       </div>
                     )}
                   </div>
