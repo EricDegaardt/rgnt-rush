@@ -21,7 +21,7 @@ const SimpleLeaderboardModal = ({ onClose, onStartRacing }: SimpleLeaderboardMod
     try {
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('leaderboard')
+        .from('scoreboard')
         .select('*')
         .order('distance', { ascending: false })
         .limit(10);

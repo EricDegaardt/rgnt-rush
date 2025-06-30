@@ -57,7 +57,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     try {
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('leaderboard')
+        .from('scoreboard')
         .select('*')
         .order('distance', { ascending: false })
         .limit(10);
@@ -67,7 +67,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
 
       // Get total player count
       const { count } = await supabase
-        .from('leaderboard')
+        .from('scoreboard')
         .select('*', { count: 'exact', head: true });
       
       setTotalPlayers(count || 0);
@@ -83,7 +83,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
     try {
       // Count how many players have a higher score
       const { count } = await supabase
-        .from('leaderboard')
+        .from('scoreboard')
         .select('*', { count: 'exact', head: true })
         .gt('distance', Math.floor(playerScore));
 
@@ -146,7 +146,7 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       setError(null);
 
       const { error } = await supabase
-        .from('leaderboard')
+        .from('scoreboard')
         .insert({
           username: username.trim(),
           distance: Math.floor(score),
@@ -162,12 +162,11 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       
       // If user already has stored data (subscribed), skip email form and go to share options
       if (hasStoredUserData) {
-        // Update the leaderboard entry with existing email and consent
+        // Update the scoreboard entry with existing email and consent
         await supabase
-          .from('leaderboard')
+          .from('scoreboard')
           .update({
-            email: email.trim(),
-            marketing_consent: marketingConsent
+            email: email.trim()
           })
           .eq('username', username.trim())
           .eq('distance', Math.floor(score))
@@ -205,12 +204,11 @@ const LeaderboardModal = ({ score, selectedBike, onClose, onPlayAgain }: Leaderb
       };
       saveUserDataLocally(userData);
 
-      // Update the leaderboard entry with email and consent
+      // Update the scoreboard entry with email
       const { error } = await supabase
-        .from('leaderboard')
+        .from('scoreboard')
         .update({
-          email: email.trim(),
-          marketing_consent: marketingConsent
+          email: email.trim()
         })
         .eq('username', username.trim())
         .eq('distance', Math.floor(score))
