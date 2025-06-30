@@ -220,23 +220,26 @@ const AnimatedStartScreen = ({ onStartGame, onViewLeaderboard }: AnimatedStartSc
 
       {/* Render batteries and barrels */}
       {batteries.slice(0, 2).map((b, i) => (
-        <Collectible key={i} x={b.x} y={b.y} />
+        <div style={{ zIndex: 30, position: 'absolute', left: b.x, bottom: b.y }} key={i}>
+          <Collectible x={0} y={0} />
+        </div>
       ))}
       {barrels.slice(0, 1).map((o, i) => (
         <img
           key={i}
           src="/lovable-uploads/4c431529-ded5-45a9-9528-a852004e45ae.png"
           alt="Barrel"
-          className="absolute z-20"
-          style={{ left: o.x, bottom: o.y - 20, width: 48, height: 64 }}
+          style={{ left: o.x, bottom: o.y - 20, width: 48, height: 64, position: 'absolute', zIndex: 30 }}
         />
       ))}
       {splash && (
-        <SplashEffect x={splash.x} y={splash.y} onComplete={() => setSplash(null)} />
+        <div style={{ zIndex: 30, position: 'absolute', left: splash.x, bottom: splash.y }}>
+          <SplashEffect x={0} y={0} onComplete={() => setSplash(null)} />
+        </div>
       )}
 
       {/* Main Content - moved much closer to the top */}
-      <div className="absolute top-16 left-0 right-0 flex flex-col items-center text-white p-4 text-center z-20">
+      <div className="absolute top-16 left-0 right-0 flex flex-col items-center text-white p-4 text-center" style={{ zIndex: 50 }}>
         <div className={`transition-all duration-1000 ${showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h1 className="text-3xl md:text-5xl mb-1 text-purple-400 font-bold tracking-wider drop-shadow-lg">
             RGNT RUSH
