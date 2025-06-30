@@ -18,7 +18,6 @@ import { useGameAudio } from '../../hooks/useGameAudio';
 import Road from './Road';
 import Countdown from './Countdown';
 import SoundToggle from '../ui/SoundToggle';
-import BoltBadge from '../ui/BoltBadge';
 
 interface MobileOptimizedGameProps {
   isMobile?: boolean;
@@ -297,14 +296,9 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         )}
 
         {isMobile && !showStartScreen && !isPreloading && !showCountdown && (
-          <>
-            <div className="fixed top-2 left-2 z-50">
-              <BoltBadge />
-            </div>
-            <div className="fixed top-2 right-2 z-50">
-              <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
-            </div>
-          </>
+          <div className="fixed top-2 right-2 z-50">
+            <SoundToggle isMuted={isMuted} onToggle={toggleMute} />
+          </div>
         )}
       </div>
     </div>
