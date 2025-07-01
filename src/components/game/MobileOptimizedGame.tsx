@@ -33,6 +33,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showSimpleLeaderboard, setShowSimpleLeaderboard] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
+  const [audioInitialized, setAudioInitialized] = useState(false);
   
   const {
     playSound,
@@ -40,21 +41,30 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     volume,
     setVolume,
     initializeAudio,
-    isAudioEnabled
+    isAudioEnabled,
+    isAudioInitialized
   } = useGameAudio();
   
+  // Initialize audio on any user interaction
+  const handleAudioInit = useCallback(async () => {
+    if (!audioInitialized) {
+      console.log('Initializing audio from user interaction...');
+      await initializeAudio();
+      setAudioInitialized(true);
+    }
+  }, [initializeAudio, audioInitialized]);
+
   // Initialize audio on first user interaction (start screen)
   useEffect(() => {
-    const handleFirstInteraction = async () => {
-      if (!isAudioEnabled) {
-        await initializeAudio();
-      }
+    const handleFirstInteraction = async (event: Event) => {
+      console.log('First user interaction detected:', event.type);
+      await handleAudioInit();
     };
 
     // Add event listeners for first user interaction
-    const events = ['click', 'touchstart', 'keydown'];
+    const events = ['click', 'touchstart', 'touchend', 'keydown'];
     events.forEach(event => {
-      document.addEventListener(event, handleFirstInteraction, { once: true });
+      document.addEventListener(event, handleFirstInteraction, { once: false, passive: true });
     });
 
     return () => {
@@ -62,7 +72,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
         document.removeEventListener(event, handleFirstInteraction);
       });
     };
-  }, [initializeAudio, isAudioEnabled]);
+  }, [handleAudioInit]);
   
   const handleGameOver = useCallback((score: number) => {
     setFinalScore(score);
@@ -97,23 +107,20 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     gameLogic.resetGame();
     setRunning(true);
     // Start background music when game actually starts
+    console.log('Starting game, attempting to play background music...');
     startBackgroundMusic();
   };
   
   const handleStartFromMenu = async () => {
     // Initialize audio on first interaction
-    if (!isAudioEnabled) {
-      await initializeAudio();
-    }
+    await handleAudioInit();
     setShowStartScreen(false);
     setShowBikeSelection(true);
   };
 
   const handleViewLeaderboard = async () => {
     // Initialize audio on first interaction
-    if (!isAudioEnabled) {
-      await initializeAudio();
-    }
+    await handleAudioInit();
     setShowStartScreen(false);
     setShowSimpleLeaderboard(true); // Show simple leaderboard from start screen
   };
@@ -157,9 +164,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
     e.preventDefault();
 
     // Initialize audio on any interaction
-    if (!isAudioEnabled) {
-      await initializeAudio();
-    }
+    await handleAudioInit();
 
     // Only handle specific game actions
     if (!running && !gameOver && !showBikeSelection && !showLeaderboard && !showSimpleLeaderboard) {
@@ -170,7 +175,7 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
       gameLogic.handleJump();
     }
     // Remove the game over screen interaction since leaderboard shows immediately
-  }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic, initializeAudio, isAudioEnabled]);
+  }, [running, gameOver, showBikeSelection, showLeaderboard, showSimpleLeaderboard, gameLogic, handleAudioInit]);
 
   // Bike images for preloading
   const bikeImages = ['/lovable-uploads/purple-rain.png', '/lovable-uploads/black-thunder.png', '/lovable-uploads/rgnt-turbo.png'];
@@ -190,6 +195,12 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
             onViewLeaderboard={handleViewLeaderboard}
           />
         </div>
+        {/* Audio status indicator for debugging on mobile */}
+        {isMobile && (
+          <div className="absolute top-2 left-2 text-xs text-white bg-black bg-opacity-50 p-1 rounded">
+            Audio: {isAudioEnabled ? 'Enabled' : 'Disabled'} | Init: {isAudioInitialized ? 'Yes' : 'No'}
+          </div>
+        )}
       </div>
     );
   }
@@ -296,6 +307,13 @@ const MobileOptimizedGame = ({ isMobile }: MobileOptimizedGameProps) => {
             onClose={handleCloseLeaderboard}
             onPlayAgain={handlePlayAgain}
           />
+        )}
+
+        {/* Audio status indicator for debugging on mobile */}
+        {isMobile && (
+          <div className="absolute top-2 left-2 text-xs text-white bg-black bg-opacity-50 p-1 rounded">
+            Audio: {isAudioEnabled ? 'Enabled' : 'Disabled'} | Init: {isAudioInitialized ? 'Yes' : 'No'}
+          </div>
         )}
       </div>
     </div>
